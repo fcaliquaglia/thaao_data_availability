@@ -36,7 +36,7 @@ from matplotlib.lines import Line2D
 from matplotlib.pyplot import cm
 from PIL import Image, ImageDraw
 
-from utils import thaao_settings as ts
+import thaao_settings as ts
 
 
 def plot_data_avail(inp, yy1, yy2, idx):
@@ -60,7 +60,7 @@ def plot_data_avail(inp, yy1, yy2, idx):
         missing_switch = 1
         data_val = pd.DataFrame(data=np.empty((0, 2)))
         data_val.columns = ['datetime', 'mask']
-        data_val['datetime'] = pd.date_range(dt.datetime(1900, 1, 1), dt.datetime.today(), freq='720T')
+        data_val['datetime'] = pd.date_range(dt.datetime(1900, 1, 1), dt.datetime.today(), freq='720min')
         data_val = data_val.set_index(pd.DatetimeIndex(data_val['datetime']))
         data_val = data_val.drop(columns=['datetime'])
         data_val['mask'] = True
@@ -277,7 +277,7 @@ def drawProgressBar(d, x, y, w, h, progress_func, bg="black", fg="red"):
 
 if __name__ == "__main__":
 
-    dpi_fac = 2  # if incresed dpi resolution increases
+    dpi_fac = 2  # if increased, dpi resolution increases
     dpi = 300 * dpi_fac
 
     # panel for gifs (by i years)
@@ -287,7 +287,7 @@ if __name__ == "__main__":
     time_window = pd.DateOffset(years=window_size)
     time_freq_g = pd.DateOffset(months=lag_g)
     start_g = dt.datetime(1900, 1, 1) + time_window
-    end_g = dt.datetime(2027, 12, 31)
+    end_g = dt.datetime.today() + dt.timedelta(minutes=500000)
 
     # single-year panels
     switch_yearly = True

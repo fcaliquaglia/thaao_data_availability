@@ -29,10 +29,10 @@ import pandas as pd
 import xarray as xr
 
 from prev import radiation_prev as rad_prev
-from utils import thaao_settings as ts
-from utils.thaao_settings import save_mask_txt
+import thaao_settings as ts
 
-tm_res = '5T'
+
+tm_res = '5min'
 
 if __name__ == "__main__":
 
@@ -73,12 +73,12 @@ if __name__ == "__main__":
             data_rad_res = None
             print("file radiation " + str(yr) + " not available")
 
-    save_mask_txt(data_rad.to_dataframe()['LW'], 'rad_down_lw')
-    save_mask_txt(data_rad.to_dataframe()['SW'], 'rad_down_sw')
-    save_mask_txt(data_rad.to_dataframe()['LW_UP'], 'rad_up_lw')
-    save_mask_txt(data_rad.to_dataframe()['TB'], 'rad_tb')
-    save_mask_txt(data_rad.to_dataframe()['PAR_UP'], 'rad_par_up')
-    save_mask_txt(data_rad.to_dataframe()['PAR_DOWN'], 'rad_par_down')
+    ts.save_mask_txt(data_rad.to_dataframe()['LW'], 'rad_down_lw')
+    ts.save_mask_txt(data_rad.to_dataframe()['SW'], 'rad_down_sw')
+    ts.save_mask_txt(data_rad.to_dataframe()['LW_UP'], 'rad_up_lw')
+    ts.save_mask_txt(data_rad.to_dataframe()['TB'], 'rad_tb')
+    ts.save_mask_txt(data_rad.to_dataframe()['PAR_UP'], 'rad_par_up')
+    ts.save_mask_txt(data_rad.to_dataframe()['PAR_DOWN'], 'rad_par_down')
 
     tmp_alb = 0
     data_alb = xr.DataArray()
@@ -91,7 +91,7 @@ if __name__ == "__main__":
             data_alb_res = None
             print("file albedo " + str(yr) + " not available")
 
-    save_mask_txt(data_alb.to_dataframe()['ALB'], 'rad_up_sw')
+    ts.save_mask_txt(data_alb.to_dataframe()['ALB'], 'rad_up_sw')
 
     # old rad radiation data DMI availability
     fol_input_rad_old = os.path.join(fol_input, 'rad_dsi_legacy')
@@ -123,7 +123,7 @@ if __name__ == "__main__":
     dsi_all = pd.concat([dsi, rad_dsi_legacy])
     dsi_all.sort_index()
 
-    save_mask_txt(usi, 'rad_usi')
-    save_mask_txt(uli, 'rad_uli')
-    save_mask_txt(dli, 'rad_dli')
-    save_mask_txt(dsi_all, 'rad_dsi')
+    ts.save_mask_txt(usi, 'rad_usi')
+    ts.save_mask_txt(uli, 'rad_uli')
+    ts.save_mask_txt(dli, 'rad_dli')
+    ts.save_mask_txt(dsi_all, 'rad_dsi')
