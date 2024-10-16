@@ -286,6 +286,7 @@ def var_(yr):
                         'Nov': {'start': dt.datetime(yr, 11, 1), 'end': dt.datetime(yr, 11, 30)},
                         'Dec': {'start': dt.datetime(yr, 12, 1), 'end': dt.datetime(yr, 12, 31)}}}
 
+
 def save_mask_txt(data_val, instr_nm):
     """
 
@@ -308,6 +309,7 @@ def save_mask_txt(data_val, instr_nm):
 
     np.savetxt(os.path.join(fol_out, instr_nm + '_data_avail_list.txt'), out_file, fmt='%s')
 
+
 def save_txt(instr_nm, data_val):
     """
 
@@ -316,7 +318,6 @@ def save_txt(instr_nm, data_val):
     :return:
     """
     fol_out = os.path.join(basefolder, "thaao_" + instr_nm)
-
 
     np.savetxt(os.path.join(fol_out, instr_nm + '_data_avail_list.txt'), data_val, fmt='%s')
 
