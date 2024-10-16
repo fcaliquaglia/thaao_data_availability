@@ -3,7 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
-PHAAO meteo plot. Data format is the one of downloaded data from the website
+Brief description
 """
 
 # =============================================================
@@ -26,7 +26,7 @@ import os
 
 import pandas as pd
 
-from utils import thaao_settings as ts
+import thaao_settings as ts
 
 instr = 'meteo'
 folder = os.path.join(ts.basefolder, "thaao_" + instr)

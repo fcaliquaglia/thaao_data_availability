@@ -3,7 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
-Plotting AERONET AOD preview:
+Brief description
 """
 
 # =============================================================
@@ -22,5 +22,6 @@ __status__ = "Research"
 __lastupdate__ = "October 2024"
 
 if __name__ == "__main__":
-    
-    return None
+    # TODO:
+    print('not developed yet')
+

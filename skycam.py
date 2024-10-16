@@ -3,8 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
-Combine multiple images from skycam into daily summary frames.
-It is possible to choose the frequency: 10, 20 or 60 minutes.
+Brief description
 """
 
 # =============================================================
@@ -27,7 +26,7 @@ import urllib.request
 
 import pandas as pd
 
-from utils import thaao_settings as ts
+import thaao_settings as ts
 
 instr = 'skycam'
 date_list = pd.date_range(

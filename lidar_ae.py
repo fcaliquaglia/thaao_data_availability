@@ -26,7 +26,7 @@ from glob import glob
 
 import pandas as pd
 
-from utils import thaao_settings as ts
+import thaao_settings as ts
 
 instr = 'lidar_ae'
 date_list = pd.date_range(

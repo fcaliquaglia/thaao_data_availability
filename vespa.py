@@ -25,7 +25,7 @@ import os
 
 import pandas as pd
 
-from utils import thaao_settings as ts
+import thaao_settings as ts
 
 instr = 'vespa'
 folder = os.path.join(ts.basefolder, "thaao_" + instr)

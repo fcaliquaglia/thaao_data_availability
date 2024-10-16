@@ -25,7 +25,7 @@ import os
 
 import pandas as pd
 
-from utils import thaao_settings as ts
+import thaao_settings as ts
 
 instr = 'ecapac_aws_snow'
 date_list = pd.date_range(

@@ -26,13 +26,12 @@ import os
 import numpy as np
 import pandas as pd
 
-from utils import thaao_settings as ts
-from utils.thaao_settings import save_txt
+import thaao_settings as ts
 
 instr = 'pm10'
 date_list = pd.date_range(
         ts.instr_na_list[instr]['start_instr'], ts.instr_na_list[instr]['end_instr'], freq='D').tolist()
-folder = os.path.join(ts.basefolder, "thaao_" + instr)
+folder = os.path.join(ts.basefolder, 'thaao_' + instr)
 
 if __name__ == "__main__":
     pm10_tmp = pd.DataFrame(columns=['dt', 'mask'])

@@ -3,7 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
-PHAAO meteo plot. Data format is the one of downloaded data from the website
+Brief description
 """
 
 # =============================================================
@@ -27,7 +27,7 @@ from urllib.request import urlopen
 import numpy as np
 import pandas as pd
 
-from utils import thaao_settings as ts
+import thaao_settings as ts
 
 instr = 'metar'
 

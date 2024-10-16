@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 """
-Reading and plotting daily summary of ceilometer data:
-backscatter, tcc, vor, cloud base, aerosol layers, cloud depth, sza, flags
-
+Brief description
 """
 # -------------------------------------------------------------------------------
 __author__ = "Filippo Cali' Quaglia"

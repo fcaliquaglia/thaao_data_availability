@@ -26,12 +26,12 @@ from glob import glob
 
 import pandas as pd
 
-from utils import thaao_settings as ts
+import thaao_settings as ts
 
 instr = 'gbms'
 date_list = pd.date_range(
         ts.instr_na_list[instr]['start_instr'], ts.instr_na_list[instr]['end_instr'], freq='D').tolist()
-folder = os.path.join(ts.basefolder, "thaao_" + instr)
+folder = os.path.join(ts.basefolder, 'thaao_' + instr)
 
 if __name__ == "__main__":
 

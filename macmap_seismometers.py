@@ -26,7 +26,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from utils import thaao_settings as ts
+import thaao_settings as ts
 
 instr = 'macmap_seisometers'
 date_list = pd.date_range(

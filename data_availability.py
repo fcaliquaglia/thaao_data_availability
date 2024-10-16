@@ -283,7 +283,7 @@ if __name__ == "__main__":
     dpi = 300 * dpi_fac
 
     # panel for gifs (by i years)
-    switch_gif = False
+    switch_gif = True
     window_size = 5  # in years
     lag_g = 3  # in months
     time_window = pd.DateOffset(years=window_size)
@@ -369,6 +369,7 @@ if __name__ == "__main__":
         j = cp.copy(start_y)
         j1 = j + pd.DateOffset(years=1)
         while j1 <= end_y:
+            print(j1)
             range_lab = dt.datetime.strftime(j, '%Y-%m')
             ffig = draw_data_avail(j, j1, instr_list)
             plt.suptitle(dt.datetime.strftime(j, '%b-%Y') + ' to ' + dt.datetime.strftime(j1, '%b-%Y'))

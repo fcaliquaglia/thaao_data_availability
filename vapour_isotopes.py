@@ -26,7 +26,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from utils import thaao_settings as ts
+import thaao_settings as ts
 
 instr = 'wv_isotopes'
 folder = os.path.join(ts.basefolder, "thaao_" + instr)

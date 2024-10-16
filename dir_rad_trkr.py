@@ -3,7 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
-Plotting AERONET AOD preview:
+Brief description
 """
 
 # =============================================================
@@ -25,7 +25,7 @@ import os
 
 import pandas as pd
 
-from utils import thaao_settings as ts
+import thaao_settings as ts
 
 instr = 'dir_rad_trkr'
 date_list = pd.date_range(
@@ -33,4 +33,5 @@ date_list = pd.date_range(
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
-    return None
+    # TODO:
+    print('not developed yet')

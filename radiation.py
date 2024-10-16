@@ -3,7 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
-Plotting radiation preview: LW, SW, PAR, TB, (albedo)
+Brief description
 """
 
 # =============================================================
@@ -24,38 +24,78 @@ __lastupdate__ = "October 2024"
 import datetime as dt
 import os
 
+import julian
 import numpy as np
 import pandas as pd
 import xarray as xr
 
-from prev import radiation_prev as rad_prev
 import thaao_settings as ts
 
-
+instr = 'rad'
 tm_res = '5min'
 
+var_list_rad = ['SW', 'LW', 'PAR', 'TB']
+var_list_alb = ['ALBEDO_SW', 'SW_UP']
+
+variables_rad = {'SW' : {'name': 'SW', 'uom': '[Wm-2]'}, 'LW': {'name': 'LW', 'uom': '[Wm-2]'},
+                 'PAR': {'name': 'PAR', 'uom': '[Wm-2]'}, 'TB': {'name': 'TB', 'uom': '[K]'}}
+
+variables_alb = {'ALBEDO_SW': {'name': 'ALBEDO_SW', 'uom': '[unitless]'}, 'SW_UP': {'name': 'SW_UP', 'uom': '[Wm-2]'}}
+
+folder = os.path.join(ts.basefolder, "thaao_" + instr)
+
+
+def read_rad(folder, date_f):
+    """
+    Function for reading radiation data and formatting data strings.
+    :param folder:
+    :param date_f: (YYYY)
+    :return: radiation data as DataFrame (pandas). Index is datetime and columns are: ['SZA', 'SW', 'LW', 'PAR', 'TB']
+    """
+
+    print('Reading RADIATION data for year ', date_f.strftime('%Y'))
+    file_rad = os.path.join(folder, 'IRR_' + date_f.strftime('%y') + '001_' + date_f.strftime('%y') + '365_FIN.DAT')
+    rad = pd.read_table(file_rad, skiprows=None, header=0, decimal='.', delim_whitespace=True)
+
+    tmp = np.empty(rad['JDAY_ASS'].shape, dtype=dt.datetime)
+    for ii, el in enumerate(rad['JDAY_ASS']):
+        tmp[ii] = julian.from_jd(el, fmt='jd')
+        tmp[ii].replace(microsecond=0)
+
+    rad.index = pd.DatetimeIndex(tmp)
+    rad.index.name = 'datetime'
+
+    data = rad.drop(['JDAY_ASS', 'YEAR_FR', 'JDAY_UT', 'TIME_UT', 'JDAY_LOC', 'TIME_LOC'], axis=1)
+
+    return data
+
+
+def read_alb(folder, date_f):
+    """
+    Function for reading albedo data and formatting data strings.
+    :param folder: input folder where to find data
+    :param date_f: (YYYY)
+    :return: radiation data as DataFrame (pandas). Index is datetime and columns are: ['SZA', 'SW', 'LW', 'PAR', 'TB']
+    """
+
+    print('Reading ALBEDO data for year ', date_f.strftime('%Y'))
+    file_rad = os.path.join(folder, 'ALBEDO_SW_' + date_f.strftime('%Y') + '_5MIN.DAT')
+    alb = pd.read_table(file_rad, skiprows=None, header=0, decimal='.', delim_whitespace=True)
+    tmp = np.empty(alb['JDAY_UT'].shape, dtype=dt.datetime)
+    for ii, el in enumerate(alb['JDAY_UT']):
+        new_jd_ass = el + julian.to_jd(dt.datetime(int(date_f.strftime('%Y')) - 1, 12, 31, 0, 0), fmt='jd')
+        tmp[ii] = julian.from_jd(new_jd_ass, fmt='jd')
+        tmp[ii] = tmp[ii].replace(microsecond=0)
+
+    alb.index = pd.DatetimeIndex(tmp)
+    alb.index.name = 'datetime'
+
+    data = alb.drop(['JDAY_UT', 'JDAY_LOC', 'SZA', 'SW_DOWN'], axis=1)
+
+    return data
+
+
 if __name__ == "__main__":
-
-    var_list_rad = ['SW', 'LW', 'PAR', 'TB']
-    var_list_alb = ['ALBEDO_SW', 'SW_UP']
-    var_list_cot = ['JDAY_UT', 'JDAY_LOC', 'SZA', 'SW_DOWN', 'SW_UP', 'PAR_DOWN', 'PAR_UP', 'LW_DOWN', 'LW_UP', 'TBP',
-                    'ALBEDO_SW', 'ALBEDO_PAR', 'T', 'PE', 'NET_SW', 'NET_LW', 'NET_SW+LW', 'SW_DW_CF', 'SW_UP_CF',
-                    'NET_SW_CF', 'LW_DW_CF', 'LW_UP_CF', 'NET_LW_CF', 'NET_SW+LW_CF', 'RF_SW', 'RF_LW', 'RF_SW+LW',
-                    'IWV', 'LWP', 'COT', 'REFF']
-
-    variables_rad = {'SW' : {'name': 'SW', 'uom': '[Wm-2]'}, 'LW': {'name': 'LW', 'uom': '[Wm-2]'},
-                     'PAR': {'name': 'PAR', 'uom': '[Wm-2]'}, 'TB': {'name': 'TB', 'uom': '[K]'}}
-
-    variables_alb = {'ALBEDO_SW': {'name': 'ALBEDO_SW', 'uom': '[unitless]'},
-                     'SW_UP'    : {'name': 'SW_UP', 'uom': '[Wm-2]'}}
-
-    variables_cot = {'JDAY_UT'  : {}, 'JDAY_LOC': {}, 'SZA': {}, 'SW_DOWN': {}, 'SW_UP': {}, 'PAR_DOWN': {},
-                     'PAR_UP'   : {}, 'LW_DOWN': {}, 'LW_UP': {}, 'TBP': {}, 'ALBEDO_SW': {}, 'ALBEDO_PAR': {}, 'T': {},
-                     'PE'       : {}, 'NET_SW': {}, 'NET_LW': {}, 'NET_SW+LW': {}, 'SW_DW_CF': {}, 'SW_UP_CF': {},
-                     'NET_SW_CF': {}, 'LW_DW_CF': {}, 'LW_UP_CF': {}, 'NET_LW_CF': {}, 'NET_SW+LW_CF': {}, 'RF_SW': {},
-                     'RF_LW'    : {}, 'RF_SW+LW': {}, 'IWV': {}, 'LWP': {}, 'COT': {}, 'REFF': {}}
-
-    fol_input = os.path.join(ts.basefolder, 'thaao_rad')
 
     year_ls = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023]
 
@@ -67,7 +107,7 @@ if __name__ == "__main__":
     for yr in year_ls:
         start = dt.datetime(int(yr), 1, 1)
         try:
-            data_rad_tmp = rad_prev.read_rad(fol_input, start)
+            data_rad_tmp = read_rad(folder, start)
             data_rad = xr.concat([data_rad, data_rad], dim='datetime')
         except FileNotFoundError:
             data_rad_res = None
@@ -85,7 +125,7 @@ if __name__ == "__main__":
     for yr in year_ls:
         start = dt.datetime(int(yr), 1, 1)
         try:
-            data_alb_tmp = rad_prev.read_alb(fol_input, start)
+            data_alb_tmp = read_alb(folder, start)
             data_alb = xr.concat([data_alb, data_alb_tmp], dim='datetime')
         except FileNotFoundError:
             data_alb_res = None
@@ -94,7 +134,7 @@ if __name__ == "__main__":
     ts.save_mask_txt(data_alb.to_dataframe()['ALB'], 'rad_up_sw')
 
     # old rad radiation data DMI availability
-    fol_input_rad_old = os.path.join(fol_input, 'rad_dsi_legacy')
+    fol_input_rad_old = os.path.join(folder, 'rad_dsi_legacy')
     date_list = pd.date_range(dt.datetime(2000, 1, 1), dt.datetime(2011, 12, 31), freq='D').tolist()
     rad_dsi_legacy = pd.DataFrame(columns=['dt', 'mask'])
     for i in date_list:
@@ -104,7 +144,7 @@ if __name__ == "__main__":
     np.savetxt(
             os.path.join(fol_input_rad_old, 'rad_dsi_legacy' + '_data_avail_list.txt'), rad_dsi_legacy, fmt='%s')
 
-    fol_input_rad = os.path.join(fol_input, 'rad_hourly')
+    fol_input_rad = os.path.join(folder, 'rad_hourly')
     uli = pd.read_table(
             os.path.join(fol_input_rad, 'ULI.txt'), comment='#', delim_whitespace=True, usecols=[0, 1, 2],
             parse_dates={'datetime': [0, 1]}, names=['date', 'time', 'rad'], header=0, index_col='datetime')

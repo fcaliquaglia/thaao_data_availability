@@ -30,7 +30,7 @@ from glob import glob
 
 import pandas as pd
 
-from utils import thaao_settings as ts
+import thaao_settings as ts
 
 instr = 'rs_sondes'
 date_list = pd.date_range(
