@@ -39,9 +39,10 @@ from PIL import Image, ImageDraw
 import thaao_settings as ts
 
 
-def plot_data_avail(inp, yy1, yy2, idx):
+def plot_data_avail(ax, inp, yy1, yy2, idx):
     """
 
+    :param ax:
     :param idx:
     :param inp:
     :param yy1:
@@ -70,7 +71,7 @@ def plot_data_avail(inp, yy1, yy2, idx):
 
         # data na
         data_na = pd.DataFrame()
-        data_na['date'] = pd.date_range(yy1, yy2, freq='720T')
+        data_na['date'] = pd.date_range(yy1, yy2, freq='720min')
         data_na['mask'] = np.empty(data_na['date'].shape)
         data_na['mask'] = False
         data_na.index = data_na['date']
@@ -80,19 +81,19 @@ def plot_data_avail(inp, yy1, yy2, idx):
         for i, ii in enumerate(data_na.index):
             if (ii.month > pd.Timestamp(ts.instr_na_list.get(instr_list[idx])['end_seas']).month) | (
                     ii.month < pd.Timestamp(ts.instr_na_list.get(instr_list[idx])['start_seas']).month):
-                if data_na['mask'][i] != True:
-                    data_na['mask'][i] = True
+                if data_na['mask'].iloc[i] != True:
+                    data_na.loc[ii, 'mask'] = True
             else:
-                data_na['mask'][i] = False
+                data_na.loc[ii, 'mask'] = False
 
         # excluding instrument missing or not installed
         for i, ii in enumerate(data_na.index):
             if (ii < pd.Timestamp(ts.instr_na_list.get(instr_list[idx])['start_instr'])) | (
                     ii > pd.Timestamp(ts.instr_na_list.get(instr_list[idx])['end_instr'])):
-                data_na['mask'][i] = True
+                data_na.loc[ii, 'mask'] = True
             else:
                 pass
-        #
+
         data_na = data_na['mask'].astype('int')
         ys_1 = np.repeat(idx, len(data_na.index[data_na == 1].values))
         ax.errorbar(
@@ -181,9 +182,10 @@ def ax_style(axx, yy1, yy2, i_labs, i_length):
     return
 
 
-def draw_events(a1, a2):
+def draw_events(ax, a1, a2):
     """
 
+    :param ax:
     :param a1:
     :param a2:
     :return:
@@ -200,9 +202,10 @@ def draw_events(a1, a2):
     return
 
 
-def draw_campaigns(a1, a2):
+def draw_campaigns(ax, a1, a2):
     """
 
+    :param ax:
     :param a1:
     :param a2:
     :return:
@@ -223,7 +226,6 @@ def draw_data_avail(a1, a2, i_list):
     :param i_list:
     :return:
     """
-    global ax
     # with plt.xkcd():
     # fig, ax = plt.subplots(figsize=(15, 10))
     fig = plt.figure(figsize=(15, 10))
@@ -232,10 +234,10 @@ def draw_data_avail(a1, a2, i_list):
     i_labs = []
     for instr_idx, instr_name in enumerate(i_list):
         inp_file, i_labs = input_file_selection(instr_idx, i_labs, instr_name)
-        plot_data_avail(inp_file, a1, a2, instr_idx)
+        plot_data_avail(ax, inp_file, a1, a2, instr_idx)
     if switch_gif:
-        draw_events(a1, a2)
-    draw_campaigns(a1, a2)
+        draw_events(ax, a1, a2)
+    draw_campaigns(ax, a1, a2)
     ax_style(ax, a1, a2, i_labs, len(i_labs))
     ax_style(ax2, a1, a2, i_labs, len(i_labs))
     # legend of institutions
@@ -315,6 +317,7 @@ if __name__ == "__main__":
                   'rad_par_down']
     # cumulative
     if switch_gif:
+        print('CUMULATIVE')
         newdir = os.path.join(folder, 'gif', str(start_g.year) + '-' + str(end_g.year))
         os.makedirs(newdir, exist_ok=True)
         j = cp.copy(start_g)
@@ -362,6 +365,7 @@ if __name__ == "__main__":
 
     # yearly
     if switch_yearly:
+        print('YEARLY')
         j = cp.copy(start_y)
         j1 = j + pd.DateOffset(years=1)
         while j1 <= end_y:
@@ -379,6 +383,7 @@ if __name__ == "__main__":
             j1 += pd.DateOffset(years=1)
 
     # if switch_yp:
+    #     print('YEARLY')
     #     range_lab =
     #     print()
     #     images = os.listdir(os.path.join(fol_out, 'yearly'))
@@ -407,6 +412,7 @@ if __name__ == "__main__":
 
     # all
     if switch_all:
+        print('ALL')
         newdir = os.path.join(folder, 'all', str(start_a.year) + '-' + str(end_a.year))
         os.makedirs(newdir, exist_ok=True)
         j = cp.copy(start_a) + time_freq_a
