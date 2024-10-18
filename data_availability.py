@@ -323,41 +323,48 @@ if __name__ == "__main__":
         time_window = pd.DateOffset(years=window_size)
         time_freq_a = pd.DateOffset(months=lag_a)
 
-    instr_list = ['uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'rs_sondes', 'gbms', 'wv_isotopes', 'metar',
-                  'vespa', 'ceilometer', 'hatpro', 'dir_rad_trkr', 'pm10', 'ftir', 'aeronet', 'ecapac_mrr',
-                  'ecapac_snow_height', 'ecapac_disdro_precip', 'ecapac_aws', 'aws(p,T,RH)', 'mms_trios', 'lidar_temp',
-                  'skycam', 'gnss', 'macmap_seismometer_1', 'macmap_seismometer_2', 'macmap_seismometer_3',
-                  'macmap_seismometer_4', 'macmap_tide_gauge', 'rad_uli', 'rad_usi', 'rad_dli', 'rad_dsi', 'rad_tb',
-                  'rad_par_up', 'rad_par_down']
+    instr_list = input(
+        'insert list of instruments (choosing from: uv-vis_spec, lidar_ae, o3_sondes, aero_sondes, rs_sondes, gbms, '
+        '\n wv_isotopes, metar, vespa, ceilometer, hatpro, dir_rad_trkr, pm10, ftir, aeronet, ecapac_mrr,'
+        '\n ecapac_snow_height, ecapac_disdro_precip, ecapac_aws, aws(p,T,RH), mms_trios, lidar_temp, '
+        '\n skycam, gnss, macmap_seismometer_1, macmap_seismometer_2, macmap_seismometer_3,macmap_seismometer_4, '
+        '\n macmap_tide_gauge, rad_uli, rad_usi,rad_dli, rad_dsi, rad_tb,rad_par_up,rad_par_dow):)')
+
+    # 'uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'rs_sondes', 'gbms', 'wv_isotopes', 'metar',
+    # 'vespa', 'ceilometer', 'hatpro', 'dir_rad_trkr', 'pm10', 'ftir', 'aeronet', 'ecapac_mrr',
+    # 'ecapac_snow_height', 'ecapac_disdro_precip', 'ecapac_aws', 'aws(p,T,RH)', 'mms_trios', 'lidar_temp',
+    # 'skycam', 'gnss', 'macmap_seismometer_1', 'macmap_seismometer_2', 'macmap_seismometer_3',
+    # 'macmap_seismometer_4', 'macmap_tide_gauge', 'rad_uli', 'rad_usi', 'rad_dli', 'rad_dsi', 'rad_tb',
+    # 'rad_par_up', 'rad_par_down'
+    #
     # cumulative
     if switch_gif:
         print('CUMULATIVE')
-        newdir = os.path.join(folder, 'gif', str(start_g.year) + '-' + str(end_g.year))
-        os.makedirs(newdir, exist_ok=True)
-        j = cp.copy(start_g)
-        while j + time_window <= end_g + time_window:
-            yyyy1, yyyy2 = (j - time_window, j)
-            range_lab = dt.datetime.strftime(yyyy1, '%Y%m') + '_' + dt.datetime.strftime(yyyy2, '%Y%m')
-            print(range_lab)
-            ffig = draw_data_avail(yyyy1, yyyy2, instr_list)
-            plt.suptitle(
-                    dt.datetime.strftime(yyyy1, '%b %Y') + ' to ' + dt.datetime.strftime(yyyy2, '%b %Y'), fontsize=20)
-            # plt.gcf().autofmt_xdate()
-            plt.savefig(os.path.join(newdir, 'data_avail_' + range_lab + '.png'), dpi=dpi, transparent=True)
-            plt.gca()
-            plt.cla()
-            gc.collect()
-            plt.close(ffig)
+    newdir = os.path.join(folder, 'gif', str(start_g.year) + '-' + str(end_g.year))
+    os.makedirs(newdir, exist_ok=True)
+    j = cp.copy(start_g)
+    while j + time_window <= end_g + time_window:
+        yyyy1, yyyy2 = (j - time_window, j)
+        range_lab = dt.datetime.strftime(yyyy1, '%Y%m') + '_' + dt.datetime.strftime(yyyy2, '%Y%m')
+        print(range_lab)
+        ffig = draw_data_avail(yyyy1, yyyy2, instr_list)
+        plt.suptitle(
+                dt.datetime.strftime(yyyy1, '%b %Y') + ' to ' + dt.datetime.strftime(yyyy2, '%b %Y'), fontsize=20)
+        # plt.gcf().autofmt_xdate()
+        plt.savefig(os.path.join(newdir, 'data_avail_' + range_lab + '.png'), dpi=dpi, transparent=True)
+        plt.gca()
+        plt.cla()
+        gc.collect()
+        plt.close(ffig)
 
-
-            # create image or load your existing image with out=Image.open(path)
-            out = Image.open(os.path.join(newdir, 'data_avail_' + range_lab + '.png')).convert('RGBA')
-            d = ImageDraw.Draw(out)
-            # draw the progress bar to given location, width, progress and color
-            progress = (j.year - start_g.year) / (end_g.year - start_g.year)
-            d = drawProgressBar(d, 50 * dpi_fac, 180 * dpi_fac, 4300 * dpi_fac, 60 * dpi_fac, progress, 'grey', 'blue')
-            out.save(os.path.join(newdir, 'data_avail_' + range_lab + '_p.png'), )
-            j += time_freq_g  # os.system("cd " + os.path.join(fol_out, 'gif'))  # import ffmpeg  # os.system("ffmpeg -f image2 -framerate 1 -pattern_type glob -i 'data_avail_*-*_*_p.png' data_avail_p.mp4")
+        # create image or load your existing image with out=Image.open(path)
+        out = Image.open(os.path.join(newdir, 'data_avail_' + range_lab + '.png')).convert('RGBA')
+        d = ImageDraw.Draw(out)
+        # draw the progress bar to given location, width, progress and color
+        progress = (j.year - start_g.year) / (end_g.year - start_g.year)
+        d = drawProgressBar(d, 50 * dpi_fac, 180 * dpi_fac, 4300 * dpi_fac, 60 * dpi_fac, progress, 'grey', 'blue')
+        out.save(os.path.join(newdir, 'data_avail_' + range_lab + '_p.png'), )
+        j += time_freq_g  # os.system("cd " + os.path.join(fol_out, 'gif'))  # import ffmpeg  # os.system("ffmpeg -f image2 -framerate 1 -pattern_type glob -i 'data_avail_*-*_*_p.png' data_avail_p.mp4")
 
     # # create animation
     # import matplotlib.pyplot as plt
