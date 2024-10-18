@@ -281,40 +281,54 @@ if __name__ == "__main__":
 
     dpi_fac = 2  # if increased, dpi resolution increases
     dpi = 300 * dpi_fac
+    folder = os.path.join(ts.basefolder, 'thaao_data_availability')
+
+    # INPUTS
 
     # panel for gifs (by i years)
-    switch_gif = True
-    window_size = 5  # in years
-    lag_g = 3  # in months
-    time_window = pd.DateOffset(years=window_size)
-    time_freq_g = pd.DateOffset(months=lag_g)
-    start_g = dt.datetime(1900, 1, 1) + time_window
-    end_g = dt.datetime.today() + dt.timedelta(minutes=500000)
+    switch_gif = input('Plot panels for gif? (yes/no)')
+    if switch_gif == 'yes':
+        switch_gif = True
+        window_size = int(input('window size (in years):'))  # 5  # in years
+        lag_g = int(input('lag (in months):'))  # 3  # in months
+        time_window = pd.DateOffset(years=window_size)
+        time_freq_g = pd.DateOffset(months=lag_g)
+        strt_y = int(input('start year:'))
+        start_g = dt.datetime(strt_y, 1, 1) + time_window  # dt.datetime(1900, 1, 1) + time_window
+        end_g = dt.datetime.today() + dt.timedelta(minutes=500000)
 
     # single-year panels
-    switch_yearly = True
-    start_y = dt.datetime(1989, 1, 1)
-    end_y = dt.datetime(2025, 12, 31)
+    switch_yearly = input('Plot single-year panels? (yes/no)')
+    if switch_yearly == 'yes':
+        switch_yearly = True
+        strt_y = int(input('start year:'))
+        start_y = dt.datetime(strt_y, 1, 1)
+        nd_y = int(input('end year:'))
+        end_y = dt.datetime(nd_y, 12, 31)
 
     # multi-year panel
-    # switch_yp = False
+    switch_yp = input('Plot multi-year panels? (yes/no)')
+    if switch_yp == 'yes':
+        switch_yp = True
 
     # complete plot
-    switch_all = True
-    start_a = dt.datetime(1989, 1, 1)
-    end_a = dt.datetime(2024, 12, 31)
-    lag_a = 6  # in months
-    time_window = pd.DateOffset(years=window_size)
-    time_freq_a = pd.DateOffset(months=lag_a)
-
-    folder = os.path.join(ts.basefolder, 'thaao_data_availability')
+    switch_all = input('Plot full panels? (yes/no)')
+    if switch_all == 'yes':
+        switch_all = True
+        strt_y = int(input('start year:'))
+        start_a = dt.datetime(strt_y, 1, 1)
+        nd_y = int(input('end year:'))
+        end_a = dt.datetime(nd_y, 12, 31)
+        lag_a = int(input('lag (in months):'))  # 6
+        time_window = pd.DateOffset(years=window_size)
+        time_freq_a = pd.DateOffset(months=lag_a)
 
     instr_list = ['uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'rs_sondes', 'gbms', 'wv_isotopes', 'metar',
                   'vespa', 'ceilometer', 'hatpro', 'dir_rad_trkr', 'pm10', 'ftir', 'aeronet', 'ecapac_mrr',
                   'ecapac_snow_height', 'ecapac_disdro_precip', 'ecapac_aws', 'aws(p,T,RH)', 'mms_trios', 'lidar_temp',
-                  'skycam', 'gnss', 'macmap_seismo_1', 'macmap_seismo_2', 'macmap_seismo_3', 'macmap_seismo_4',
-                  'macmap_tide_gauge', 'rad_uli', 'rad_usi', 'rad_dli', 'rad_dsi', 'rad_tb', 'rad_par_up',
-                  'rad_par_down']
+                  'skycam', 'gnss', 'macmap_seismometer_1', 'macmap_seismometer_2', 'macmap_seismometer_3',
+                  'macmap_seismometer_4', 'macmap_tide_gauge', 'rad_uli', 'rad_usi', 'rad_dli', 'rad_dsi', 'rad_tb',
+                  'rad_par_up', 'rad_par_down']
     # cumulative
     if switch_gif:
         print('CUMULATIVE')
