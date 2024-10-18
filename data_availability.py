@@ -349,6 +349,7 @@ if __name__ == "__main__":
             gc.collect()
             plt.close(ffig)
 
+
             # create image or load your existing image with out=Image.open(path)
             out = Image.open(os.path.join(newdir, 'data_avail_' + range_lab + '.png')).convert('RGBA')
             d = ImageDraw.Draw(out)
