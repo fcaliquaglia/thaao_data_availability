@@ -238,9 +238,10 @@ def draw_data_avail(a1, a2, i_list):
     for instr_idx, instr_name in enumerate(i_list):
         inp_file, i_labs = input_file_selection(instr_idx, i_labs, instr_name)
         plot_data_avail(ax, inp_file, a1, a2, instr_idx)
-    if switch_gif:
+    if switch_history:
         draw_events(ax, a1, a2)
-    draw_campaigns(ax, a1, a2)
+    if switch_campaigns:
+        draw_campaigns(ax, a1, a2)
     ax_style(ax, a1, a2, i_labs, len(i_labs))
     ax_style(ax2, a1, a2, i_labs, len(i_labs))
     # legend of institutions
@@ -263,6 +264,16 @@ def draw_data_avail(a1, a2, i_list):
             handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.05), fancybox=True, shadow=True,
             ncol=6, labelcolor=legend_colors, prop={'weight': 'bold'})
     return fig
+
+
+def draw_progress_bar(n_dir, range_lab_f, strt_ff, end_ff, jj):
+    # create image or load your existing image with out=Image.open(path)
+    out = Image.open(os.path.join(n_dir, 'data_avail_' + range_lab_f + '.png')).convert('RGBA')
+    d = ImageDraw.Draw(out)
+    # draw the progress bar to given location, width, progress and color
+    progress = (jj.year - strt_ff.year) / (end_ff.year - strt_ff.year)
+    d = drawProgressBar(d, 50 * dpi_fac, 180 * dpi_fac, 4300 * dpi_fac, 60 * dpi_fac, progress, 'grey', 'blue')
+    out.save(os.path.join(n_dir, f'data_avail_{range_lab_f}_p.png'))
 
 
 def drawProgressBar(d, x, y, w, h, progress_func, bg="black", fg="red"):
@@ -309,13 +320,9 @@ def plot_cumulative(fol, strt_f, end_f, tm_win_f, tm_freq_f, instr_l):
         gc.collect()
         plt.close(ffig)
 
-        # create image or load your existing image with out=Image.open(path)
-        out = Image.open(os.path.join(newdir, 'data_avail_' + range_lab + '.png')).convert('RGBA')
-        d = ImageDraw.Draw(out)
-        # draw the progress bar to given location, width, progress and color
-        progress = (j.year - strt_f.year) / (end_f.year - strt_f.year)
-        d = drawProgressBar(d, 50 * dpi_fac, 180 * dpi_fac, 4300 * dpi_fac, 60 * dpi_fac, progress, 'grey', 'blue')
-        out.save(os.path.join(newdir, f'data_avail_{range_lab}_p.png'), )
+        if switch_prog_bar:
+            draw_progress_bar(newdir, range_lab, strt_f, end_f, j)
+
         j += tm_freq_f
     return
 
@@ -350,9 +357,10 @@ def plot_yearly(fol, strt_f, end_f, instr_l):
     return
 
 
-def plot_all(fol, strt_f, tm_freq_f, instr_l):
+def plot_all(fol, strt_f, end_f, tm_freq_f, instr_l):
     """
 
+    :param end_f:
     :param fol:
     :param strt_f:
     :param tm_freq_f:
@@ -360,17 +368,17 @@ def plot_all(fol, strt_f, tm_freq_f, instr_l):
     :return:
     """
     print('ALL')
-    newdir = os.path.join(fol, 'all', str(strt_f.year) + '-' + str(end_a.year))
+    newdir = os.path.join(fol, 'all', str(strt_f.year) + '-' + str(end_f.year))
     os.makedirs(newdir, exist_ok=True)
     j = cp.copy(strt_f) + tm_freq_f
-    while j <= end_g:
+    while j <= end_f:
         yyyy1, yyyy2 = (strt_f, j)
         range_lab = dt.datetime.strftime(yyyy1, '%Y%m') + '_' + dt.datetime.strftime(yyyy2, '%Y%m')
         print(range_lab)
         ffig = draw_data_avail(strt_f, j, instr_l)
         plt.suptitle(dt.datetime.strftime(strt_f, '%b-%Y') + ' to ' + dt.datetime.strftime(j, '%b-%Y'))
         plt.gcf().autofmt_xdate()
-        plt.savefig(os.path.join(newdir, 'data_avail_' + range_lab + '.png'), dpi=dpi)
+        plt.savefig(os.path.join(newdir, f'data_avail_{range_lab}.png'), dpi=dpi)
         plt.gca()
         plt.cla()
         gc.collect()
@@ -388,7 +396,9 @@ if __name__ == "__main__":
 
     # panel for gifs (by i years)
     switch_gif = input('Plot panels for gif? (yes/no)')
-    if switch_gif == 'yes':
+    if switch_gif == 'no':
+        switch_gif = False
+    elif switch_gif == 'yes':
         switch_gif = True
         window_size = int(input('window size (in years):'))  # 5  # in years
         lag_g = int(input('lag (in months):'))  # 3  # in months
@@ -400,8 +410,9 @@ if __name__ == "__main__":
 
     # single-year panels
     switch_yearly = input('Plot single-year panels? (yes/no)')
-    if switch_yearly == 'yes':
-        switch_yearly = True
+    if switch_yearly == 'no':
+        switch_yearly = False
+    elif switch_yearly == 'yes':
         strt_y = int(input('start year:'))
         start_y = dt.datetime(strt_y, 1, 1)
         nd_y = int(input('end year:'))
@@ -409,9 +420,9 @@ if __name__ == "__main__":
 
     # complete plot
     switch_all = input('Plot full panels? (yes/no)')
-    if switch_all == 'yes':
-        switch_all = True
-
+    if switch_all == 'no':
+        switch_all = False
+    elif switch_all == 'yes':
         strt_y = int(input('start year:'))
         start_a = dt.datetime(strt_y, 1, 1)
         nd_y = int(input('end year:'))
@@ -421,22 +432,43 @@ if __name__ == "__main__":
         time_window = pd.DateOffset(years=window_size)
         time_freq_a = pd.DateOffset(months=lag_a)
 
+    # Field Campaigns
+    switch_campaigns = input('Draw field campaigns? (yes/no)')
+    if switch_campaigns == 'yes':
+        switch_campaigns = True
+    elif switch_campaigns == 'no':
+        switch_campaigns = False
+
+    # Historical events
+    switch_history = input('Draw historical events? (yes/no)')
+    if switch_history == 'yes':
+        switch_history = True
+    elif switch_history == 'no':
+        switch_history = False
+
+    # Time-progress bar
+    switch_prog_bar = input('Draw historical events? (yes/no)')
+    if switch_prog_bar == 'yes':
+        switch_prog_bar = True
+    elif switch_prog_bar == 'no':
+        switch_prog_bar = False
+
     # instr_list = input(
     #         'insert list of instruments separated by comma (choosing from: '
     #         '\n uv-vis_spec, lidar_ae, o3_sondes, aero_sondes, wv_isotopes, gbms, hatpro,'
     #         '\n ftir, aeronet, metar,'
     #         '\n rs_sondes, vespa, ceilometer, dir_rad_trkr, pm10, aws(p,T,RH), mms_trios, lidar_temp, skycam, gnss, '
-    #         '\n ecapac_snow_height, ecapac_disdro_precip, ecapac_aws, ecapac_mrr, '
+    #         '\n ecapac_aws_snow, ecapac_disdro_precip, ecapac_aws, ecapac_mrr, '
     #         '\n macmap_tide_gauge, macmap_seismometer_1, macmap_seismometer_2, macmap_seismometer_3, macmap_seismometer_4, '
     #         '\n rad_uli, rad_usi,rad_dli, rad_dsi, rad_tb, rad_par_up, rad_par_dow):')
 
     instr_list = ['uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'rs_sondes', 'gbms', 'wv_isotopes', 'metar',
                   'vespa', 'ceilometer', 'hatpro', 'dir_rad_trkr', 'pm10', 'ftir', 'aeronet', 'ecapac_mrr',
-                  'ecapac_snow_height', 'ecapac_disdro_precip', 'ecapac_aws', 'aws(p,T,RH)', 'mms_trios', 'lidar_temp',
-                  'skycam', 'gnss', 'macmap_seismometer_1', 'macmap_seismometer_2', 'macmap_seismometer_3',
-                  'macmap_seismometer_4', 'macmap_tide_gauge', 'rad_uli', 'rad_usi', 'rad_dli', 'rad_dsi', 'rad_tb',
+                  # 'ecapac_aws_snow', 'ecapac_disdro_precip', 'ecapac_aws', 'aws(p,T,RH)', 'mms_trios', 'lidar_temp',
+                  # 'skycam', 'gnss', 'macmap_seismometer_1', 'macmap_seismometer_2', 'macmap_seismometer_3',
+                  # 'macmap_seismometer_4', 'macmap_tide_gauge', 'rad_uli', 'rad_usi', 'rad_dli', 'rad_dsi', 'rad_tb',
                   'rad_par_up', 'rad_par_down']
-    print(f'This istrument are plotted (hard-coded): {instr_list}')
+    print(f'These instruments are plotted (hard-coded): {instr_list}')
 
     # cumulative
     if switch_gif:
@@ -448,7 +480,7 @@ if __name__ == "__main__":
 
     # all
     if switch_all:
-        plot_all(folder, start_a, time_freq_a, instr_list)
+        plot_all(folder, start_a, end_a, time_freq_a, instr_list)
 
     # os.system("cd " + os.path.join(fol_out, 'gif'))  # import ffmpeg  # os.system("ffmpeg -f image2 -framerate 1 -pattern_type glob -i 'data_avail_*-*_*_p.png' data_avail_p.mp4")
 
