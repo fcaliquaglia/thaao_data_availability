@@ -38,6 +38,9 @@ from PIL import Image, ImageDraw
 
 import thaao_settings as ts
 
+dpi_fac = 2  # if increased, dpi resolution increases
+dpi = 300 * dpi_fac
+
 
 def plot_data_avail(ax, inp, yy1, yy2, idx):
     """
@@ -277,77 +280,26 @@ def drawProgressBar(d, x, y, w, h, progress_func, bg="black", fg="red"):
     return d
 
 
-if __name__ == "__main__":
+def plot_cumulative(fol, strt_f, end_f, tm_win_f, tm_freq_f, instr_l):
+    """
 
-    dpi_fac = 2  # if increased, dpi resolution increases
-    dpi = 300 * dpi_fac
-    folder = os.path.join(ts.basefolder, 'thaao_data_availability')
-
-    # INPUTS
-
-    # panel for gifs (by i years)
-    switch_gif = input('Plot panels for gif? (yes/no)')
-    if switch_gif == 'yes':
-        switch_gif = True
-        window_size = int(input('window size (in years):'))  # 5  # in years
-        lag_g = int(input('lag (in months):'))  # 3  # in months
-        time_window = pd.DateOffset(years=window_size)
-        time_freq_g = pd.DateOffset(months=lag_g)
-        strt_y = int(input('start year:'))
-        start_g = dt.datetime(strt_y, 1, 1) + time_window  # dt.datetime(1900, 1, 1) + time_window
-        end_g = dt.datetime.today() + dt.timedelta(minutes=500000)
-
-    # single-year panels
-    switch_yearly = input('Plot single-year panels? (yes/no)')
-    if switch_yearly == 'yes':
-        switch_yearly = True
-        strt_y = int(input('start year:'))
-        start_y = dt.datetime(strt_y, 1, 1)
-        nd_y = int(input('end year:'))
-        end_y = dt.datetime(nd_y, 12, 31)
-
-    # multi-year panel
-    switch_yp = input('Plot multi-year panels? (yes/no)')
-    if switch_yp == 'yes':
-        switch_yp = True
-
-    # complete plot
-    switch_all = input('Plot full panels? (yes/no)')
-    if switch_all == 'yes':
-        switch_all = True
-        strt_y = int(input('start year:'))
-        start_a = dt.datetime(strt_y, 1, 1)
-        nd_y = int(input('end year:'))
-        end_a = dt.datetime(nd_y, 12, 31)
-        lag_a = int(input('lag (in months):'))  # 6
-        time_window = pd.DateOffset(years=window_size)
-        time_freq_a = pd.DateOffset(months=lag_a)
-
-    instr_list = input(
-        'insert list of instruments (choosing from: uv-vis_spec, lidar_ae, o3_sondes, aero_sondes, rs_sondes, gbms, '
-        '\n wv_isotopes, metar, vespa, ceilometer, hatpro, dir_rad_trkr, pm10, ftir, aeronet, ecapac_mrr,'
-        '\n ecapac_snow_height, ecapac_disdro_precip, ecapac_aws, aws(p,T,RH), mms_trios, lidar_temp, '
-        '\n skycam, gnss, macmap_seismometer_1, macmap_seismometer_2, macmap_seismometer_3,macmap_seismometer_4, '
-        '\n macmap_tide_gauge, rad_uli, rad_usi,rad_dli, rad_dsi, rad_tb,rad_par_up,rad_par_dow):)')
-
-    # 'uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'rs_sondes', 'gbms', 'wv_isotopes', 'metar',
-    # 'vespa', 'ceilometer', 'hatpro', 'dir_rad_trkr', 'pm10', 'ftir', 'aeronet', 'ecapac_mrr',
-    # 'ecapac_snow_height', 'ecapac_disdro_precip', 'ecapac_aws', 'aws(p,T,RH)', 'mms_trios', 'lidar_temp',
-    # 'skycam', 'gnss', 'macmap_seismometer_1', 'macmap_seismometer_2', 'macmap_seismometer_3',
-    # 'macmap_seismometer_4', 'macmap_tide_gauge', 'rad_uli', 'rad_usi', 'rad_dli', 'rad_dsi', 'rad_tb',
-    # 'rad_par_up', 'rad_par_down'
-    #
-    # cumulative
-    if switch_gif:
-        print('CUMULATIVE')
-    newdir = os.path.join(folder, 'gif', str(start_g.year) + '-' + str(end_g.year))
+    :param fol:
+    :param strt_f:
+    :param end_f:
+    :param tm_win_f:
+    :param tm_freq_f:
+    :param instr_l:
+    :return:
+    """
+    print('CUMULATIVE')
+    newdir = os.path.join(fol, 'gif', f'{strt_f.year}-{end_f.year}')
     os.makedirs(newdir, exist_ok=True)
-    j = cp.copy(start_g)
-    while j + time_window <= end_g + time_window:
-        yyyy1, yyyy2 = (j - time_window, j)
+    j = cp.copy(strt_f)
+    while j + tm_win_f <= end_f + tm_win_f:
+        yyyy1, yyyy2 = (j - tm_win_f, j)
         range_lab = dt.datetime.strftime(yyyy1, '%Y%m') + '_' + dt.datetime.strftime(yyyy2, '%Y%m')
         print(range_lab)
-        ffig = draw_data_avail(yyyy1, yyyy2, instr_list)
+        ffig = draw_data_avail(yyyy1, yyyy2, instr_l)
         plt.suptitle(
                 dt.datetime.strftime(yyyy1, '%b %Y') + ' to ' + dt.datetime.strftime(yyyy2, '%b %Y'), fontsize=20)
         # plt.gcf().autofmt_xdate()
@@ -361,94 +313,147 @@ if __name__ == "__main__":
         out = Image.open(os.path.join(newdir, 'data_avail_' + range_lab + '.png')).convert('RGBA')
         d = ImageDraw.Draw(out)
         # draw the progress bar to given location, width, progress and color
-        progress = (j.year - start_g.year) / (end_g.year - start_g.year)
+        progress = (j.year - strt_f.year) / (end_f.year - strt_f.year)
         d = drawProgressBar(d, 50 * dpi_fac, 180 * dpi_fac, 4300 * dpi_fac, 60 * dpi_fac, progress, 'grey', 'blue')
-        out.save(os.path.join(newdir, 'data_avail_' + range_lab + '_p.png'), )
-        j += time_freq_g  # os.system("cd " + os.path.join(fol_out, 'gif'))  # import ffmpeg  # os.system("ffmpeg -f image2 -framerate 1 -pattern_type glob -i 'data_avail_*-*_*_p.png' data_avail_p.mp4")
+        out.save(os.path.join(newdir, f'data_avail_{range_lab}_p.png'), )
+        j += tm_freq_f
+    return
 
-    # # create animation
-    # import matplotlib.pyplot as plt
-    # from matplotlib.animation import FuncAnimation
-    #
-    # nframes = 30
-    # plt.subplots_adjust(top=1, bottom=0, left=0, right=1)
-    #
-    # def animate(i):
-    #     im = plt.imread(os.path.join(fol_out, 'data_avail_1990-' + str(1990 + i) + '.png'))
-    #     plt.imshow(im)
-    #
-    #
-    # anim = FuncAnimation(plt.gcf(), animate, frames=nframes, interval=(2000.0 / nframes))
-    # anim.save(os.path.join(fol_out, 'data_avail_1990-' + str(2020) + '.gif'), writer='imagemagick')
 
-    # ffmpeg -f image2 -i image%d.png output.mp4
-    # ffmpeg -f image2 -framerate 1 -pattern_type glob -i 'data_avail_*-*_*_p.png' output1_p.mp4
-    # ffmpeg -i output.mp4 -vf "fps=10,scale=320:-1:flags=lanczos" -c:v pam -f image2pipe - | convert -delay 10 - -loop 0 -layers optimize output.gif
+def plot_yearly(fol, strt_f, end_f, instr_l):
+    """
+
+    :param fol:
+    :param strt_f:
+    :param end_f:
+    :param instr_l:
+    :return:
+    """
+    print('YEARLY')
+    j = cp.copy(strt_f)
+    j1 = j + pd.DateOffset(years=1)
+    while j1 <= end_f:
+        print(j1)
+        range_lab = dt.datetime.strftime(j, '%Y-%m')
+        ffig = draw_data_avail(j, j1, instr_l)
+        plt.suptitle(dt.datetime.strftime(j, '%b-%Y') + ' to ' + dt.datetime.strftime(j1, '%b-%Y'))
+        plt.gcf().autofmt_xdate()
+        plt.savefig(os.path.join(fol, 'yearly', 'data_avail_' + range_lab + '.png'), dpi=dpi)
+        plt.gca()
+        plt.cla()
+        gc.collect()
+        plt.close(ffig)
+
+        j += pd.DateOffset(years=1)
+        j1 += pd.DateOffset(years=1)
+
+    return
+
+
+def plot_all(fol, strt_f, tm_freq_f, instr_l):
+    """
+
+    :param fol:
+    :param strt_f:
+    :param tm_freq_f:
+    :param instr_l:
+    :return:
+    """
+    print('ALL')
+    newdir = os.path.join(fol, 'all', str(strt_f.year) + '-' + str(end_a.year))
+    os.makedirs(newdir, exist_ok=True)
+    j = cp.copy(strt_f) + tm_freq_f
+    while j <= end_g:
+        yyyy1, yyyy2 = (strt_f, j)
+        range_lab = dt.datetime.strftime(yyyy1, '%Y%m') + '_' + dt.datetime.strftime(yyyy2, '%Y%m')
+        print(range_lab)
+        ffig = draw_data_avail(strt_f, j, instr_l)
+        plt.suptitle(dt.datetime.strftime(strt_f, '%b-%Y') + ' to ' + dt.datetime.strftime(j, '%b-%Y'))
+        plt.gcf().autofmt_xdate()
+        plt.savefig(os.path.join(newdir, 'data_avail_' + range_lab + '.png'), dpi=dpi)
+        plt.gca()
+        plt.cla()
+        gc.collect()
+        plt.close(ffig)
+        j += tm_freq_f
+
+    return
+
+
+if __name__ == "__main__":
+
+    folder = os.path.join(ts.basefolder, 'thaao_data_availability')
+
+    # INPUTS
+
+    # panel for gifs (by i years)
+    switch_gif = input('Plot panels for gif? (yes/no)')
+    if switch_gif == 'yes':
+        switch_gif = True
+        window_size = int(input('window size (in years):'))  # 5  # in years
+        lag_g = int(input('lag (in months):'))  # 3  # in months
+        time_window_g = pd.DateOffset(years=window_size)
+        time_freq_g = pd.DateOffset(months=lag_g)
+        strt_y = int(input('start year:'))
+        start_g = dt.datetime(strt_y, 1, 1) + time_window_g  # dt.datetime(1900, 1, 1) + time_window
+        end_g = dt.datetime.today() + dt.timedelta(minutes=500000)
+
+    # single-year panels
+    switch_yearly = input('Plot single-year panels? (yes/no)')
+    if switch_yearly == 'yes':
+        switch_yearly = True
+        strt_y = int(input('start year:'))
+        start_y = dt.datetime(strt_y, 1, 1)
+        nd_y = int(input('end year:'))
+        end_y = dt.datetime(nd_y, 12, 31)
+
+    # complete plot
+    switch_all = input('Plot full panels? (yes/no)')
+    if switch_all == 'yes':
+        switch_all = True
+
+        strt_y = int(input('start year:'))
+        start_a = dt.datetime(strt_y, 1, 1)
+        nd_y = int(input('end year:'))
+        end_a = dt.datetime(nd_y, 12, 31)
+        window_size = int(input('window size (in years):'))  # 5  # in years
+        lag_a = int(input('lag (in months):'))  # 6
+        time_window = pd.DateOffset(years=window_size)
+        time_freq_a = pd.DateOffset(months=lag_a)
+
+    # instr_list = input(
+    #         'insert list of instruments separated by comma (choosing from: '
+    #         '\n uv-vis_spec, lidar_ae, o3_sondes, aero_sondes, wv_isotopes, gbms, hatpro,'
+    #         '\n ftir, aeronet, metar,'
+    #         '\n rs_sondes, vespa, ceilometer, dir_rad_trkr, pm10, aws(p,T,RH), mms_trios, lidar_temp, skycam, gnss, '
+    #         '\n ecapac_snow_height, ecapac_disdro_precip, ecapac_aws, ecapac_mrr, '
+    #         '\n macmap_tide_gauge, macmap_seismometer_1, macmap_seismometer_2, macmap_seismometer_3, macmap_seismometer_4, '
+    #         '\n rad_uli, rad_usi,rad_dli, rad_dsi, rad_tb, rad_par_up, rad_par_dow):')
+
+    instr_list = ['uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'rs_sondes', 'gbms', 'wv_isotopes', 'metar',
+                  'vespa', 'ceilometer', 'hatpro', 'dir_rad_trkr', 'pm10', 'ftir', 'aeronet', 'ecapac_mrr',
+                  'ecapac_snow_height', 'ecapac_disdro_precip', 'ecapac_aws', 'aws(p,T,RH)', 'mms_trios', 'lidar_temp',
+                  'skycam', 'gnss', 'macmap_seismometer_1', 'macmap_seismometer_2', 'macmap_seismometer_3',
+                  'macmap_seismometer_4', 'macmap_tide_gauge', 'rad_uli', 'rad_usi', 'rad_dli', 'rad_dsi', 'rad_tb',
+                  'rad_par_up', 'rad_par_down']
+    print(f'This istrument are plotted (hard-coded): {instr_list}')
+
+    # cumulative
+    if switch_gif:
+        plot_cumulative(folder, start_g, end_g, time_window_g, time_freq_g, instr_list)
 
     # yearly
     if switch_yearly:
-        print('YEARLY')
-        j = cp.copy(start_y)
-        j1 = j + pd.DateOffset(years=1)
-        while j1 <= end_y:
-            print(j1)
-            range_lab = dt.datetime.strftime(j, '%Y-%m')
-            ffig = draw_data_avail(j, j1, instr_list)
-            plt.suptitle(dt.datetime.strftime(j, '%b-%Y') + ' to ' + dt.datetime.strftime(j1, '%b-%Y'))
-            plt.gcf().autofmt_xdate()
-            plt.savefig(os.path.join(folder, 'yearly', 'data_avail_' + range_lab + '.png'), dpi=dpi)
-            plt.gca()
-            plt.cla()
-            gc.collect()
-            plt.close(ffig)
-
-            j += pd.DateOffset(years=1)
-            j1 += pd.DateOffset(years=1)
-
-    # if switch_yp:
-    #     print('YEARLY')
-    #     range_lab =
-    #     print()
-    #     images = os.listdir(os.path.join(fol_out, 'yearly'))
-    #     img_arr = []
-    #     for image in images:
-    #         img = Image.open(os.path.join(fol_out, 'yearly', image)).convert('RGB')
-    #         img = np.asarray(img)
-    #         img_arr.append(img)
-    #
-    #     fig, ax = plt.subplots(figsize=(18, 18))
-    #     fig.suptitle("THAAO datasets")
-    #
-    #     grid = ImageGrid(fig, 111, (6, 6), axes_pad=0, share_all=True, aspect=False, direction='row')
-    #
-    #     for (ax, im) in zip(grid, img_arr):
-    #         ax.imshow(im)
-    #         ax.xaxis.set_visible(False)
-    #         ax.yaxis.set_visible(False)
-    #
-    #     plt.savefig(
-    #             os.path.join(fol_out, 'yearly', 'data_avail_yearly_panel_' +range_lab + '.png'),
-    #             dpi=600)
-    #     plt.gca()
-    #     plt.cla()
-    #     plt.close('all')
+        plot_yearly(folder, start_y, end_y, instr_list)
 
     # all
     if switch_all:
-        print('ALL')
-        newdir = os.path.join(folder, 'all', str(start_a.year) + '-' + str(end_a.year))
-        os.makedirs(newdir, exist_ok=True)
-        j = cp.copy(start_a) + time_freq_a
-        while j <= end_g:
-            yyyy1, yyyy2 = (start_a, j)
-            range_lab = dt.datetime.strftime(yyyy1, '%Y%m') + '_' + dt.datetime.strftime(yyyy2, '%Y%m')
-            print(range_lab)
-            ffig = draw_data_avail(start_a, j, instr_list)
-            plt.suptitle(dt.datetime.strftime(start_a, '%b-%Y') + ' to ' + dt.datetime.strftime(j, '%b-%Y'))
-            plt.gcf().autofmt_xdate()
-            plt.savefig(os.path.join(newdir, 'data_avail_' + range_lab + '.png'), dpi=dpi)
-            plt.gca()
-            plt.cla()
-            gc.collect()
-            plt.close(ffig)
-            j += time_freq_a
+        plot_all(folder, start_a, time_freq_a, instr_list)
+
+    # os.system("cd " + os.path.join(fol_out, 'gif'))  # import ffmpeg  # os.system("ffmpeg -f image2 -framerate 1 -pattern_type glob -i 'data_avail_*-*_*_p.png' data_avail_p.mp4")
+
+    # # create animation  # import matplotlib.pyplot as plt  # from matplotlib.animation import FuncAnimation  #  # nframes = 30  # plt.subplots_adjust(top=1, bottom=0, left=0, right=1)  #  # def animate(i):  #     im = plt.imread(os.path.join(fol_out, 'data_avail_1990-' + str(1990 + i) + '.png'))  #     plt.imshow(im)  #  #  # anim = FuncAnimation(plt.gcf(), animate, frames=nframes, interval=(2000.0 / nframes))  # anim.save(os.path.join(fol_out, 'data_avail_1990-' + str(2020) + '.gif'), writer='imagemagick')
+
+    # ffmpeg -f image2 -i image%d.png output.mp4  # ffmpeg -f image2 -framerate 1 -pattern_type glob -i 'data_avail_*-*_*_p.png' output1_p.mp4  # ffmpeg -i output.mp4 -vf "fps=10,scale=320:-1:flags=lanczos" -c:v pam -f image2pipe - | convert -delay 10 - -loop 0 -layers optimize output.gif
+
+    # if switch_yp:  #     print('YEARLY')  #     range_lab =  #     print()  #     images = os.listdir(os.path.join(fol_out, 'yearly'))  #     img_arr = []  #     for image in images:  #         img = Image.open(os.path.join(fol_out, 'yearly', image)).convert('RGB')  #         img = np.asarray(img)  #         img_arr.append(img)  #   #     fig, ax = plt.subplots(figsize=(18, 18))  #     fig.suptitle("THAAO datasets")  #   #     grid = ImageGrid(fig, 111, (6, 6), axes_pad=0, share_all=True, aspect=False, direction='row')  #   #     for (ax, im) in zip(grid, img_arr):  #         ax.imshow(im)  #         ax.xaxis.set_visible(False)  #         ax.yaxis.set_visible(False)  #   #     plt.savefig(  #             os.path.join(fol_out, 'yearly', 'data_avail_yearly_panel_' + range_lab + '.png'),  #             dpi=600)  #     plt.gca()  #     plt.cla()  #     plt.close('all')
