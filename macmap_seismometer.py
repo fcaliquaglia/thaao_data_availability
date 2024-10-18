@@ -28,14 +28,16 @@ import pandas as pd
 
 import thaao_settings as ts
 
-instr = 'macmap_seisometers'
-date_list = pd.date_range(
-        ts.instr_na_list[instr]['start_instr'], ts.instr_na_list[instr]['end_instr'], freq='D').tolist()
-folder = os.path.join(ts.basefolder, "thaao_" + instr)
+
 if __name__ == "__main__":
 
     for station in [1, 2, 3, 4]:
-        fn = os.path.join(folder, "lista_TH0" + str(station) + ".txt")
+        instr = f'macmap_seismometer_{station}'
+        date_list = pd.date_range(
+                ts.instr_na_list[instr]['start_instr'], ts.instr_na_list[instr]['end_instr'], freq='D').tolist()
+        folder = os.path.join(ts.basefolder, "thaao_" + instr)
+
+        fn = os.path.join(folder, f"lista_TH0{station}.txt")
         list_file = pd.read_table(fn)
         date_converted = []
         for i in list_file.values:
@@ -63,4 +65,4 @@ if __name__ == "__main__":
             if i.strftime('%Y.%j') in date_converted:
                 macmap_seismo.loc[i] = [i, True]
 
-        ts.save_txt(instr + '_' + str(station), macmap_seismo)
+        ts.save_txt(instr, macmap_seismo)
