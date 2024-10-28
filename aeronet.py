@@ -44,15 +44,14 @@ Original file is located at
 """
 
 import datetime  # for time data manipulation
-import numpy as np  # for array manipulation
 import os
+
+import numpy as np  # for array manipulation
 import pandas as pd  # for data querying and processing
 import requests  # useful for sending HTTP requests
-import warnings
 from bs4 import BeautifulSoup  # reads data from website (web scraping)
 
 import thaao_settings as ts
-
 
 """**Setup input parameters such as date, data level, averaging type, AOD range for mapping, AOD/Angstrom exponent, and geographical limits**"""
 
