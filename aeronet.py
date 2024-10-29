@@ -44,25 +44,24 @@ Original file is located at
 """
 
 import datetime  # for time data manipulation
-import numpy as np  # for array manipulation
 import os
+
+import numpy as np  # for array manipulation
 import pandas as pd  # for data querying and processing
 import requests  # useful for sending HTTP requests
-import warnings
 from bs4 import BeautifulSoup  # reads data from website (web scraping)
 
 import thaao_settings as ts
-
 
 """**Setup input parameters such as date, data level, averaging type, AOD range for mapping, AOD/Angstrom exponent, and geographical limits**"""
 
 instr = 'aeronet'
 date_list = pd.date_range(
-        ts.instr_na_list[instr]['start_instr'], ts.instr_na_list[instr]['end_instr'], freq='D').tolist()
+        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 site = 'Thule'  # Please make sure site name is spelled properly
-dt_initial = ts.instr_na_list[instr]['start_instr'].strftime('%Y%m%d')  # starting date YYYYMMDD format
-dt_final = ts.instr_na_list[instr]['end_instr'].strftime('%Y%m%d')  # final date YYYYMMDD format
+dt_initial = ts.instr_metadata[instr]['start_instr'].strftime('%Y%m%d')  # starting date YYYYMMDD format
+dt_final = ts.instr_metadata[instr]['end_instr'].strftime('%Y%m%d')  # final date YYYYMMDD format
 level = 1.5  # AERONET data level
 average_type = 1  # daily (1), monthly (2)
 feature_choice = 1  # Enter '1' if you are specifying an AOD wavelength or '2' if you are specifying an Angstrom exponent
