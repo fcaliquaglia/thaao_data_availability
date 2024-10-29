@@ -193,7 +193,7 @@ def draw_events(ax, a1, a2):
     :param a2:
     :return:
     """
-    for event, event_idx in zip(ts.events_list.values(), ts.events_list.keys()):
+    for event, event_idx in zip(ts.events_dict.values(), ts.events_dict.keys()):
         if event['date'] in pd.date_range(a1, a2):
             mx = len(instr_list) + 1
             ax.vlines(x=event['date'], ymin=-1., ymax=mx, color='grey', ls='dotted')
@@ -213,7 +213,7 @@ def draw_campaigns(ax, a1, a2):
     :param a2:
     :return:
     """
-    for campaign_idx, campaign in enumerate(ts.campaign_list.values()):
+    for campaign_idx, campaign in enumerate(ts.campaigns_dict.values()):
         if campaign['start'] in pd.date_range(a1, a2):
             ax.axvspan(
                     campaign['start'], campaign['end'], alpha=0.3, color='cyan', label='Field campaign', zorder=10)
