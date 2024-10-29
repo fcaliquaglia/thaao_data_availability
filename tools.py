@@ -94,7 +94,7 @@ def save_txt(instr_nm, data_val):
     :param instr_nm:
     :return:
     """
-    fol_out = os.path.join(ts.basefolder, f"thaao_{instr_nm}")
+    fol_out = os.path.join(ts.basefolder, f'thaao_{instr_nm}')
 
     print('Saving: ' + instr_nm)
     np.savetxt(os.path.join(fol_out, f'{instr_nm}_data_avail_list.txt'), data_val, fmt='%s')

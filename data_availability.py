@@ -22,6 +22,8 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
+# TODO: cambiare formato stringhe
+
 from plots import *
 
 if __name__ == "__main__":

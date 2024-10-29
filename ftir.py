@@ -29,6 +29,7 @@ import numpy as np
 import pandas as pd
 
 import thaao_settings as ts
+import tools as tls
 
 instr = 'ftir'
 date_list = pd.date_range(
@@ -42,8 +43,8 @@ if __name__ == "__main__":
                 os.path.join(folder, 'groundbased_ftir.' + 'c2h6' + '_ncar001_thule_' + i.strftime('%Y%m%d') + '*'))
         try:
             if os.path.exists(fn[0]):
-                start = fn[0].split('_')[6]
-                end = fn[0].split('_')[7]
+                start = fn[0].split('_')[5]
+                end = fn[0].split('_')[6]
                 date_list_avail = pd.date_range(
                         dt.datetime.strptime(start[0:8], '%Y%m%d'), dt.datetime.strptime(end[0:8], '%Y%m%d'),
                         freq='D').tolist()
@@ -53,4 +54,4 @@ if __name__ == "__main__":
         except IndexError:
             pass
 
-    ts.save_txt(instr, ftir)
+    tls.save_txt(instr, ftir)

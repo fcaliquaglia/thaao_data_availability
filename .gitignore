@@ -3,3 +3,5 @@
 __pycache__/thaao_settings.cpython-311.pyc
 /.idea
 __pycache__/plots.cpython-311.pyc
+/__pycache__
+/.spyproject
