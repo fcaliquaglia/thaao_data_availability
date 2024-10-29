@@ -98,7 +98,7 @@ if __name__ == "__main__":
 
     # cumulative
     if ts.switch_gif:
-        plot_cumulative(start_g, end_g, time_freq_g, time_window_g)
+        plot_cumulative()
 
     # yearly
     if ts.switch_yearly:
