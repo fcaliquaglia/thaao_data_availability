@@ -29,6 +29,21 @@ import pandas as pd
 
 basefolder = os.path.join("H:\\Shared drives", "Dati")
 
+instr_list = ['uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'rs_sondes', 'gbms', 'wv_isotopes', 'metar',
+              'vespa', 'ceilometer', 'hatpro', 'dir_rad_trkr', 'pm10', 'ftir', 'aeronet', 'ecapac_mrr',
+              # 'ecapac_aws_snow', 'ecapac_disdro_precip', 'ecapac_aws', 'aws(p,T,RH)', 'mms_trios', 'lidar_temp',
+              # 'skycam', 'gnss', 'macmap_seismometer_1', 'macmap_seismometer_2', 'macmap_seismometer_3',
+              # 'macmap_seismometer_4', 'macmap_tide_gauge', 'rad_uli', 'rad_usi', 'rad_dli', 'rad_dsi', 'rad_tb',
+              'rad_par_up', 'rad_par_down']
+
+# switches
+switch_campaigns = ''   # Draw field campaigns?
+switch_all = ''         # Plot full panels?
+switch_history = ''     # Draw historical events?
+switch_yearly = ''      # Plot single-year panels?
+switch_prog_bar = ''    # Draw progress bar?
+switch_gif = ''         # Plot panels for gif?
+
 # consider when instruments are not available and when there are not the conditions (i.e., sun)
 instr_metadata = {'metar'               : {'institution': 'U.Alaska,Florence,StonyBrook/USSF',
                                            'start_instr': dt.datetime(1951, 10, 1),
