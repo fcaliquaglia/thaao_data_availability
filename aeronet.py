@@ -57,11 +57,11 @@ import thaao_settings as ts
 
 instr = 'aeronet'
 date_list = pd.date_range(
-        ts.instr_na_list[instr]['start_instr'], ts.instr_na_list[instr]['end_instr'], freq='D').tolist()
+        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 site = 'Thule'  # Please make sure site name is spelled properly
-dt_initial = ts.instr_na_list[instr]['start_instr'].strftime('%Y%m%d')  # starting date YYYYMMDD format
-dt_final = ts.instr_na_list[instr]['end_instr'].strftime('%Y%m%d')  # final date YYYYMMDD format
+dt_initial = ts.instr_metadata[instr]['start_instr'].strftime('%Y%m%d')  # starting date YYYYMMDD format
+dt_final = ts.instr_metadata[instr]['end_instr'].strftime('%Y%m%d')  # final date YYYYMMDD format
 level = 1.5  # AERONET data level
 average_type = 1  # daily (1), monthly (2)
 feature_choice = 1  # Enter '1' if you are specifying an AOD wavelength or '2' if you are specifying an Angstrom exponent

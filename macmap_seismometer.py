@@ -34,7 +34,7 @@ if __name__ == "__main__":
     for station in [1, 2, 3, 4]:
         instr = f'macmap_seismometer_{station}'
         date_list = pd.date_range(
-                ts.instr_na_list[instr]['start_instr'], ts.instr_na_list[instr]['end_instr'], freq='D').tolist()
+                ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
         folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
         fn = os.path.join(folder, f"lista_TH0{station}.txt")

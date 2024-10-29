@@ -30,7 +30,7 @@ import pandas as pd
 basefolder = os.path.join("H:\\Shared drives", "Dati")
 
 # consider when instruments are not available and when there are not the conditions (i.e., sun)
-instr_na_list = {'metar'               : {'institution': 'U.Alaska,Florence,StonyBrook/USSF',
+instr_metadata = {'metar'               : {'institution': 'U.Alaska,Florence,StonyBrook/USSF',
                                           'start_instr': dt.datetime(1951, 10, 1),
                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
                                           'end_seas'   : dt.datetime(1900, 12, 31)},

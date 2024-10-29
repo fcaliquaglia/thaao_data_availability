@@ -82,8 +82,8 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
 
         # excluding seasonal unavailability
         for i, ii in enumerate(data_na.index):
-            if (ii.month > pd.Timestamp(ts.instr_na_list.get(instr_list[idx])['end_seas']).month) | (
-                    ii.month < pd.Timestamp(ts.instr_na_list.get(instr_list[idx])['start_seas']).month):
+            if (ii.month > pd.Timestamp(ts.instr_metadata.get(instr_list[idx])['end_seas']).month) | (
+                    ii.month < pd.Timestamp(ts.instr_metadata.get(instr_list[idx])['start_seas']).month):
                 if data_na['mask'].iloc[i] != True:
                     data_na.loc[ii, 'mask'] = True
             else:
@@ -91,8 +91,8 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
 
         # excluding instrument missing or not installed
         for i, ii in enumerate(data_na.index):
-            if (ii < pd.Timestamp(ts.instr_na_list.get(instr_list[idx])['start_instr'])) | (
-                    ii > pd.Timestamp(ts.instr_na_list.get(instr_list[idx])['end_instr'])):
+            if (ii < pd.Timestamp(ts.instr_metadata.get(instr_list[idx])['start_instr'])) | (
+                    ii > pd.Timestamp(ts.instr_metadata.get(instr_list[idx])['end_instr'])):
                 data_na.loc[ii, 'mask'] = True
             else:
                 pass
@@ -174,13 +174,13 @@ def ax_style(axx, yy1, yy2, i_labs, i_length):
     axx.set_yticks(list(np.arange(0, i_length)))
     axx.set_yticklabels(i_labs)
     for ytick in axx.get_yticklabels():
-        if ts.instr_na_list.get(ytick.get_text())['end_instr'] < yy1:
+        if ts.instr_metadata.get(ytick.get_text())['end_instr'] < yy1:
             ytick.set_color('grey')
-        elif ts.instr_na_list.get(ytick.get_text())['start_instr'] > yy2:
+        elif ts.instr_metadata.get(ytick.get_text())['start_instr'] > yy2:
             ytick.set_color('grey')
         else:
             ytick.set_color(
-                    ts.institution_colors[ts.instr_na_list.get(ytick.get_text())['institution']])
+                    ts.institution_colors[ts.instr_metadata.get(ytick.get_text())['institution']])
             ytick.set_fontweight('bold')
     return
 
