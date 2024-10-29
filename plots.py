@@ -236,7 +236,7 @@ def draw_data_avail(a1, a2):
     for instr_idx, instr_name in enumerate(ts.instr_list):
         inp_file, i_labs = input_file_selection(instr_idx, i_labs, instr_name)
         plot_data_avail(ax, inp_file, a1, a2, instr_idx)
-    if ts.ts.switch_history:
+    if ts.switch_history:
         draw_events(ax, a1, a2)
     if ts.switch_campaigns:
         draw_campaigns(ax, a1, a2)
