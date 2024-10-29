@@ -13,7 +13,7 @@ Brief description
 # =============================================================
 #
 # -------------------------------------------------------------------------------
-__author__ = "Filippo Cali' Quaglia"
+__author__ = "Filippo Cali' Quaglia, Monica Tosco"
 __credits__ = ["??????"]
 __license__ = "GPL"
 __version__ = "0.1"
