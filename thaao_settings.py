@@ -24,10 +24,8 @@ __lastupdate__ = ""
 import datetime as dt
 import os
 
-import numpy as np
-import pandas as pd
-
 basefolder = os.path.join("H:\\Shared drives", "Dati")
+da_folder = os.path.join(basefolder, 'thaao_data_availability')
 
 instr_list = ['uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'rs_sondes', 'gbms', 'wv_isotopes', 'metar',
               'vespa', 'ceilometer', 'hatpro', 'dir_rad_trkr', 'pm10', 'ftir', 'aeronet', 'ecapac_mrr',
@@ -37,81 +35,74 @@ instr_list = ['uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'rs_sondes'
               'rad_par_up', 'rad_par_down']
 
 # switches
-switch_campaigns = ''   # Draw field campaigns?
-switch_all = ''         # Plot full panels?
-switch_history = ''     # Draw historical events?
-switch_yearly = ''      # Plot single-year panels?
-switch_prog_bar = ''    # Draw progress bar?
-switch_gif = ''         # Plot panels for gif?
+switch_campaigns = ''  # Draw field campaigns?
+switch_all = ''  # Plot full panels?
+switch_history = ''  # Draw historical events?
+switch_yearly = ''  # Plot single-year panels?
+switch_prog_bar = ''  # Draw progress bar?
+switch_gif = ''  # Plot panels for gif?
 
 # consider when instruments are not available and when there are not the conditions (i.e., sun)
-instr_metadata = {'metar'               : {'institution': 'U.Alaska,Florence,StonyBrook/USSF',
-                                           'start_instr': dt.datetime(1951, 10, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'vespa'               : {'institution': 'INGV', 'start_instr': dt.datetime(2016, 7, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'ceilometer'          : {'institution': 'ENEA', 'start_instr': dt.datetime(2019, 11, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'hatpro'              : {'institution': 'ENEA', 'start_instr': dt.datetime(2017, 1, 1),
-                                           'end_instr'  : dt.datetime(2024, 6, 30),
-                                           'start_seas' : dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'dir_rad_trkr'        : {'institution': 'DMI+ENEA', 'start_instr': dt.datetime(2002, 10, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 2, 1),
-                                           'end_seas'   : dt.datetime(1900, 10, 31)},
-                  'pm10'                : {'institution': 'U.Alaska,Florence,StonyBrook/USSF',
-                                           'start_instr': dt.datetime(2010, 1, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'ecapac_mrr'          : {'institution': 'ENEA', 'start_instr': dt.datetime(2022, 9, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'ecapac_aws_snow'     : {'institution': 'ENEA', 'start_instr': dt.datetime(2022, 9, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
+instr_metadata = {'metar': {'institution': 'U.Alaska,Florence,StonyBrook/USSF', 'start_instr': dt.datetime(1951, 10, 1),
+                            'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
+                            'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'vespa': {'institution': 'INGV', 'start_instr': dt.datetime(2016, 7, 1),
+                            'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
+                            'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'ceilometer': {'institution': 'ENEA', 'start_instr': dt.datetime(2019, 11, 1),
+                                 'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
+                                 'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'hatpro': {'institution': 'ENEA', 'start_instr': dt.datetime(2017, 1, 1),
+                             'end_instr'  : dt.datetime(2024, 6, 30), 'start_seas': dt.datetime(1900, 1, 1),
+                             'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'dir_rad_trkr': {'institution': 'DMI+ENEA', 'start_instr': dt.datetime(2002, 10, 1),
+                                   'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 2, 1),
+                                   'end_seas'   : dt.datetime(1900, 10, 31)},
+                  'pm10': {'institution': 'U.Alaska,Florence,StonyBrook/USSF', 'start_instr': dt.datetime(2010, 1, 1),
+                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
+                           'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'ecapac_mrr': {'institution': 'ENEA', 'start_instr': dt.datetime(2022, 9, 1),
+                                 'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
+                                 'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'ecapac_aws_snow': {'institution': 'ENEA', 'start_instr': dt.datetime(2022, 9, 1),
+                                      'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
+                                      'end_seas'   : dt.datetime(1900, 12, 31)},
                   'ecapac_disdro_precip': {'institution': 'ENEA', 'start_instr': dt.datetime(2022, 9, 1),
                                            'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
                                            'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'rs_sondes'           : {'institution': 'DMI+INGV', 'start_instr': dt.datetime(1973, 1, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'o3_sondes'           : {'institution': 'DMI', 'start_instr': dt.datetime(1991, 12, 1),
-                                           'end_instr'  : dt.datetime(2016, 12, 31),
-                                           'start_seas' : dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'aero_sondes'         : {'institution': 'DMI', 'start_instr': dt.datetime(1992, 1, 1),
-                                           'end_instr'  : dt.datetime(1998, 12, 31),
-                                           'start_seas' : dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'rad_tb'              : {'institution': 'ENEA', 'start_instr': dt.datetime(2017, 1, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'skycam'              : {'institution': 'ENEA', 'start_instr': dt.datetime(2017, 2, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'gnss'                : {'institution': 'INGV', 'start_instr': dt.datetime(2021, 5, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'rad_uli'             : {'institution': 'ENEA', 'start_instr': dt.datetime(2016, 7, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'rad_usi'             : {'institution': 'ENEA', 'start_instr': dt.datetime(2016, 7, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'rad_dli'             : {'institution': 'ENEA', 'start_instr': dt.datetime(2009, 1, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'rad_dsi'             : {'institution': 'DMI+ENEA', 'start_instr': dt.datetime(2003, 2, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'wv_isotopes'         : {'institution': 'U.Alaska,Florence,StonyBrook/USSF',
-                                           'start_instr': dt.datetime(2017, 8, 1),
-                                           'end_instr'  : dt.datetime(2019, 12, 31),
-                                           'start_seas' : dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'rs_sondes': {'institution': 'DMI+INGV', 'start_instr': dt.datetime(1973, 1, 1),
+                                'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
+                                'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'o3_sondes': {'institution': 'DMI', 'start_instr': dt.datetime(1991, 12, 1),
+                                'end_instr'  : dt.datetime(2016, 12, 31), 'start_seas': dt.datetime(1900, 1, 1),
+                                'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'aero_sondes': {'institution': 'DMI', 'start_instr': dt.datetime(1992, 1, 1),
+                                  'end_instr'  : dt.datetime(1998, 12, 31), 'start_seas': dt.datetime(1900, 1, 1),
+                                  'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'rad_tb': {'institution': 'ENEA', 'start_instr': dt.datetime(2017, 1, 1),
+                             'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
+                             'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'skycam': {'institution': 'ENEA', 'start_instr': dt.datetime(2017, 2, 1),
+                             'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
+                             'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'gnss': {'institution': 'INGV', 'start_instr': dt.datetime(2021, 5, 1),
+                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
+                           'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'rad_uli': {'institution': 'ENEA', 'start_instr': dt.datetime(2016, 7, 1),
+                              'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
+                              'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'rad_usi': {'institution': 'ENEA', 'start_instr': dt.datetime(2016, 7, 1),
+                              'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
+                              'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'rad_dli': {'institution': 'ENEA', 'start_instr': dt.datetime(2009, 1, 1),
+                              'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
+                              'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'rad_dsi': {'institution': 'DMI+ENEA', 'start_instr': dt.datetime(2003, 2, 1),
+                              'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
+                              'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'wv_isotopes': {'institution': 'U.Alaska,Florence,StonyBrook/USSF',
+                                  'start_instr': dt.datetime(2017, 8, 1), 'end_instr': dt.datetime(2019, 12, 31),
+                                  'start_seas' : dt.datetime(1900, 1, 1), 'end_seas': dt.datetime(1900, 12, 31)},
                   'macmap_seismometer_1': {'institution': 'INGV', 'start_instr': dt.datetime(2021, 8, 1),
                                            'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 3, 1),
                                            'end_seas'   : dt.datetime(1900, 11, 30)},
@@ -124,53 +115,43 @@ instr_metadata = {'metar'               : {'institution': 'U.Alaska,Florence,Sto
                   'macmap_seismometer_4': {'institution': 'INGV', 'start_instr': dt.datetime(2022, 9, 1),
                                            'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 3, 1),
                                            'end_seas'   : dt.datetime(1900, 11, 30)},
-                  'macmap_tide_gauge'   : {'institution': 'INGV', 'start_instr': dt.datetime(2021, 8, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 3, 1),
-                                           'end_seas'   : dt.datetime(1900, 11, 30)},
-                  'mms_trios'           : {'institution': 'INGV', 'start_instr': dt.datetime(2021, 9, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 3, 1),
-                                           'end_seas'   : dt.datetime(1900, 10, 31)},
-                  'ftir'                : {'institution': 'NCAR', 'start_instr': dt.datetime(1999, 10, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 3, 1),
-                                           'end_seas'   : dt.datetime(1900, 10, 31)},
-                  'aeronet'             : {'institution': 'NCAR', 'start_instr': dt.datetime(2007, 3, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 3, 1),
-                                           'end_seas'   : dt.datetime(1900, 10, 31)},
-                  'aws(p,T,RH)'         : {'institution': 'ENEA+INGV', 'start_instr': dt.datetime(2017, 9, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 9, 1),
-                                           'end_seas'   : dt.datetime.today()},
-                  'lidar_temp'          : {'institution': 'U.Sap+ENEA', 'start_instr': dt.datetime(1993, 11, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 11, 1),
-                                           'end_seas'   : dt.datetime(1900, 3, 31)},
-                  'lidar_ae'            : {'institution': 'U.Sap+ENEA', 'start_instr': dt.datetime(1991, 9, 1),
-                                           'end_instr'  : dt.datetime(1996, 3, 31),
-                                           'start_seas' : dt.datetime(1900, 9, 1),
-                                           'end_seas'   : dt.datetime(1900, 3, 31)},
-                  'uv-vis_spec'         : {'institution': 'DMI', 'start_instr': dt.datetime(1991, 2, 1),
-                                           'end_instr'  : dt.datetime(2016, 11, 30),
-                                           'start_seas' : dt.datetime(1900, 2, 1),
-                                           'end_seas'   : dt.datetime(1900, 11, 30)},
-                  'gbms'                : {'institution': 'U.Alaska,Florence,StonyBrook/USSF',
-                                           'start_instr': dt.datetime(1992, 1, 1),
-                                           'end_instr'  : dt.datetime(2012, 12, 31),
-                                           'start_seas' : dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'rad_par_up'          : {'institution': 'ENEA', 'start_instr': dt.datetime(2016, 7, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)},
-                  'rad_par_down'        : {'institution': 'ENEA', 'start_instr': dt.datetime(2016, 7, 1),
-                                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
-                                           'end_seas'   : dt.datetime(1900, 12, 31)}}
+                  'macmap_tide_gauge': {'institution': 'INGV', 'start_instr': dt.datetime(2021, 8, 1),
+                                        'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 3, 1),
+                                        'end_seas'   : dt.datetime(1900, 11, 30)},
+                  'mms_trios': {'institution': 'INGV', 'start_instr': dt.datetime(2021, 9, 1),
+                                'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 3, 1),
+                                'end_seas'   : dt.datetime(1900, 10, 31)},
+                  'ftir': {'institution': 'NCAR', 'start_instr': dt.datetime(1999, 10, 1),
+                           'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 3, 1),
+                           'end_seas'   : dt.datetime(1900, 10, 31)},
+                  'aeronet': {'institution': 'NCAR', 'start_instr': dt.datetime(2007, 3, 1),
+                              'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 3, 1),
+                              'end_seas'   : dt.datetime(1900, 10, 31)},
+                  'aws(p,T,RH)': {'institution': 'ENEA+INGV', 'start_instr': dt.datetime(2017, 9, 1),
+                                  'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 9, 1),
+                                  'end_seas'   : dt.datetime.today()},
+                  'lidar_temp': {'institution': 'U.Sap+ENEA', 'start_instr': dt.datetime(1993, 11, 1),
+                                 'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 11, 1),
+                                 'end_seas'   : dt.datetime(1900, 3, 31)},
+                  'lidar_ae': {'institution': 'U.Sap+ENEA', 'start_instr': dt.datetime(1991, 9, 1),
+                               'end_instr'  : dt.datetime(1996, 3, 31), 'start_seas': dt.datetime(1900, 9, 1),
+                               'end_seas'   : dt.datetime(1900, 3, 31)},
+                  'uv-vis_spec': {'institution': 'DMI', 'start_instr': dt.datetime(1991, 2, 1),
+                                  'end_instr'  : dt.datetime(2016, 11, 30), 'start_seas': dt.datetime(1900, 2, 1),
+                                  'end_seas'   : dt.datetime(1900, 11, 30)},
+                  'gbms': {'institution': 'U.Alaska,Florence,StonyBrook/USSF', 'start_instr': dt.datetime(1992, 1, 1),
+                           'end_instr'  : dt.datetime(2012, 12, 31), 'start_seas': dt.datetime(1900, 1, 1),
+                           'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'rad_par_up': {'institution': 'ENEA', 'start_instr': dt.datetime(2016, 7, 1),
+                                 'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
+                                 'end_seas'   : dt.datetime(1900, 12, 31)},
+                  'rad_par_down': {'institution': 'ENEA', 'start_instr': dt.datetime(2016, 7, 1),
+                                   'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
+                                   'end_seas'   : dt.datetime(1900, 12, 31)}}
 
-institution_colors = {'DMI'                              : 'green',
-                      'INGV'                             : 'blue',
-                      'ENEA'                             : 'red',
-                      'NCAR'                             : 'purple',
-                      'ENEA+INGV'                        : 'olive',
-                      'U.Sap+ENEA'                       : 'brown',
-                      'DMI+INGV'                         : 'orange',
-                      'DMI+ENEA'                         : 'pink',
-                      'U.Alaska,Florence,StonyBrook/USSF': 'black',
+institution_colors = {'DMI'                              : 'green', 'INGV': 'blue', 'ENEA': 'red', 'NCAR': 'purple',
+                      'ENEA+INGV'                        : 'olive', 'U.Sap+ENEA': 'brown', 'DMI+INGV': 'orange',
+                      'DMI+ENEA'                         : 'pink', 'U.Alaska,Florence,StonyBrook/USSF': 'black',
                       'not active'                       : 'grey'}
 
 events_dict = {15: {'date': dt.datetime(1903, 3, 30), 'label': 'Danish Literary \n Expedition'},
@@ -263,44 +244,3 @@ campaigns_dict = {1 : {'start': dt.datetime(1991, 1, 1), 'end': dt.datetime(1991
                   33: {'start': dt.datetime(2024, 5, 25), 'end': dt.datetime(2024, 6, 17)},
                   34: {'start': dt.datetime(2024, 7, 22), 'end': dt.datetime(2024, 8, 7)},
                   36: {'start': dt.datetime(2024, 9, 26), 'end': dt.datetime(2024, 10, 5)}, }
-
-
-def save_mask_txt(data_val, instr_nm):
-    """
-
-    :param data_val:
-    :param instr_nm:
-    :return:
-    """
-    fol_out = os.path.join(basefolder, "thaao_" + instr_nm)
-
-    # Make sure interesting data fields are numeric (i.e. floats)
-    data_val = data_val.apply(pd.to_numeric, errors='coerce')
-
-    # Create masks
-    try:
-        valid_mask = np.sum(data_val.notnull(), axis=1) == data_val.shape[1]
-    except:
-        valid_mask = data_val.notnull()
-
-    out_file = pd.concat([pd.Series(data_val.index.values), pd.Series(valid_mask.values)], axis=1)
-
-    print('Saving: ' + instr_nm)
-    np.savetxt(os.path.join(fol_out, instr_nm + '_data_avail_list.txt'), out_file, fmt='%s')
-    print('Saved ' + str(os.path.join(fol_out, instr_nm + '_data_avail_list.txt')))
-    return
-
-
-def save_txt(instr_nm, data_val):
-    """
-
-    :param data_val:
-    :param instr_nm:
-    :return:
-    """
-    fol_out = os.path.join(basefolder, "thaao_" + instr_nm)
-
-    print('Saving: ' + instr_nm)
-    np.savetxt(os.path.join(fol_out, instr_nm + '_data_avail_list.txt'), data_val, fmt='%s')
-    print('Saved ' + str(os.path.join(fol_out, instr_nm + '_data_avail_list.txt')))
-    return

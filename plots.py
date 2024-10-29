@@ -36,6 +36,7 @@ from matplotlib.pyplot import cm
 from PIL import Image, ImageDraw
 
 import thaao_settings as ts
+import tools as tls
 
 dpi_fac = 2  # if increased, dpi resolution increases
 dpi = 300 * dpi_fac
@@ -117,38 +118,6 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
     del data_val
 
     return
-
-
-def input_file_selection(i_idx, i_list, i_name):
-    """
-
-    :param i_idx:
-    :param i_list:
-    :param i_name:
-    :return:
-    """
-    try:
-        print(f'{i_idx:02}' + ' ' + i_name)
-        # if i_name[0:3] == 'rad':
-        #     inp_file = os.path.join(fol_input, 'thaao_rad', i_name + '_data_avail_list.txt')
-        if i_name[0:3] == 'aws':
-            inp_file = os.path.join(ts.basefolder, 'thaao_meteo', i_name + '_data_avail_list.txt')
-        # elif i_name[0:5] == 'lidar':
-        #     inp_file = os.path.join(fol_input, 'thaao_lidar', i_name + '_data_avail_list.txt')
-        # elif i_name[0:5] == 'metar':
-        #     inp_file = os.path.join(fol_input, i_name + '_data_avail_list.txt')
-        # elif i_name[0:13] == 'macmap_seismometers':
-        #     inp_file = os.path.join(fol_input, 'thaao_macmap_seismometers', i_name + '_data_avail_list.txt')
-        # elif (i_name[0:11] == 'ecapac_snow') | (i_name[0:10] == 'ecapac_aws'):
-        #     inp_file = os.path.join(fol_input, 'thaao_ecapac_aws_snow', i_name + '_data_avail_list.txt')
-        else:
-            inp_file = os.path.join(ts.basefolder, 'thaao_' + i_name, i_name + '_data_avail_list.txt')
-        i_list.append(i_name)
-    except FileNotFoundError:
-        inp_file = None
-        print('file for ' + i_name + ' was not found')
-
-    return inp_file, i_list
 
 
 def ax_style(axx, yy1, yy2, i_labs, i_length):
@@ -234,7 +203,7 @@ def draw_data_avail(a1, a2):
     ax2 = ax.twinx()
     i_labs = []
     for instr_idx, instr_name in enumerate(ts.instr_list):
-        inp_file, i_labs = input_file_selection(instr_idx, i_labs, instr_name)
+        inp_file, i_labs = tls.input_file_selection(instr_idx, i_labs, instr_name)
         plot_data_avail(ax, inp_file, a1, a2, instr_idx)
     if ts.switch_history:
         draw_events(ax, a1, a2)
@@ -265,6 +234,15 @@ def draw_data_avail(a1, a2):
 
 
 def draw_progress_bar(n_dir, range_lab_f, strt_ff, end_ff, jj):
+    """
+
+    :param n_dir:
+    :param range_lab_f:
+    :param strt_ff:
+    :param end_ff:
+    :param jj:
+    :return:
+    """
     # create image or load your existing image with out=Image.open(path)
     out = Image.open(os.path.join(n_dir, 'data_avail_' + range_lab_f + '.png')).convert('RGBA')
     d = ImageDraw.Draw(out)
@@ -272,9 +250,22 @@ def draw_progress_bar(n_dir, range_lab_f, strt_ff, end_ff, jj):
     progress = (jj.year - strt_ff.year) / (end_ff.year - strt_ff.year)
     d = drawProgressBar(d, 50 * dpi_fac, 180 * dpi_fac, 4300 * dpi_fac, 60 * dpi_fac, progress, 'grey', 'blue')
     out.save(os.path.join(n_dir, f'data_avail_{range_lab_f}_p.png'))
+    return
 
 
 def drawProgressBar(d, x, y, w, h, progress_func, bg="black", fg="red"):
+    """
+
+    :param d:
+    :param x:
+    :param y:
+    :param w:
+    :param h:
+    :param progress_func:
+    :param bg:
+    :param fg:
+    :return:
+    """
     # draw background
     d.ellipse((x + w, y, x + h + w, y + h), fill=bg)
     d.ellipse((x, y, x + h, y + h), fill=bg)
@@ -289,10 +280,9 @@ def drawProgressBar(d, x, y, w, h, progress_func, bg="black", fg="red"):
     return d
 
 
-def plot_cumulative(fol, strt_f, end_f, tm_win_f, tm_freq_f):
+def plot_cumulative(strt_f, end_f, tm_freq_f, tm_win_f):
     """
 
-    :param fol:
     :param strt_f:
     :param end_f:
     :param tm_win_f:
@@ -300,7 +290,7 @@ def plot_cumulative(fol, strt_f, end_f, tm_win_f, tm_freq_f):
     :return:
     """
     print('CUMULATIVE')
-    newdir = os.path.join(fol, 'gif', f'{strt_f.year}-{end_f.year}')
+    newdir = os.path.join(ts.da_folder, 'gif', f'{strt_f.year}-{end_f.year}')
     os.makedirs(newdir, exist_ok=True)
     j = cp.copy(strt_f)
     while j + tm_win_f <= end_f + tm_win_f:
@@ -324,10 +314,9 @@ def plot_cumulative(fol, strt_f, end_f, tm_win_f, tm_freq_f):
     return
 
 
-def plot_yearly(fol, strt_f, end_f):
+def plot_yearly(strt_f, end_f):
     """
 
-    :param fol:
     :param strt_f:
     :param end_f:
     :return:
@@ -341,7 +330,7 @@ def plot_yearly(fol, strt_f, end_f):
         ffig = draw_data_avail(j, j1)
         plt.suptitle(dt.datetime.strftime(j, '%b-%Y') + ' to ' + dt.datetime.strftime(j1, '%b-%Y'))
         plt.gcf().autofmt_xdate()
-        plt.savefig(os.path.join(fol, 'yearly', 'data_avail_' + range_lab + '.png'), dpi=dpi)
+        plt.savefig(os.path.join(ts.da_folder, 'yearly', 'data_avail_' + range_lab + '.png'), dpi=dpi)
         plt.gca()
         plt.cla()
         gc.collect()
@@ -353,17 +342,16 @@ def plot_yearly(fol, strt_f, end_f):
     return
 
 
-def plot_all(fol, strt_f, end_f, tm_freq_f):
+def plot_all(strt_f, end_f, tm_freq_f):
     """
 
     :param end_f:
-    :param fol:
     :param strt_f:
     :param tm_freq_f:
     :return:
     """
     print('ALL')
-    newdir = os.path.join(fol, 'all', str(strt_f.year) + '-' + str(end_f.year))
+    newdir = os.path.join(ts.da_folder, 'all', str(strt_f.year) + '-' + str(end_f.year))
     os.makedirs(newdir, exist_ok=True)
     j = cp.copy(strt_f) + tm_freq_f
     while j <= end_f:

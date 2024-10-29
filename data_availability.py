@@ -25,11 +25,6 @@ __lastupdate__ = "October 2024"
 from plots import *
 
 if __name__ == "__main__":
-
-    folder = os.path.join(ts.basefolder, 'thaao_data_availability')
-
-    # INPUTS
-
     # panel for gifs (by i years)
     ts.switch_gif = input('Plot panels for gif? (yes/no)')
     if ts.switch_gif == 'no':
@@ -103,15 +98,15 @@ if __name__ == "__main__":
 
     # cumulative
     if ts.switch_gif:
-        plot_cumulative(folder, start_g, end_g, time_window_g, time_freq_g)
+        plot_cumulative(start_g, end_g, time_freq_g, time_window_g)
 
     # yearly
     if ts.switch_yearly:
-        plot_yearly(folder, start_y, end_y)
+        plot_yearly(start_y, end_y)
 
     # all
     if ts.switch_all:
-        plot_all(folder, start_a, end_a, time_freq_a)
+        plot_all(start_a, end_a, time_freq_a)
 
     # os.system("cd " + os.path.join(fol_out, 'gif'))  # import ffmpeg  # os.system("ffmpeg -f image2 -framerate 1 -pattern_type glob -i 'data_avail_*-*_*_p.png' data_avail_p.mp4")
 
