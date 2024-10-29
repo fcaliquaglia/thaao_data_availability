@@ -33,11 +33,11 @@ if __name__ == "__main__":
         ts.switch_gif = True
         window_size = int(input('window size (in years):'))  # 5  # in years
         lag_g = int(input('lag (in months):'))  # 3  # in months
-        time_window_g = pd.DateOffset(years=window_size)
-        time_freq_g = pd.DateOffset(months=lag_g)
+        ts.time_window_g = pd.DateOffset(years=window_size)
+        ts.time_freq_g = pd.DateOffset(months=lag_g)
         strt_y = int(input('start year:'))
-        start_g = dt.datetime(strt_y, 1, 1) + time_window_g  # dt.datetime(1900, 1, 1) + time_window
-        end_g = dt.datetime.today() + dt.timedelta(minutes=500000)
+        ts.start_g = dt.datetime(strt_y, 1, 1) + time_window_g  # dt.datetime(1900, 1, 1) + time_window
+        ts.end_g = dt.datetime.today() + dt.timedelta(minutes=500000)
 
     # single-year panels
     ts.switch_yearly = input('Plot single-year panels? (yes/no)')
@@ -45,9 +45,9 @@ if __name__ == "__main__":
         ts.switch_yearly = False
     elif ts.switch_yearly == 'yes':
         strt_y = int(input('start year:'))
-        start_y = dt.datetime(strt_y, 1, 1)
+        ts.start_y = dt.datetime(strt_y, 1, 1)
         nd_y = int(input('end year:'))
-        end_y = dt.datetime(nd_y, 12, 31)
+        ts.end_y = dt.datetime(nd_y, 12, 31)
 
     # complete plot
     ts.switch_all = input('Plot full panels? (yes/no)')
@@ -55,13 +55,13 @@ if __name__ == "__main__":
         ts.switch_all = False
     elif ts.switch_all == 'yes':
         strt_y = int(input('start year:'))
-        start_a = dt.datetime(strt_y, 1, 1)
+        ts.start_a = dt.datetime(strt_y, 1, 1)
         nd_y = int(input('end year:'))
-        end_a = dt.datetime(nd_y, 12, 31)
+        ts.end_a = dt.datetime(nd_y, 12, 31)
         window_size = int(input('window size (in years):'))  # 5  # in years
         lag_a = int(input('lag (in months):'))  # 6
         time_window = pd.DateOffset(years=window_size)
-        time_freq_a = pd.DateOffset(months=lag_a)
+        ts.time_freq_a = pd.DateOffset(months=lag_a)
 
     # Field Campaigns
     switch_campaigns = input('Draw field campaigns? (yes/no)')
@@ -102,11 +102,11 @@ if __name__ == "__main__":
 
     # yearly
     if ts.switch_yearly:
-        plot_yearly(start_y, end_y)
+        plot_yearly()
 
     # all
     if ts.switch_all:
-        plot_all(start_a, end_a, time_freq_a)
+        plot_all()
 
     # os.system("cd " + os.path.join(fol_out, 'gif'))  # import ffmpeg  # os.system("ffmpeg -f image2 -framerate 1 -pattern_type glob -i 'data_avail_*-*_*_p.png' data_avail_p.mp4")
 

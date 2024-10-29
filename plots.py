@@ -280,21 +280,17 @@ def drawProgressBar(d, x, y, w, h, progress_func, bg="black", fg="red"):
     return d
 
 
-def plot_cumulative(strt_f, end_f, tm_freq_f, tm_win_f):
+def plot_cumulative():
     """
 
-    :param strt_f:
-    :param end_f:
-    :param tm_win_f:
-    :param tm_freq_f:
     :return:
     """
     print('CUMULATIVE')
-    newdir = os.path.join(ts.da_folder, 'gif', f'{strt_f.year}-{end_f.year}')
+    newdir = os.path.join(ts.da_folder, 'gif', f'{ts.start_c.year}-{ts.end_c.year}')
     os.makedirs(newdir, exist_ok=True)
-    j = cp.copy(strt_f)
-    while j + tm_win_f <= end_f + tm_win_f:
-        yyyy1, yyyy2 = (j - tm_win_f, j)
+    j = cp.copy(ts.start_c)
+    while j + ts.time_window_c <= ts.end_c + ts.time_window_c:
+        yyyy1, yyyy2 = (j - ts.time_window_c, j)
         range_lab = dt.datetime.strftime(yyyy1, '%Y%m') + '_' + dt.datetime.strftime(yyyy2, '%Y%m')
         print(range_lab)
         ffig = draw_data_avail(yyyy1, yyyy2)
@@ -308,23 +304,20 @@ def plot_cumulative(strt_f, end_f, tm_freq_f, tm_win_f):
         plt.close(ffig)
 
         if ts.switch_prog_bar:
-            draw_progress_bar(newdir, range_lab, strt_f, end_f, j)
+            draw_progress_bar(newdir, range_lab, ts.start_c, ts.end_c, j)
 
-        j += tm_freq_f
+        j += ts.time_freq_c
     return
 
 
-def plot_yearly(strt_f, end_f):
+def plot_yearly():
     """
-
-    :param strt_f:
-    :param end_f:
     :return:
     """
     print('YEARLY')
-    j = cp.copy(strt_f)
+    j = cp.copy(ts.start_y)
     j1 = j + pd.DateOffset(years=1)
-    while j1 <= end_f:
+    while j1 <= ts.end_y:
         print(j1)
         range_lab = dt.datetime.strftime(j, '%Y-%m')
         ffig = draw_data_avail(j, j1)
@@ -342,30 +335,27 @@ def plot_yearly(strt_f, end_f):
     return
 
 
-def plot_all(strt_f, end_f, tm_freq_f):
+def plot_all():
     """
 
-    :param end_f:
-    :param strt_f:
-    :param tm_freq_f:
     :return:
     """
     print('ALL')
-    newdir = os.path.join(ts.da_folder, 'all', str(strt_f.year) + '-' + str(end_f.year))
+    newdir = os.path.join(ts.da_folder, 'all', str(ts.start_a.year) + '-' + str(ts.end_a.year))
     os.makedirs(newdir, exist_ok=True)
-    j = cp.copy(strt_f) + tm_freq_f
-    while j <= end_f:
-        yyyy1, yyyy2 = (strt_f, j)
+    j = cp.copy(ts.start_a) + ts.time_freq_a
+    while j <= ts.end_a:
+        yyyy1, yyyy2 = (ts.start_a, j)
         range_lab = dt.datetime.strftime(yyyy1, '%Y%m') + '_' + dt.datetime.strftime(yyyy2, '%Y%m')
         print(range_lab)
-        ffig = draw_data_avail(strt_f, j)
-        plt.suptitle(dt.datetime.strftime(strt_f, '%b-%Y') + ' to ' + dt.datetime.strftime(j, '%b-%Y'))
+        ffig = draw_data_avail(ts.start_a, j)
+        plt.suptitle(dt.datetime.strftime(ts.start_a, '%b-%Y') + ' to ' + dt.datetime.strftime(j, '%b-%Y'))
         plt.gcf().autofmt_xdate()
         plt.savefig(os.path.join(newdir, f'data_avail_{range_lab}.png'), dpi=dpi)
         plt.gca()
         plt.cla()
         gc.collect()
         plt.close(ffig)
-        j += tm_freq_f
+        j += ts.time_freq_a
 
     return

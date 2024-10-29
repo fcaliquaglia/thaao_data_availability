@@ -14,3 +14,5 @@ Contains list of instruments, dates of field campaigns and other relevant metada
 
 Contains different plot options which you can manage changing state to the switches in thaao_settings.py (managed as
 input)
+
+## tools.py

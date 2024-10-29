@@ -42,6 +42,19 @@ switch_yearly = ''  # Plot single-year panels?
 switch_prog_bar = ''  # Draw progress bar?
 switch_gif = ''  # Plot panels for gif?
 
+# inputs
+start_a = ''
+end_a = ''
+time_freq_a = ''
+
+start_y = ''
+end_y = ''
+
+start_c = ''
+end_c = ''
+time_freq_c = ''
+time_window_c = ''
+
 # consider when instruments are not available and when there are not the conditions (i.e., sun)
 instr_metadata = {'metar': {'institution': 'U.Alaska,Florence,StonyBrook/USSF', 'start_instr': dt.datetime(1951, 10, 1),
                             'end_instr'  : dt.datetime.today(), 'start_seas': dt.datetime(1900, 1, 1),
