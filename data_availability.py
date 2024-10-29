@@ -25,19 +25,19 @@ __lastupdate__ = "October 2024"
 from plots import *
 
 if __name__ == "__main__":
-    # panel for gifs (by i years)
-    ts.switch_gif = input('Plot panels for gif? (yes/no)')
-    if ts.switch_gif == 'no':
-        ts.switch_gif = False
-    elif ts.switch_gif == 'yes':
-        ts.switch_gif = True
+    # panel for cumulative (for gifs, by i years)
+    ts.switch_cumulative = input('Plot panels for gif? (yes/no)')
+    if ts.switch_cumulative == 'no':
+        ts.switch_cumulative = False
+    elif ts.switch_cumulative == 'yes':
+        ts.switch_cumulative = True
         window_size = int(input('window size (in years):'))  # 5  # in years
-        lag_g = int(input('lag (in months):'))  # 3  # in months
-        ts.time_window_g = pd.DateOffset(years=window_size)
-        ts.time_freq_g = pd.DateOffset(months=lag_g)
+        lag_c = int(input('lag (in months):'))  # 3  # in months
+        ts.time_window_c = pd.DateOffset(years=window_size)
+        ts.time_freq_c = pd.DateOffset(months=lag_c)
         strt_y = int(input('start year:'))
-        ts.start_g = dt.datetime(strt_y, 1, 1) + time_window_g  # dt.datetime(1900, 1, 1) + time_window
-        ts.end_g = dt.datetime.today() + dt.timedelta(minutes=500000)
+        ts.start_c = dt.datetime(strt_y, 1, 1) + ts.time_window_c  # dt.datetime(1900, 1, 1) + time_window
+        ts.end_c = dt.datetime.today() + dt.timedelta(minutes=500000)
 
     # single-year panels
     ts.switch_yearly = input('Plot single-year panels? (yes/no)')
@@ -86,18 +86,18 @@ if __name__ == "__main__":
 
     # TODO: instrument selection from input
     # instr_list = input(
-    #         'insert list of instruments separated by comma (choosing from: '
-    #         '\n uv-vis_spec, lidar_ae, o3_sondes, aero_sondes, wv_isotopes, gbms, hatpro,'
-    #         '\n ftir, aeronet, metar,'
-    #         '\n rs_sondes, vespa, ceilometer, dir_rad_trkr, pm10, aws(p,T,RH), mms_trios, lidar_temp, skycam, gnss, '
-    #         '\n ecapac_aws_snow, ecapac_disdro_precip, ecapac_aws, ecapac_mrr, '
-    #         '\n macmap_tide_gauge, macmap_seismometer_1, macmap_seismometer_2, macmap_seismometer_3, macmap_seismometer_4, '
-    #         '\n rad_uli, rad_usi,rad_dli, rad_dsi, rad_tb, rad_par_up, rad_par_dow):')
+    # 'insert list of instruments separated by comma (choosing from: '
+    # '\n uv-vis_spec, lidar_ae, o3_sondes, aero_sondes, wv_isotopes, gbms, hatpro,'
+    # '\n ftir, aeronet, metar,'
+    # '\n rs_sondes, vespa, ceilometer, dir_rad_trkr, pm10, aws(p,T,RH), mms_trios, lidar_temp, skycam, gnss, '
+    # '\n ecapac_aws_snow, ecapac_disdro_precip, ecapac_aws, ecapac_mrr, '
+    # '\n macmap_tide_gauge, macmap_seismometer_1, macmap_seismometer_2, macmap_seismometer_3, macmap_seismometer_4, '
+    # '\n rad_uli, rad_usi,rad_dli, rad_dsi, rad_tb, rad_par_up, rad_par_dow):')
 
     print(f'These instruments are plotted (hard-coded): {ts.instr_list}')
 
     # cumulative
-    if ts.switch_gif:
+    if ts.switch_cumulative:
         plot_cumulative()
 
     # yearly
