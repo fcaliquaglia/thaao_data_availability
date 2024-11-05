@@ -280,7 +280,7 @@ def drawProgressBar(d, x, y, w, h, progress_func, bg="black", fg="red"):
     return d
 
 
-def plot_cumulative():
+def plot_cumulative_panels():
     """
 
     :return:
@@ -310,7 +310,7 @@ def plot_cumulative():
     return
 
 
-def plot_yearly():
+def plot_yearly_panels():
     """
     :return:
     """
@@ -335,7 +335,7 @@ def plot_yearly():
     return
 
 
-def plot_all():
+def plot_full_panels():
     """
 
     :return:

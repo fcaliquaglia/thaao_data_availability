@@ -28,11 +28,11 @@ from plots import *
 
 if __name__ == "__main__":
     # panel for cumulative (for gifs, by i years)
-    ts.switch_cumulative = input('Plot panels for gif? (yes/no)')
-    if ts.switch_cumulative == 'no':
-        ts.switch_cumulative = False
-    elif ts.switch_cumulative == 'yes':
-        ts.switch_cumulative = True
+    ts.switch_cumulative_panels = input('Plot panels for gif? (yes/no)')
+    if ts.switch_cumulative_panels == 'no':
+        ts.switch_cumulative_panels = False
+    elif ts.switch_cumulative_panels == 'yes':
+        ts.switch_cumulative_panels = True
         window_size = int(input('window size (in years):'))
         lag_c = int(input('lag (in months):'))  # 3  # in months
         ts.time_window_c = pd.DateOffset(years=window_size)
@@ -42,20 +42,20 @@ if __name__ == "__main__":
         ts.end_c = dt.datetime.today() + dt.timedelta(minutes=500000)
 
     # single-year panels
-    ts.switch_yearly = input('Plot single-year panels? (yes/no)')
-    if ts.switch_yearly == 'no':
-        ts.switch_yearly = False
-    elif ts.switch_yearly == 'yes':
+    ts.switch_yearly_panels = input('Plot single-year panels? (yes/no)')
+    if ts.switch_yearly_panels == 'no':
+        ts.switch_yearly_panels = False
+    elif ts.switch_yearly_panels == 'yes':
         strt_y = int(input('start year:'))
         ts.start_y = dt.datetime(strt_y, 1, 1)
         nd_y = int(input('end year:'))
         ts.end_y = dt.datetime(nd_y, 12, 31)
 
     # Full panels
-    ts.switch_all = input('Plot full panels? (yes/no)')
-    if ts.switch_all == 'no':
-        ts.switch_all = False
-    elif ts.switch_all == 'yes':
+    ts.switch_full_panels = input('Plot full panels? (yes/no)')
+    if ts.switch_full_panels == 'no':
+        ts.switch_full_panels = False
+    elif ts.switch_full_panels == 'yes':
         strt_y = int(input('start year:'))
         ts.start_a = dt.datetime(strt_y, 1, 1)
         nd_y = int(input('end year:'))
@@ -98,17 +98,17 @@ if __name__ == "__main__":
 
     print(f'These instruments are plotted (hard-coded): {ts.instr_list}')
 
-    # cumulative
-    if ts.switch_cumulative:
-        plot_cumulative()
+    # cumulative panels
+    if ts.switch_cumulative_panels:
+        plot_cumulative_panels()
 
-    # yearly
-    if ts.switch_yearly:
-        plot_yearly()
+    # yearly panels
+    if ts.switch_yearly_panels:
+        plot_yearly_panels()
 
-    # all
-    if ts.switch_all:
-        plot_all()
+    # full panels
+    if ts.switch_full_panels:
+        plot_full_panels()
 
     # os.system("cd " + os.path.join(fol_out, 'gif'))  # import ffmpeg  # os.system("ffmpeg -f image2 -framerate 1 -pattern_type glob -i 'data_avail_*-*_*_p.png' data_avail_p.mp4")
 

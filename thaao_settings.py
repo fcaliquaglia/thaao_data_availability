@@ -36,11 +36,11 @@ instr_list = ['uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'rs_sondes'
 
 # switches
 switch_campaigns = ''  # Draw field campaigns?
-switch_all = ''  # Plot full panels?
+switch_full_panels = ''  # Plot full panels?
 switch_history = ''  # Draw historical events?
-switch_yearly = ''  # Plot single-year panels?
+switch_yearly_panels = ''  # Plot single-year panels?
 switch_prog_bar = ''  # Draw progress bar?
-switch_cumulative = ''  # Plot panels for gif?
+switch_cumulative_panels = ''  # Plot panels for gif?
 
 # inputs
 start_a = ''
