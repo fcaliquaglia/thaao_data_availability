@@ -33,12 +33,12 @@ if __name__ == "__main__":
         ts.switch_cumulative = False
     elif ts.switch_cumulative == 'yes':
         ts.switch_cumulative = True
-        window_size = int(input('window size (in years):'))  # 5  # in years
+        window_size = int(input('window size (in years):'))
         lag_c = int(input('lag (in months):'))  # 3  # in months
         ts.time_window_c = pd.DateOffset(years=window_size)
         ts.time_freq_c = pd.DateOffset(months=lag_c)
         strt_y = int(input('start year:'))
-        ts.start_c = dt.datetime(strt_y, 1, 1) + ts.time_window_c  # dt.datetime(1900, 1, 1) + time_window
+        ts.start_c = dt.datetime(strt_y, 1, 1) + ts.time_window_c
         ts.end_c = dt.datetime.today() + dt.timedelta(minutes=500000)
 
     # single-year panels
@@ -51,7 +51,7 @@ if __name__ == "__main__":
         nd_y = int(input('end year:'))
         ts.end_y = dt.datetime(nd_y, 12, 31)
 
-    # complete plot
+    # Full panels
     ts.switch_all = input('Plot full panels? (yes/no)')
     if ts.switch_all == 'no':
         ts.switch_all = False
@@ -60,8 +60,8 @@ if __name__ == "__main__":
         ts.start_a = dt.datetime(strt_y, 1, 1)
         nd_y = int(input('end year:'))
         ts.end_a = dt.datetime(nd_y, 12, 31)
-        window_size = int(input('window size (in years):'))  # 5  # in years
-        lag_a = int(input('lag (in months):'))  # 6
+        window_size = int(input('window size (in years):'))
+        lag_a = int(input('lag (in months):'))
         time_window = pd.DateOffset(years=window_size)
         ts.time_freq_a = pd.DateOffset(months=lag_a)
 
