@@ -97,9 +97,6 @@ if __name__ == "__main__":
 
     year_ls = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
 
-
-
-
     tmp_rad = 0
     data_rad = pd.DataFrame()
     for yr in year_ls:
@@ -111,11 +108,7 @@ if __name__ == "__main__":
             data_rad_res = None
             print("file radiation " + str(yr) + " not available")
 
-    tls.save_mask_txt(data_rad['LW'], folder, 'rad_dli')
-    tls.save_mask_txt(data_rad['SW'], folder, 'rad_dsi')
-    tls.save_mask_txt(data_rad['TB'], folder, 'rad_tb')
-    tls.save_mask_txt(data_rad['PAR'], folder, 'rad_par_down')
-
+    # TODO: find files with upward data
     tmp_alb = 0
     data_alb = pd.DataFrame()
     for yr in year_ls:
@@ -127,43 +120,57 @@ if __name__ == "__main__":
             data_alb_res = None
             print("file albedo " + str(yr) + " not available")
 
-    tls.save_mask_txt(data_alb['ALB'], folder, 'rad_usi')
-    tls.save_mask_txt(data_rad['LW_UP'], folder, 'rad_uli')
-    tls.save_mask_txt(data_rad['PAR_UP'], folder, 'rad_par_up')
+    try:
+        tls.save_mask_txt(data_rad['LW'], folder, 'rad_dli')
+        tls.save_mask_txt(data_rad['SW'], folder, 'rad_dsi')
+        tls.save_mask_txt(data_rad['TB'], folder, 'rad_tb')
+        tls.save_mask_txt(data_rad['PAR'], folder, 'rad_par_down')
+    except IndexError:
+        print('downward values not available')
+    try:
+        tls.save_mask_txt(data_rad['SW_UP'], folder, 'rad_usi')
+        tls.save_mask_txt(data_rad['LW_UP'], folder, 'rad_uli')
+        tls.save_mask_txt(data_rad['PAR_UP'], folder, 'rad_par_up')
+    except IndexError:
+        print('upward values not available')
 
+    # TODO: the legacy data part is not working
     # old rad radiation data from DMI
-    fol_input_rad_old = os.path.join(folder, 'rad_dsi_legacy')
-    date_list = pd.date_range(dt.datetime(2000, 1, 1), dt.datetime(2011, 12, 31), freq='D').tolist()
-    rad_dsi_legacy = pd.DataFrame(columns=['dt', 'mask'])
-    for i in date_list:
-        fn = os.path.join(fol_input_rad_old, i.strftime('%Y-%m-%d') + '.globirr.thule.txt')
-        if os.path.exists(fn):
-            rad_dsi_legacy.loc[i] = [i, True]
-    np.savetxt(
-            os.path.join(fol_input_rad_old, 'rad_dsi_legacy' + '_data_avail_list.txt'), rad_dsi_legacy, fmt='%s')
+    try:
+        fol_input_rad_old = os.path.join(folder, 'rad_dsi_legacy')
+        date_list = pd.date_range(dt.datetime(2000, 1, 1), dt.datetime(2011, 12, 31), freq='D').tolist()
+        rad_dsi_legacy = pd.DataFrame(columns=['dt', 'mask'])
+        for i in date_list:
+            fn = os.path.join(fol_input_rad_old, i.strftime('%Y-%m-%d') + '.globirr.thule.txt')
+            if os.path.exists(fn):
+                rad_dsi_legacy.loc[i] = [i, True]
+        np.savetxt(
+                os.path.join(fol_input_rad_old, 'rad_dsi_legacy' + '_data_avail_list.txt'), rad_dsi_legacy, fmt='%s')
 
-    # old radiation data
-    # TODO: files missing --> ask Giorgio di Sarra??
-    fol_input_rad = os.path.join(folder, 'rad_hourly')
-    uli = pd.read_table(
-            os.path.join(fol_input_rad, 'ULI.txt'), comment='#', sep='\s+', usecols=[0, 1, 2],
-            parse_dates={'datetime': [0, 1]}, names=['date', 'time', 'rad'], header=0, index_col='datetime')
-    dli = pd.read_table(
-            os.path.join(fol_input_rad, 'DLI.txt'), comment='#', sep='\s+', usecols=[0, 1, 2],
-            parse_dates={'datetime': [0, 1]}, names=['date', 'time', 'rad'], header=0, index_col='datetime')
-    usi = pd.read_table(
-            os.path.join(fol_input_rad, 'USI.txt'), comment='#', sep='\s+', usecols=[0, 1, 2],
-            parse_dates={'datetime': [0, 1]}, names=['date', 'time', 'rad'], header=0, index_col='datetime')
-    dsi = pd.read_table(
-            os.path.join(fol_input_rad, 'DSI.txt'), comment='#', sep='\s+', usecols=[0, 1, 2],
-            parse_dates={'datetime': [0, 1]}, names=['date', 'time', 'rad'], header=0, index_col='datetime')
-    rad_dsi_legacy.columns = ['datetime', 'rad']
-    rad_dsi_legacy = rad_dsi_legacy.set_index('datetime')
-    rad_dsi_legacy = rad_dsi_legacy * 1  # setting a value
-    dsi_all = pd.concat([dsi, rad_dsi_legacy])
-    dsi_all.sort_index()
+        # old radiation data
+        # TODO: files missing --> ask Giorgio di Sarra??
+        fol_input_rad = os.path.join(folder, 'rad_hourly')
+        uli = pd.read_table(
+                os.path.join(fol_input_rad, 'ULI.txt'), comment='#', sep='\s+', usecols=[0, 1, 2],
+                parse_dates={'datetime': [0, 1]}, names=['date', 'time', 'rad'], header=0, index_col='datetime')
+        dli = pd.read_table(
+                os.path.join(fol_input_rad, 'DLI.txt'), comment='#', sep='\s+', usecols=[0, 1, 2],
+                parse_dates={'datetime': [0, 1]}, names=['date', 'time', 'rad'], header=0, index_col='datetime')
+        usi = pd.read_table(
+                os.path.join(fol_input_rad, 'USI.txt'), comment='#', sep='\s+', usecols=[0, 1, 2],
+                parse_dates={'datetime': [0, 1]}, names=['date', 'time', 'rad'], header=0, index_col='datetime')
+        dsi = pd.read_table(
+                os.path.join(fol_input_rad, 'DSI.txt'), comment='#', sep='\s+', usecols=[0, 1, 2],
+                parse_dates={'datetime': [0, 1]}, names=['date', 'time', 'rad'], header=0, index_col='datetime')
+        rad_dsi_legacy.columns = ['datetime', 'rad']
+        rad_dsi_legacy = rad_dsi_legacy.set_index('datetime')
+        rad_dsi_legacy = rad_dsi_legacy * 1  # setting a value
+        dsi_all = pd.concat([dsi, rad_dsi_legacy])
+        dsi_all.sort_index()
 
-    tls.save_mask_txt(usi, folder, 'rad_usi')
-    tls.save_mask_txt(uli, folder, 'rad_uli')
-    tls.save_mask_txt(dli, folder, 'rad_dli')
-    tls.save_mask_txt(dsi_all, folder, 'rad_dsi')
+        tls.save_mask_txt(usi, folder, 'rad_usi')
+        tls.save_mask_txt(uli, folder, 'rad_uli')
+        tls.save_mask_txt(dli, folder, 'rad_dli')
+        tls.save_mask_txt(dsi_all, folder, 'rad_dsi')
+    except:
+        print('error with legacy data 1')
