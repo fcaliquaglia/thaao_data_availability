@@ -26,6 +26,7 @@ import os
 import pandas as pd
 
 import thaao_settings as ts
+import tools as tls
 
 instr = 'vespa'
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
@@ -34,4 +35,4 @@ if __name__ == "__main__":
     vespa['dt'] = vespa['yyyy-mm-dd'].values + ' ' + vespa['HH:MM:SS'].values
     vespa.index = pd.DatetimeIndex(vespa['dt'])
 
-    ts.save_mask_txt(vespa['PWV'], instr)
+    tls.save_mask_txt(vespa['PWV'], folder, instr)

@@ -25,6 +25,7 @@ import datetime as dt
 import os
 
 import pandas as pd
+import tools as tls
 
 import thaao_settings as ts
 
@@ -63,4 +64,4 @@ if __name__ == "__main__":
     all_weekly_xr = all_weekly.to_xarray()
     all_weekly_xr.to_netcdf(os.path.join(folder, 'Meteo_weekly_all.nc'))
 
-    ts.save_mask_txt(all_weekly['Air_K'], 'aws(p,T,RH)')
+    tls.save_mask_txt(all_weekly['Air_K'], folder, 'aws(p,T,RH)')

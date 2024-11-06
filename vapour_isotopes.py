@@ -25,7 +25,7 @@ import os
 
 import numpy as np
 import pandas as pd
-
+import tools as tls
 import thaao_settings as ts
 
 instr = 'wv_isotopes'
@@ -38,4 +38,4 @@ if __name__ == "__main__":
 
     wv_isotopes = pd.concat([pd.Series(wv_isotopes_tmp.values[:, 0]), pd.Series(vals)], axis=1)
 
-    ts.save_mask_txt(wv_isotopes, instr)
+    tls.save_mask_txt(wv_isotopes, folder, instr)

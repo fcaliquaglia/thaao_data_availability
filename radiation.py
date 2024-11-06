@@ -27,7 +27,6 @@ import os
 import julian
 import numpy as np
 import pandas as pd
-import xarray as xr
 
 import thaao_settings as ts
 import tools as tls
@@ -112,12 +111,12 @@ if __name__ == "__main__":
             data_rad_res = None
             print("file radiation " + str(yr) + " not available")
 
-    tls.save_mask_txt(data_rad['LW'], 'rad_down_lw')
-    tls.save_mask_txt(data_rad['SW'], 'rad_down_sw')
-    tls.save_mask_txt(data_rad['LW_UP'], 'rad_up_lw')
-    tls.save_mask_txt(data_rad['TB'], 'rad_tb')
-    tls.save_mask_txt(data_rad['PAR_UP'], 'rad_par_up')
-    tls.save_mask_txt(data_rad['PAR_DOWN'], 'rad_par_down')
+    tls.save_mask_txt(data_rad['LW'], folder, 'rad_down_lw')
+    tls.save_mask_txt(data_rad['SW'], folder, 'rad_down_sw')
+    tls.save_mask_txt(data_rad['LW_UP'], folder, 'rad_up_lw')
+    tls.save_mask_txt(data_rad['TB'], folder, 'rad_tb')
+    tls.save_mask_txt(data_rad['PAR_UP'], folder, 'rad_par_up')
+    tls.save_mask_txt(data_rad['PAR_DOWN'], folder, 'rad_par_down')
 
     tmp_alb = 0
     data_alb = pd.DataFrame()
@@ -130,7 +129,7 @@ if __name__ == "__main__":
             data_alb_res = None
             print("file albedo " + str(yr) + " not available")
 
-    tls.save_mask_txt(data_alb['ALB'], 'rad_up_sw')
+    tls.save_mask_txt(data_alb['ALB'], folder, 'rad_up_sw')
 
     # old rad radiation data DMI availability
     fol_input_rad_old = os.path.join(folder, 'rad_dsi_legacy')
@@ -162,7 +161,7 @@ if __name__ == "__main__":
     dsi_all = pd.concat([dsi, rad_dsi_legacy])
     dsi_all.sort_index()
 
-    tls.save_mask_txt(usi, 'rad_usi')
-    tls.save_mask_txt(uli, 'rad_uli')
-    tls.save_mask_txt(dli, 'rad_dli')
-    tls.save_mask_txt(dsi_all, 'rad_dsi')
+    tls.save_mask_txt(usi, folder, 'rad_usi')
+    tls.save_mask_txt(uli, folder, 'rad_uli')
+    tls.save_mask_txt(dli, folder, 'rad_dli')
+    tls.save_mask_txt(dsi_all, folder, 'rad_dsi')

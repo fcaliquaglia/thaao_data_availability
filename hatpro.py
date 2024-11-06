@@ -27,6 +27,7 @@ import os
 import pandas as pd
 
 import thaao_settings as ts
+import tools as tls
 
 instr = 'hatpro'
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
@@ -38,4 +39,4 @@ if __name__ == "__main__":
             sep='\s+', parse_dates={'datetime': [0, 1]}, date_parser=dateparse, index_col='datetime')
     data_avail_hat.columns = ['IWV[kg/m2]', 'STD_IWV[kg/m2]', 'Num']
 
-    ts.save_mask_txt(data_avail_hat['IWV[kg/m2]'], instr)
+    tls.save_mask_txt(data_avail_hat['IWV[kg/m2]'], folder, instr)
