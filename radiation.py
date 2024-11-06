@@ -30,6 +30,7 @@ import pandas as pd
 import xarray as xr
 
 import thaao_settings as ts
+import tools as tls
 
 instr = 'rad'
 tm_res = '5min'
@@ -45,10 +46,9 @@ variables_alb = {'ALBEDO_SW': {'name': 'ALBEDO_SW', 'uom': '[unitless]'}, 'SW_UP
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 
-def read_rad(folder, date_f):
+def read_rad(date_f):
     """
     Function for reading radiation data and formatting data strings.
-    :param folder:
     :param date_f: (YYYY)
     :return: radiation data as DataFrame (pandas). Index is datetime and columns are: ['SZA', 'SW', 'LW', 'PAR', 'TB']
     """
@@ -70,10 +70,9 @@ def read_rad(folder, date_f):
     return data
 
 
-def read_alb(folder, date_f):
+def read_alb(date_f):
     """
     Function for reading albedo data and formatting data strings.
-    :param folder: input folder where to find data
     :param date_f: (YYYY)
     :return: radiation data as DataFrame (pandas). Index is datetime and columns are: ['SZA', 'SW', 'LW', 'PAR', 'TB']
     """
@@ -99,39 +98,39 @@ if __name__ == "__main__":
 
     year_ls = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
 
-    fn_rad_nc = 'radiation_stats_RAD_' + str(tm_res) + '_' + str(year_ls[0]) + '_' + str(year_ls[-1]) + '.nc'
-    fn_alb_nc = 'radiation_stats_ALB_' + str(tm_res) + '_' + str(year_ls[0]) + '_' + str(year_ls[-1]) + '.nc'
+    # fn_rad_nc = 'radiation_stats_RAD_' + str(tm_res) + '_' + str(year_ls[0]) + '_' + str(year_ls[-1]) + '.nc'
+    # fn_alb_nc = 'radiation_stats_ALB_' + str(tm_res) + '_' + str(year_ls[0]) + '_' + str(year_ls[-1]) + '.nc'
 
     tmp_rad = 0
     data_rad = xr.DataArray()
     for yr in year_ls:
         start = dt.datetime(int(yr), 1, 1)
         try:
-            data_rad_tmp = read_rad(folder, start)
+            data_rad_tmp = read_rad(start)
             data_rad = xr.concat([data_rad, data_rad], dim='datetime')
         except FileNotFoundError:
             data_rad_res = None
             print("file radiation " + str(yr) + " not available")
 
-    ts.save_mask_txt(data_rad.to_dataframe()['LW'], 'rad_down_lw')
-    ts.save_mask_txt(data_rad.to_dataframe()['SW'], 'rad_down_sw')
-    ts.save_mask_txt(data_rad.to_dataframe()['LW_UP'], 'rad_up_lw')
-    ts.save_mask_txt(data_rad.to_dataframe()['TB'], 'rad_tb')
-    ts.save_mask_txt(data_rad.to_dataframe()['PAR_UP'], 'rad_par_up')
-    ts.save_mask_txt(data_rad.to_dataframe()['PAR_DOWN'], 'rad_par_down')
+    tls.save_mask_txt(data_rad.to_dataframe()['LW'], 'rad_down_lw')
+    tls.save_mask_txt(data_rad.to_dataframe()['SW'], 'rad_down_sw')
+    tls.save_mask_txt(data_rad.to_dataframe()['LW_UP'], 'rad_up_lw')
+    tls.save_mask_txt(data_rad.to_dataframe()['TB'], 'rad_tb')
+    tls.save_mask_txt(data_rad.to_dataframe()['PAR_UP'], 'rad_par_up')
+    tls.save_mask_txt(data_rad.to_dataframe()['PAR_DOWN'], 'rad_par_down')
 
     tmp_alb = 0
     data_alb = xr.DataArray()
     for yr in year_ls:
         start = dt.datetime(int(yr), 1, 1)
         try:
-            data_alb_tmp = read_alb(folder, start)
+            data_alb_tmp = read_alb(start)
             data_alb = xr.concat([data_alb, data_alb_tmp], dim='datetime')
         except FileNotFoundError:
             data_alb_res = None
             print("file albedo " + str(yr) + " not available")
 
-    ts.save_mask_txt(data_alb.to_dataframe()['ALB'], 'rad_up_sw')
+    tls.save_mask_txt(data_alb.to_dataframe()['ALB'], 'rad_up_sw')
 
     # old rad radiation data DMI availability
     fol_input_rad_old = os.path.join(folder, 'rad_dsi_legacy')
@@ -163,7 +162,7 @@ if __name__ == "__main__":
     dsi_all = pd.concat([dsi, rad_dsi_legacy])
     dsi_all.sort_index()
 
-    ts.save_mask_txt(usi, 'rad_usi')
-    ts.save_mask_txt(uli, 'rad_uli')
-    ts.save_mask_txt(dli, 'rad_dli')
-    ts.save_mask_txt(dsi_all, 'rad_dsi')
+    tls.save_mask_txt(usi, 'rad_usi')
+    tls.save_mask_txt(uli, 'rad_uli')
+    tls.save_mask_txt(dli, 'rad_dli')
+    tls.save_mask_txt(dsi_all, 'rad_dsi')
