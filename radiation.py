@@ -55,7 +55,7 @@ def read_rad(folder, date_f):
 
     print('Reading RADIATION data for year ', date_f.strftime('%Y'))
     file_rad = os.path.join(folder, 'IRR_' + date_f.strftime('%y') + '001_' + date_f.strftime('%y') + '365_FIN.DAT')
-    rad = pd.read_table(file_rad, skiprows=None, header=0, decimal='.', delim_whitespace=True)
+    rad = pd.read_table(file_rad, skiprows=None, header=0, decimal='.', sep='\s+')
 
     tmp = np.empty(rad['JDAY_ASS'].shape, dtype=dt.datetime)
     for ii, el in enumerate(rad['JDAY_ASS']):
@@ -80,7 +80,7 @@ def read_alb(folder, date_f):
 
     print('Reading ALBEDO data for year ', date_f.strftime('%Y'))
     file_rad = os.path.join(folder, 'ALBEDO_SW_' + date_f.strftime('%Y') + '_5MIN.DAT')
-    alb = pd.read_table(file_rad, skiprows=None, header=0, decimal='.', delim_whitespace=True)
+    alb = pd.read_table(file_rad, skiprows=None, header=0, decimal='.', sep='\s+')
     tmp = np.empty(alb['JDAY_UT'].shape, dtype=dt.datetime)
     for ii, el in enumerate(alb['JDAY_UT']):
         new_jd_ass = el + julian.to_jd(dt.datetime(int(date_f.strftime('%Y')) - 1, 12, 31, 0, 0), fmt='jd')
@@ -97,7 +97,7 @@ def read_alb(folder, date_f):
 
 if __name__ == "__main__":
 
-    year_ls = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023]
+    year_ls = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
 
     fn_rad_nc = 'radiation_stats_RAD_' + str(tm_res) + '_' + str(year_ls[0]) + '_' + str(year_ls[-1]) + '.nc'
     fn_alb_nc = 'radiation_stats_ALB_' + str(tm_res) + '_' + str(year_ls[0]) + '_' + str(year_ls[-1]) + '.nc'
@@ -146,16 +146,16 @@ if __name__ == "__main__":
 
     fol_input_rad = os.path.join(folder, 'rad_hourly')
     uli = pd.read_table(
-            os.path.join(fol_input_rad, 'ULI.txt'), comment='#', delim_whitespace=True, usecols=[0, 1, 2],
+            os.path.join(fol_input_rad, 'ULI.txt'), comment='#', sep='\s+', usecols=[0, 1, 2],
             parse_dates={'datetime': [0, 1]}, names=['date', 'time', 'rad'], header=0, index_col='datetime')
     dli = pd.read_table(
-            os.path.join(fol_input_rad, 'DLI.txt'), comment='#', delim_whitespace=True, usecols=[0, 1, 2],
+            os.path.join(fol_input_rad, 'DLI.txt'), comment='#', sep='\s+', usecols=[0, 1, 2],
             parse_dates={'datetime': [0, 1]}, names=['date', 'time', 'rad'], header=0, index_col='datetime')
     usi = pd.read_table(
-            os.path.join(fol_input_rad, 'USI.txt'), comment='#', delim_whitespace=True, usecols=[0, 1, 2],
+            os.path.join(fol_input_rad, 'USI.txt'), comment='#', sep='\s+', usecols=[0, 1, 2],
             parse_dates={'datetime': [0, 1]}, names=['date', 'time', 'rad'], header=0, index_col='datetime')
     dsi = pd.read_table(
-            os.path.join(fol_input_rad, 'DSI.txt'), comment='#', delim_whitespace=True, usecols=[0, 1, 2],
+            os.path.join(fol_input_rad, 'DSI.txt'), comment='#', sep='\s+', usecols=[0, 1, 2],
             parse_dates={'datetime': [0, 1]}, names=['date', 'time', 'rad'], header=0, index_col='datetime')
     rad_dsi_legacy.columns = ['datetime', 'rad']
     rad_dsi_legacy = rad_dsi_legacy.set_index('datetime')
