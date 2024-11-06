@@ -102,35 +102,35 @@ if __name__ == "__main__":
     # fn_alb_nc = 'radiation_stats_ALB_' + str(tm_res) + '_' + str(year_ls[0]) + '_' + str(year_ls[-1]) + '.nc'
 
     tmp_rad = 0
-    data_rad = xr.DataArray()
+    data_rad = pd.DataFrame()
     for yr in year_ls:
         start = dt.datetime(int(yr), 1, 1)
         try:
             data_rad_tmp = read_rad(start)
-            data_rad = xr.concat([data_rad, data_rad], dim='datetime')
+            data_rad = pd.concat([data_rad, data_rad_tmp])
         except FileNotFoundError:
             data_rad_res = None
             print("file radiation " + str(yr) + " not available")
 
-    tls.save_mask_txt(data_rad.to_dataframe()['LW'], 'rad_down_lw')
-    tls.save_mask_txt(data_rad.to_dataframe()['SW'], 'rad_down_sw')
-    tls.save_mask_txt(data_rad.to_dataframe()['LW_UP'], 'rad_up_lw')
-    tls.save_mask_txt(data_rad.to_dataframe()['TB'], 'rad_tb')
-    tls.save_mask_txt(data_rad.to_dataframe()['PAR_UP'], 'rad_par_up')
-    tls.save_mask_txt(data_rad.to_dataframe()['PAR_DOWN'], 'rad_par_down')
+    tls.save_mask_txt(data_rad['LW'], 'rad_down_lw')
+    tls.save_mask_txt(data_rad['SW'], 'rad_down_sw')
+    tls.save_mask_txt(data_rad['LW_UP'], 'rad_up_lw')
+    tls.save_mask_txt(data_rad['TB'], 'rad_tb')
+    tls.save_mask_txt(data_rad['PAR_UP'], 'rad_par_up')
+    tls.save_mask_txt(data_rad['PAR_DOWN'], 'rad_par_down')
 
     tmp_alb = 0
-    data_alb = xr.DataArray()
+    data_alb = pd.DataFrame()
     for yr in year_ls:
         start = dt.datetime(int(yr), 1, 1)
         try:
             data_alb_tmp = read_alb(start)
-            data_alb = xr.concat([data_alb, data_alb_tmp], dim='datetime')
+            data_alb = pd.concat([data_alb, data_alb_tmp])
         except FileNotFoundError:
             data_alb_res = None
             print("file albedo " + str(yr) + " not available")
 
-    tls.save_mask_txt(data_alb.to_dataframe()['ALB'], 'rad_up_sw')
+    tls.save_mask_txt(data_alb['ALB'], 'rad_up_sw')
 
     # old rad radiation data DMI availability
     fol_input_rad_old = os.path.join(folder, 'rad_dsi_legacy')
