@@ -97,8 +97,8 @@ if __name__ == "__main__":
 
     year_ls = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
 
-    # fn_rad_nc = 'radiation_stats_RAD_' + str(tm_res) + '_' + str(year_ls[0]) + '_' + str(year_ls[-1]) + '.nc'
-    # fn_alb_nc = 'radiation_stats_ALB_' + str(tm_res) + '_' + str(year_ls[0]) + '_' + str(year_ls[-1]) + '.nc'
+
+
 
     tmp_rad = 0
     data_rad = pd.DataFrame()
@@ -113,10 +113,8 @@ if __name__ == "__main__":
 
     tls.save_mask_txt(data_rad['LW'], folder, 'rad_dli')
     tls.save_mask_txt(data_rad['SW'], folder, 'rad_dsi')
-    tls.save_mask_txt(data_rad['LW_UP'], folder, 'rad_uli')
     tls.save_mask_txt(data_rad['TB'], folder, 'rad_tb')
-    tls.save_mask_txt(data_rad['PAR_UP'], folder, 'rad_par_up')
-    tls.save_mask_txt(data_rad['PAR_DOWN'], folder, 'rad_par_down')
+    tls.save_mask_txt(data_rad['PAR'], folder, 'rad_par_down')
 
     tmp_alb = 0
     data_alb = pd.DataFrame()
@@ -130,6 +128,8 @@ if __name__ == "__main__":
             print("file albedo " + str(yr) + " not available")
 
     tls.save_mask_txt(data_alb['ALB'], folder, 'rad_usi')
+    tls.save_mask_txt(data_rad['LW_UP'], folder, 'rad_uli')
+    tls.save_mask_txt(data_rad['PAR_UP'], folder, 'rad_par_up')
 
     # old rad radiation data from DMI
     fol_input_rad_old = os.path.join(folder, 'rad_dsi_legacy')

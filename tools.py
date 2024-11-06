@@ -72,7 +72,7 @@ def save_mask_txt(data_val, fol_out, instr_nm):
 
     # Make sure interesting data fields are numeric (i.e. floats)
     data_val = data_val.apply(pd.to_numeric, errors='coerce')
-    data_val.index.floor('s').tz_localize(None)  # remove microseconds
+    data_val.index = data_val.index.ceil('s').tz_localize(None)  # remove microseconds
 
     # Create masks
     try:
