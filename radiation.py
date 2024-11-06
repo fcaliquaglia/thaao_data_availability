@@ -111,9 +111,9 @@ if __name__ == "__main__":
             data_rad_res = None
             print("file radiation " + str(yr) + " not available")
 
-    tls.save_mask_txt(data_rad['LW'], folder, 'rad_down_lw')
-    tls.save_mask_txt(data_rad['SW'], folder, 'rad_down_sw')
-    tls.save_mask_txt(data_rad['LW_UP'], folder, 'rad_up_lw')
+    tls.save_mask_txt(data_rad['LW'], folder, 'rad_dli')
+    tls.save_mask_txt(data_rad['SW'], folder, 'rad_dsi')
+    tls.save_mask_txt(data_rad['LW_UP'], folder, 'rad_uli')
     tls.save_mask_txt(data_rad['TB'], folder, 'rad_tb')
     tls.save_mask_txt(data_rad['PAR_UP'], folder, 'rad_par_up')
     tls.save_mask_txt(data_rad['PAR_DOWN'], folder, 'rad_par_down')
@@ -129,9 +129,9 @@ if __name__ == "__main__":
             data_alb_res = None
             print("file albedo " + str(yr) + " not available")
 
-    tls.save_mask_txt(data_alb['ALB'], folder, 'rad_up_sw')
+    tls.save_mask_txt(data_alb['ALB'], folder, 'rad_usi')
 
-    # old rad radiation data DMI availability
+    # old rad radiation data from DMI
     fol_input_rad_old = os.path.join(folder, 'rad_dsi_legacy')
     date_list = pd.date_range(dt.datetime(2000, 1, 1), dt.datetime(2011, 12, 31), freq='D').tolist()
     rad_dsi_legacy = pd.DataFrame(columns=['dt', 'mask'])
@@ -142,6 +142,8 @@ if __name__ == "__main__":
     np.savetxt(
             os.path.join(fol_input_rad_old, 'rad_dsi_legacy' + '_data_avail_list.txt'), rad_dsi_legacy, fmt='%s')
 
+    # old radiation data
+    # TODO: files missing --> ask Giorgio di Sarra??
     fol_input_rad = os.path.join(folder, 'rad_hourly')
     uli = pd.read_table(
             os.path.join(fol_input_rad, 'ULI.txt'), comment='#', sep='\s+', usecols=[0, 1, 2],

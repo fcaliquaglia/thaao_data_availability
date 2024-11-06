@@ -64,6 +64,7 @@ def input_file_selection(i_idx, i_list, i_name):
 def save_mask_txt(data_val, fol_out, instr_nm):
     """
 
+    :param fol_out:
     :param data_val:
     :param instr_nm:
     :return:
@@ -71,6 +72,7 @@ def save_mask_txt(data_val, fol_out, instr_nm):
 
     # Make sure interesting data fields are numeric (i.e. floats)
     data_val = data_val.apply(pd.to_numeric, errors='coerce')
+    data_val.floor('S').tz_localize(None) # remove microseconds
 
     # Create masks
     try:
