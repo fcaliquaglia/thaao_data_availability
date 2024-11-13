@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 """
-Brief description
+OK
 """
 # -------------------------------------------------------------------------------
 __author__ = "Filippo Cali' Quaglia"
@@ -19,6 +19,7 @@ import os
 import pandas as pd
 
 import thaao_settings as ts
+import tools as tls
 
 instr = 'ceilometer'
 date_list = pd.date_range(
@@ -35,4 +36,4 @@ if __name__ == "__main__":
         if os.path.exists(fn):
             ceilometer.loc[i] = [i, True]
 
-    ts.save_txt(instr, ceilometer)
+    tls.save_txt(instr, ceilometer)

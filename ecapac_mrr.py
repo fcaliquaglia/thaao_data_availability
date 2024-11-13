@@ -3,7 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
-Brief description
+OK
 """
 
 # =============================================================
@@ -26,6 +26,7 @@ import os
 import pandas as pd
 
 import thaao_settings as ts
+import tools as tls
 
 instr = 'ecapac_mrr'
 date_list = pd.date_range(
@@ -36,14 +37,14 @@ if __name__ == "__main__":
 
     ecapac_mrr = pd.DataFrame(columns=['dt', 'mask'])
 
-    # currently no real date, only estimate
-    for i in date_list:
-        ecapac_mrr.loc[i] = [i, True]
-
+    # # currently no real date, only estimate
     # for i in date_list:
-    #     fn = os.path.join(
-    #             folder, "mrr_improtoo_0.107_Thule_" + i.strftime('%Y%m%d') + ".nc")
-    #     if os.path.exists(fn):
-    #         ecapac_mrr.loc[i] = [i, True]
+    #     ecapac_mrr.loc[i] = [i, True]
 
-    ts.save_txt(instr, ecapac_mrr)
+    for i in date_list:
+        fn = os.path.join(
+                folder, 'RawSpectra', i.strftime('%Y%m'), i.strftime('%m%d') + ".raw")
+        if os.path.exists(fn):
+            ecapac_mrr.loc[i] = [i, True]
+
+    tls.save_txt(instr, ecapac_mrr)

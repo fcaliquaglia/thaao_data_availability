@@ -3,6 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
+OK
 https://github.com/NASAARSET/GEMS_AQ
 https://colab.research.google.com/drive/13V4WAnA6dhQR1o2pHXZA0Wm2-H5Xk498
 """
@@ -52,6 +53,7 @@ import requests  # useful for sending HTTP requests
 from bs4 import BeautifulSoup  # reads data from website (web scraping)
 
 import thaao_settings as ts
+import tools as tls
 
 """**Setup input parameters such as date, data level, averaging type, AOD range for mapping, AOD/Angstrom exponent, and geographical limits**"""
 
@@ -124,4 +126,4 @@ if __name__ == "__main__":
     for i in date_list:
         if i in df['Date'].values:
             aeronet.loc[i] = [i, True]
-    ts.save_txt(instr, aeronet)
+    tls.save_txt(instr, aeronet)
