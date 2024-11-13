@@ -26,7 +26,7 @@ from glob import glob
 
 import pandas as pd
 
-import thaao_settings as ts
+import settings as ts
 import tools as tls
 
 instr = 'aero_sondes'

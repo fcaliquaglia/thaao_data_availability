@@ -21,24 +21,32 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
+import datetime as dt
 import os
-from glob import glob
 
 import pandas as pd
 
-import thaao_settings as ts
+import settings as ts
 
-instr = 'uv-vis_spec'
+instr = 'macmap_tide_gauge'
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
-    uv_vis_spec = pd.DataFrame(columns=['dt', 'mask'])
 
+    dateparse = lambda x: dt.datetime.strptime(x, ' %d/%m/%Y')
+    date_converted = pd.DataFrame()
     for i in date_list:
-        fn = os.path.join(folder, 'thtc' + i.strftime('%y%m') + '.erv')
-        if glob(fn):
-            uv_vis_spec.loc[i] = [i, True]
+        try:
+            fn = os.path.join(folder, "Thule_" + i.strftime('%y%m') + ".dat")
+            list_file = pd.read_table(fn, sep='|', parse_dates={'datetime': [0]}, date_parser=dateparse)
+            date_converted = pd.concat([date_converted, list_file['datetime'].drop_duplicates()])
+        except FileNotFoundError:
+            print('file ' + str(fn) + ' not found')
 
-    ts.save_txt(instr, uv_vis_spec)
+    macmap_tide_gauge = pd.DataFrame(columns=['dt', 'mask'])
+    for i in date_list:
+        if i.strftime('%Y-%m-%d') in pd.to_datetime(date_converted.values.flatten()):
+            macmap_tide_gauge.loc[i] = [i, True]
+    ts.save_txt(instr, macmap_tide_gauge)

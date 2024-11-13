@@ -26,7 +26,7 @@ import os
 import numpy as np
 import pandas as pd
 
-import thaao_settings as ts
+import settings as ts
 
 
 def input_file_selection(i_idx, i_list, i_name):

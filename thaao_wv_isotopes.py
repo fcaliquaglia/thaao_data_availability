@@ -7,7 +7,7 @@ Brief description
 """
 
 # =============================================================
-# CREATED:
+# CREATED: 
 # AFFILIATION: INGV
 # AUTHORS: Filippo Cali' Quaglia
 # =============================================================
@@ -23,16 +23,19 @@ __lastupdate__ = "October 2024"
 
 import os
 
+import numpy as np
 import pandas as pd
-
-import thaao_settings as ts
 import tools as tls
+import settings as ts
 
-instr = 'vespa'
+instr = 'wv_isotopes'
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
-if __name__ == "__main__":
-    vespa = pd.read_table(os.path.join(folder, 'vespaIWV_July2016-Sept2022_v3.txt'), delimiter='\s+')
-    vespa['dt'] = vespa['yyyy-mm-dd'].values + ' ' + vespa['HH:MM:SS'].values
-    vespa.index = pd.DatetimeIndex(vespa['dt'])
 
-    tls.save_mask_txt(vespa['PWV'], folder, instr)
+if __name__ == "__main__":
+    fn = os.path.join(folder, 'wv_isotopes.xlsx')
+    wv_isotopes_tmp = pd.read_excel(fn)
+    vals = np.repeat(True, len(wv_isotopes_tmp))
+
+    wv_isotopes = pd.concat([pd.Series(wv_isotopes_tmp.values[:, 0]), pd.Series(vals)], axis=1)
+
+    tls.save_mask_txt(wv_isotopes, folder, instr)

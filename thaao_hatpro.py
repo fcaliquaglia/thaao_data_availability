@@ -21,21 +21,22 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
+import datetime as dt
 import os
 
-import numpy as np
 import pandas as pd
-import tools as tls
-import thaao_settings as ts
 
-instr = 'wv_isotopes'
+import settings as ts
+import tools as tls
+
+instr = 'hatpro'
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
-    fn = os.path.join(folder, 'wv_isotopes.xlsx')
-    wv_isotopes_tmp = pd.read_excel(fn)
-    vals = np.repeat(True, len(wv_isotopes_tmp))
+    dateparse = lambda x: dt.datetime.strptime(x, '%Y-%m-%d %H:%M:%S')
+    data_avail_hat = pd.read_table(
+            os.path.join(ts.basefolder, "thaao_hatpro", 'IWV_20170101_20220919.txt'), skiprows=10, header=None,
+            sep='\s+', parse_dates={'datetime': [0, 1]}, date_parser=dateparse, index_col='datetime')
+    data_avail_hat.columns = ['IWV[kg/m2]', 'STD_IWV[kg/m2]', 'Num']
 
-    wv_isotopes = pd.concat([pd.Series(wv_isotopes_tmp.values[:, 0]), pd.Series(vals)], axis=1)
-
-    tls.save_mask_txt(wv_isotopes, folder, instr)
+    tls.save_mask_txt(data_avail_hat['IWV[kg/m2]'], folder, instr)

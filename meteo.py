@@ -27,7 +27,7 @@ import os
 import pandas as pd
 import tools as tls
 
-import thaao_settings as ts
+import settings as ts
 
 instr = 'meteo'
 folder = os.path.join(ts.basefolder, "thaao_" + instr)

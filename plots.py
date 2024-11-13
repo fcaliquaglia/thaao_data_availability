@@ -35,7 +35,7 @@ from matplotlib.lines import Line2D
 from matplotlib.pyplot import cm
 from PIL import Image, ImageDraw
 
-import thaao_settings as ts
+import settings as ts
 import tools as tls
 
 dpi_fac = 2  # if increased, dpi resolution increases

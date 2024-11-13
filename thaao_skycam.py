@@ -3,7 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
-OK
+Brief description
 """
 
 # =============================================================
@@ -22,29 +22,30 @@ __status__ = "Research"
 __lastupdate__ = "October 2024"
 
 import os
+import urllib.request
 
 import pandas as pd
 
-import thaao_settings as ts
-import tools as tls
+import settings as ts
 
-instr = 'ecapac_disdro_precip'
+instr = 'skycam'
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
 
-    ecapac_disdro_precip = pd.DataFrame(columns=['dt', 'mask'])
-
-    # # currently no real date, only estimate
-    # for i in date_list:
-    #     ecapac_disdro_precip.loc[i] = [i, True]
-
+    skycam = pd.DataFrame(columns=['dt', 'mask'])
     for i in date_list:
-        fn = os.path.join(
-                folder, 'DISDRO', "DISDRO_THAAO_" + i.strftime('%Y_%m_%d') + '_00_00' + ".dat")
-        if os.path.exists(fn):
-            ecapac_disdro_precip.loc[i] = [i, True]
+        imgURL = "https://www.thuleatmos-it.it/data/skythule/data/" + i.strftime(
+                '%Y/%Y%m%d/THULE_IMAGE_%Y%m%d_') + i.strftime('%H%M') + ".jpg"
+        try:
+            urllib.request.urlopen(imgURL)
+            skycam.loc[i] = [i, True]
+            print(i)
+        except urllib.request.HTTPError as e:
+            pass
+        except urllib.request.URLError as e:
+            pass
 
-    tls.save_txt(instr, ecapac_disdro_precip)
+    ts.save_txt(instr, skycam)

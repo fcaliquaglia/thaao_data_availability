@@ -1,19 +1,12 @@
 #!/usr/local/bin/python3
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
-#
 """
 OK
 """
-
-# =============================================================
-# CREATED: 
-# AFFILIATION: INGV
-# AUTHORS: Filippo Cali' Quaglia
-# =============================================================
-#
 # -------------------------------------------------------------------------------
 __author__ = "Filippo Cali' Quaglia"
+__affiliation__ = "UNIVE, INGV"
 __credits__ = ["??????"]
 __license__ = "GPL"
 __version__ = "0.1"
@@ -25,25 +18,22 @@ import os
 
 import pandas as pd
 
-import thaao_settings as ts
+import settings as ts
 import tools as tls
 
-instr = 'ecapac_aws_snow'
+instr = 'ceilometer'
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
 
-    ecapac_aws_snow = pd.DataFrame(columns=['dt', 'mask'])
-    # # currently no real date, only estimates
-    # for i in date_list:
-    #     ecapac_aws_snow.loc[i] = [i, True]
+    ceilometer = pd.DataFrame(columns=['dt', 'mask'])
 
     for i in date_list:
         fn = os.path.join(
-                folder, "AWS_ECAPAC", "AWS_THAAO_" + i.strftime('%Y_%m_%d') + '_00_00' + ".dat")
+                folder, i.strftime('%Y%m') + "_Thule_CHM190147.nc", i.strftime('%Y%m%d') + "_Thule_CHM190147_000.nc")
         if os.path.exists(fn):
-            ecapac_aws_snow.loc[i] = [i, True]
+            ceilometer.loc[i] = [i, True]
 
-    tls.save_txt(instr, ecapac_aws_snow)
+    tls.save_txt(instr, ceilometer)

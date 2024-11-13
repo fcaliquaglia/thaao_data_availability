@@ -52,7 +52,7 @@ import pandas as pd  # for data querying and processing
 import requests  # useful for sending HTTP requests
 from bs4 import BeautifulSoup  # reads data from website (web scraping)
 
-import thaao_settings as ts
+import settings as ts
 import tools as tls
 
 """**Setup input parameters such as date, data level, averaging type, AOD range for mapping, AOD/Angstrom exponent, and geographical limits**"""

@@ -22,30 +22,23 @@ __status__ = "Research"
 __lastupdate__ = "October 2024"
 
 import os
-import urllib.request
+from glob import glob
 
 import pandas as pd
 
-import thaao_settings as ts
+import settings as ts
 
-instr = 'skycam'
+instr = 'uv-vis_spec'
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
+    uv_vis_spec = pd.DataFrame(columns=['dt', 'mask'])
 
-    skycam = pd.DataFrame(columns=['dt', 'mask'])
     for i in date_list:
-        imgURL = "https://www.thuleatmos-it.it/data/skythule/data/" + i.strftime(
-                '%Y/%Y%m%d/THULE_IMAGE_%Y%m%d_') + i.strftime('%H%M') + ".jpg"
-        try:
-            urllib.request.urlopen(imgURL)
-            skycam.loc[i] = [i, True]
-            print(i)
-        except urllib.request.HTTPError as e:
-            pass
-        except urllib.request.URLError as e:
-            pass
+        fn = os.path.join(folder, 'thtc' + i.strftime('%y%m') + '.erv')
+        if glob(fn):
+            uv_vis_spec.loc[i] = [i, True]
 
-    ts.save_txt(instr, skycam)
+    ts.save_txt(instr, uv_vis_spec)

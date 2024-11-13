@@ -26,7 +26,7 @@ import zipfile
 
 import pandas as pd
 
-import thaao_settings as ts
+import settings as ts
 
 instr = 'mms_trios'
 date_list = pd.date_range(

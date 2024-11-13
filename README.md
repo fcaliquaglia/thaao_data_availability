@@ -16,9 +16,9 @@ There are three types of plot:
   - It requires the start and end years. It plots avery years availability starting from January 1st to December 31st.
 - plot_full_panels() --> Full panels: 
 Additionally, you can specify if you want the historical events and the Italian field campaigns to be plotted.
-The instruments considered are hard coded, and you can manually modify the list in thaao_settings.py --> instr_list
+The instruments considered are hard coded, and you can manually modify the list in settings.py --> instr_list
 
-## thaao_settings.py
+## settings.py
 
 Contains list of instruments, dates of field campaigns and other relevant metadata. 
 

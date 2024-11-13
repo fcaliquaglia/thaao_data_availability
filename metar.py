@@ -27,7 +27,7 @@ from urllib.request import urlopen
 import numpy as np
 import pandas as pd
 
-import thaao_settings as ts
+import settings as ts
 
 instr = 'metar'
 

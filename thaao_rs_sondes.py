@@ -1,11 +1,15 @@
 #!/usr/local/bin/python3
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
+"""
+Reading and plotting data from EDT radiosounding.
+ATTENTION! Before plotting data you need to format the data file using the script
+C:\\Users\\FCQ\\iCloudDrive\\Documents\\bin\\thaao_rs_raw\\rs_1_convert_2022-on.py -- from 2022 onward
+C:\\Users\\FCQ\\iCloudDrive\\Documents\\bin\\thaao_rs_raw\\rs_1_convert_2021.py -- for 2021
+C:\\Users\\FCQ\\iCloudDrive\\Documents\\bin\\thaao_rs_raw\\rs_1_convert_2005-2020.py -- from 2006 to 2020
+C:\\Users\\FCQ\\iCloudDrive\\Documents\\bin\\thaao_rs_raw\\rs_1_convert_wyo.py -- from 1973 to 2005
+"""
 #
-"""
-Brief description
-"""
-
 # =============================================================
 # CREATED: 
 # AFFILIATION: INGV
@@ -26,23 +30,19 @@ from glob import glob
 
 import pandas as pd
 
-import thaao_settings as ts
+import settings as ts
 
-instr = 'o3_sondes'
+instr = 'rs_sondes'
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
-
 if __name__ == "__main__":
 
-    o3_sondes = pd.DataFrame(columns=['dt', 'mask'])
+    rs_sondes = pd.DataFrame(columns=['dt', 'mask'])
 
     for i in date_list:
-        fn = glob(os.path.join(folder, 'th' + i.strftime('%y%m%d') + '.*'))
-        try:
-            if fn[0]:
-                o3_sondes.loc[i] = [i, True]
-        except IndexError:
-            pass
+        fn = os.path.join(folder, i.strftime('%Y'), 'EDT_BGTL_' + i.strftime('%Y%m%d') + '*')
+        if glob(fn):
+            rs_sondes.loc[i] = [i, True]
 
-    ts.save_txt(instr, o3_sondes)
+    ts.save_txt(instr, rs_sondes)

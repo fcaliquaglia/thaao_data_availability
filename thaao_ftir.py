@@ -28,7 +28,7 @@ from glob import glob
 import numpy as np
 import pandas as pd
 
-import thaao_settings as ts
+import settings as ts
 import tools as tls
 
 instr = 'ftir'

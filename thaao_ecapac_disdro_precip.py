@@ -3,7 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
-Brief description
+OK
 """
 
 # =============================================================
@@ -21,32 +21,30 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
-import datetime as dt
 import os
 
 import pandas as pd
 
-import thaao_settings as ts
+import settings as ts
+import tools as tls
 
-instr = 'macmap_tide_gauge'
+instr = 'ecapac_disdro_precip'
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
 
-    dateparse = lambda x: dt.datetime.strptime(x, ' %d/%m/%Y')
-    date_converted = pd.DataFrame()
-    for i in date_list:
-        try:
-            fn = os.path.join(folder, "Thule_" + i.strftime('%y%m') + ".dat")
-            list_file = pd.read_table(fn, sep='|', parse_dates={'datetime': [0]}, date_parser=dateparse)
-            date_converted = pd.concat([date_converted, list_file['datetime'].drop_duplicates()])
-        except FileNotFoundError:
-            print('file ' + str(fn) + ' not found')
+    ecapac_disdro_precip = pd.DataFrame(columns=['dt', 'mask'])
 
-    macmap_tide_gauge = pd.DataFrame(columns=['dt', 'mask'])
+    # # currently no real date, only estimate
+    # for i in date_list:
+    #     ecapac_disdro_precip.loc[i] = [i, True]
+
     for i in date_list:
-        if i.strftime('%Y-%m-%d') in pd.to_datetime(date_converted.values.flatten()):
-            macmap_tide_gauge.loc[i] = [i, True]
-    ts.save_txt(instr, macmap_tide_gauge)
+        fn = os.path.join(
+                folder, 'DISDRO', "DISDRO_THAAO_" + i.strftime('%Y_%m_%d') + '_00_00' + ".dat")
+        if os.path.exists(fn):
+            ecapac_disdro_precip.loc[i] = [i, True]
+
+    tls.save_txt(instr, ecapac_disdro_precip)

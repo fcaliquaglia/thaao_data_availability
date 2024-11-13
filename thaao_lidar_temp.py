@@ -3,7 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
-OK
+Brief description
 """
 
 # =============================================================
@@ -22,29 +22,29 @@ __status__ = "Research"
 __lastupdate__ = "October 2024"
 
 import os
+from glob import glob
 
 import pandas as pd
 
-import thaao_settings as ts
-import tools as tls
+import settings as ts
 
-instr = 'ecapac_mrr'
+instr = 'lidar_temp'
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
 
-    ecapac_mrr = pd.DataFrame(columns=['dt', 'mask'])
-
-    # # currently no real date, only estimate
-    # for i in date_list:
-    #     ecapac_mrr.loc[i] = [i, True]
+    lidar_temp = pd.DataFrame(columns=['dt', 'mask'])
 
     for i in date_list:
-        fn = os.path.join(
-                folder, 'RawSpectra', i.strftime('%Y%m'), i.strftime('%m%d') + ".raw")
-        if os.path.exists(fn):
-            ecapac_mrr.loc[i] = [i, True]
+        if i.year <= 2020:
+            fn = os.path.join(folder, 'WWW-AIR_1685207569988', 'thte' + i.strftime('%y%m') + '.*')
+            if glob(fn):
+                lidar_temp.loc[i] = [i, True]
+        else:
+            fn = os.path.join(folder, i.strftime('%y%m%d') + '.zip')
+            if glob(fn):
+                lidar_temp.loc[i] = [i, True]
 
-    tls.save_txt(instr, ecapac_mrr)
+    ts.save_txt(instr, lidar_temp)

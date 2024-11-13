@@ -26,25 +26,23 @@ from glob import glob
 
 import pandas as pd
 
-import thaao_settings as ts
+import settings as ts
 
-instr = 'lidar_temp'
+instr = 'o3_sondes'
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
 
-    lidar_temp = pd.DataFrame(columns=['dt', 'mask'])
+    o3_sondes = pd.DataFrame(columns=['dt', 'mask'])
 
     for i in date_list:
-        if i.year <= 2020:
-            fn = os.path.join(folder, 'WWW-AIR_1685207569988', 'thte' + i.strftime('%y%m') + '.*')
-            if glob(fn):
-                lidar_temp.loc[i] = [i, True]
-        else:
-            fn = os.path.join(folder, i.strftime('%y%m%d') + '.zip')
-            if glob(fn):
-                lidar_temp.loc[i] = [i, True]
+        fn = glob(os.path.join(folder, 'th' + i.strftime('%y%m%d') + '.*'))
+        try:
+            if fn[0]:
+                o3_sondes.loc[i] = [i, True]
+        except IndexError:
+            pass
 
-    ts.save_txt(instr, lidar_temp)
+    ts.save_txt(instr, o3_sondes)
