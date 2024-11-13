@@ -60,9 +60,9 @@ if __name__ == "__main__":
         ts.start_a = dt.datetime(strt_y, 1, 1)
         nd_y = int(input('end year:'))
         ts.end_a = dt.datetime(nd_y, 12, 31)
-        window_size = int(input('window size (in years):'))
+        # window_size = int(input('window size (in years):'))
+        # time_window = pd.DateOffset(years=window_size)
         lag_a = int(input('lag (in months):'))
-        time_window = pd.DateOffset(years=window_size)
         ts.time_freq_a = pd.DateOffset(months=lag_a)
 
     # Field Campaigns

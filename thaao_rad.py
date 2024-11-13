@@ -31,6 +31,8 @@ import pandas as pd
 import settings as ts
 import tools as tls
 
+
+# TODO: separare sw and lw (and par?) perchè lo sw (e il par) ha availability diversa durante l'anno.
 instr = 'rad'
 tm_res = '5min'
 
