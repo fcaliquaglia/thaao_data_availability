@@ -139,7 +139,8 @@ def ax_style(axx, yy1, yy2, i_labs, i_length):
         myFmt = mdates.DateFormatter('%b-%Y')
     axx.xaxis.set_major_formatter(myFmt)
 
-    axx.set_xticklabels(axx.get_xticklabels(), fontsize=14)
+    #axx.set_xticks(list(np.arange(0, i_length)))
+    #axx.set_xticklabels(axx.get_xticklabels(), fontsize=14)
     axx.set_yticks(list(np.arange(0, i_length)))
     axx.set_yticklabels(i_labs)
     for ytick in axx.get_yticklabels():
@@ -245,12 +246,12 @@ def draw_progress_bar(n_dir, range_lab_f, strt_ff, end_ff, jj):
     :return:
     """
     # create image or load your existing image with out=Image.open(path)
-    out = Image.open(os.path.join(n_dir, 'data_avail_' + range_lab_f + '.png')).convert('RGBA')
+    out = Image.open(os.path.join(n_dir, 'thaao_data_avail_' + range_lab_f + '.png')).convert('RGBA')
     d = ImageDraw.Draw(out)
     # draw the progress bar to given location, width, progress and color
     progress = (jj.year - strt_ff.year) / (end_ff.year - strt_ff.year)
     d = drawProgressBar(d, 50 * dpi_fac, 180 * dpi_fac, 4300 * dpi_fac, 60 * dpi_fac, progress, 'grey', 'blue')
-    out.save(os.path.join(n_dir, f'data_avail_{range_lab_f}_p.png'))
+    out.save(os.path.join(n_dir, f'thaao_data_avail_{range_lab_f}_p.png'))
     return
 
 
@@ -297,8 +298,8 @@ def plot_cumulative_panels():
         ffig = draw_data_avail(yyyy1, yyyy2)
         plt.suptitle(
                 dt.datetime.strftime(yyyy1, '%b %Y') + ' to ' + dt.datetime.strftime(yyyy2, '%b %Y'), fontsize=20)
-        # plt.gcf().autofmt_xdate()
-        plt.savefig(os.path.join(newdir, 'data_avail_' + range_lab + '.png'), dpi=dpi, transparent=True)
+
+        plt.savefig(os.path.join(newdir, 'thaao_data_avail_' + range_lab + '.png'), dpi=dpi, transparent=True)
         plt.gca()
         plt.cla()
         gc.collect()
@@ -320,11 +321,11 @@ def plot_yearly_panels():
     j1 = j + pd.DateOffset(years=1)
     while j1 <= ts.end_y:
         print(j)
-        range_lab = dt.datetime.strftime(j, '%Y-%m')
+        range_lab = dt.datetime.strftime(j, '%Y')
         ffig = draw_data_avail(j, j1)
         plt.suptitle(dt.datetime.strftime(j, '%b-%Y') + ' to ' + dt.datetime.strftime(j1, '%b-%Y'))
         plt.gcf().autofmt_xdate()
-        plt.savefig(os.path.join(ts.da_folder, 'yearly', 'data_avail_' + range_lab + '.png'), dpi=dpi)
+        plt.savefig(os.path.join(ts.da_folder, 'yearly', 'thaao_data_avail_' + range_lab + '.png'), dpi=dpi)
         plt.gca()
         plt.cla()
         gc.collect()
@@ -352,7 +353,7 @@ def plot_full_panels():
         ffig = draw_data_avail(ts.start_a, j)
         plt.suptitle(dt.datetime.strftime(ts.start_a, '%b-%Y') + ' to ' + dt.datetime.strftime(j, '%b-%Y'))
         plt.gcf().autofmt_xdate()
-        plt.savefig(os.path.join(newdir, f'data_avail_{range_lab}.png'), dpi=dpi)
+        plt.savefig(os.path.join(newdir, f'thaao_data_avail_{range_lab}.png'), dpi=dpi)
         plt.gca()
         plt.cla()
         gc.collect()

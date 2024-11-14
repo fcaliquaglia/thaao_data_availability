@@ -28,59 +28,59 @@ from plots import *
 
 if __name__ == "__main__":
     # panel for cumulative (for gifs, by i years)
-    ts.switch_cumulative_panels = input('Plot panels for gif? (yes/no)')
+    ts.switch_cumulative_panels = input('Plot panels for gif? (yes/no)\n')
     if ts.switch_cumulative_panels == 'no':
         ts.switch_cumulative_panels = False
     elif ts.switch_cumulative_panels == 'yes':
         ts.switch_cumulative_panels = True
-        window_size = int(input('window size (in years):'))
-        lag_c = int(input('lag (in months):'))  # 3  # in months
+        window_size = int(input('window size (in years): '))
+        lag_c = int(input('lag (in months): '))  # 3  # in months
         ts.time_window_c = pd.DateOffset(years=window_size)
         ts.time_freq_c = pd.DateOffset(months=lag_c)
-        strt_y = int(input('start year:'))
+        strt_y = int(input('start year: '))
         ts.start_c = dt.datetime(strt_y, 1, 1) + ts.time_window_c
         ts.end_c = dt.datetime.today() + dt.timedelta(minutes=500000)
 
-    # single-year panels
-    ts.switch_yearly_panels = input('Plot single-year panels? (yes/no)')
+    # yearly panels
+    ts.switch_yearly_panels = input('Plot yearly panels? (yes/no)\n')
     if ts.switch_yearly_panels == 'no':
         ts.switch_yearly_panels = False
     elif ts.switch_yearly_panels == 'yes':
-        strt_y = int(input('start year:'))
+        strt_y = int(input('start year: '))
         ts.start_y = dt.datetime(strt_y, 1, 1)
-        nd_y = int(input('end year:'))
+        nd_y = int(input('end year: '))
         ts.end_y = dt.datetime(nd_y, 12, 31)
 
     # Full panels
-    ts.switch_full_panels = input('Plot full panels? (yes/no)')
+    ts.switch_full_panels = input('Plot full panels? (yes/no)\n')
     if ts.switch_full_panels == 'no':
         ts.switch_full_panels = False
     elif ts.switch_full_panels == 'yes':
-        strt_y = int(input('start year:'))
+        strt_y = int(input('start year: '))
         ts.start_a = dt.datetime(strt_y, 1, 1)
-        nd_y = int(input('end year:'))
+        nd_y = int(input('end year: '))
         ts.end_a = dt.datetime(nd_y, 12, 31)
         # window_size = int(input('window size (in years):'))
         # time_window = pd.DateOffset(years=window_size)
-        lag_a = int(input('lag (in months):'))
+        lag_a = int(input('lag (in months): '))
         ts.time_freq_a = pd.DateOffset(months=lag_a)
 
     # Field Campaigns
-    switch_campaigns = input('Draw field campaigns? (yes/no)')
+    switch_campaigns = input('Draw field campaigns? (yes/no)\n')
     if ts.switch_campaigns == 'yes':
         ts.switch_campaigns = True
     elif ts.switch_campaigns == 'no':
         ts.switch_campaigns = False
 
     # Historical events
-    ts.switch_history = input('Draw historical events? (yes/no)')
+    ts.switch_history = input('Draw historical events? (yes/no)\n')
     if ts.switch_history == 'yes':
         ts.switch_history = True
     elif ts.switch_history == 'no':
         ts.switch_history = False
 
     # Time-progress bar
-    ts.switch_prog_bar = input('Draw progress bar? (yes/no)')
+    ts.switch_prog_bar = input('Draw progress bar? (yes/no)\n')
     if ts.switch_prog_bar == 'yes':
         ts.switch_prog_bar = True
     elif ts.switch_prog_bar == 'no':
