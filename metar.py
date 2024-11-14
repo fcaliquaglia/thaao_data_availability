@@ -28,6 +28,7 @@ import numpy as np
 import pandas as pd
 
 import settings as ts
+import tools as tls
 
 instr = 'metar'
 
@@ -54,4 +55,4 @@ if __name__ == "__main__":
     # TODO: modificare usando ts.save_mask_txt
     vals = np.repeat(True, len(historical_data_metar))
     metar = pd.concat([pd.Series(historical_data_metar.index), pd.Series(vals)], axis=1)
-    ts.save_txt(instr, metar)
+    tls.save_txt(instr, metar)

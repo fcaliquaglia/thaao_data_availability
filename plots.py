@@ -138,6 +138,7 @@ def ax_style(axx, yy1, yy2, i_labs, i_length):
     else:
         myFmt = mdates.DateFormatter('%b-%Y')
     axx.xaxis.set_major_formatter(myFmt)
+
     axx.set_xticklabels(axx.get_xticklabels(), fontsize=14)
     axx.set_yticks(list(np.arange(0, i_length)))
     axx.set_yticklabels(i_labs)
@@ -318,7 +319,7 @@ def plot_yearly_panels():
     j = cp.copy(ts.start_y)
     j1 = j + pd.DateOffset(years=1)
     while j1 <= ts.end_y:
-        print(j1)
+        print(j)
         range_lab = dt.datetime.strftime(j, '%Y-%m')
         ffig = draw_data_avail(j, j1)
         plt.suptitle(dt.datetime.strftime(j, '%b-%Y') + ' to ' + dt.datetime.strftime(j1, '%b-%Y'))
