@@ -91,7 +91,7 @@ if __name__ == "__main__":
     # 'insert list of instruments separated by comma (choosing from: '
     # '\n uv-vis_spec, lidar_ae, o3_sondes, aero_sondes, wv_isotopes, gbms, hatpro,'
     # '\n ftir, aeronet, metar,'
-    # '\n rs_sondes, vespa, ceilometer, dir_rad_trkr, pm10, aws(p,T,RH), mms_trios, lidar_temp, skycam, gnss, '
+    # '\n rs_sondes, vespa, ceilometer, dir_rad_trkr, pm10, aws_vespa, mms_trios, lidar_temp, skycam, gnss, '
     # '\n ecapac_aws_snow, ecapac_disdro_precip, ecapac_aws, ecapac_mrr, '
     # '\n macmap_tide_gauge, macmap_seismometer_1, macmap_seismometer_2, macmap_seismometer_3, macmap_seismometer_4, '
     # '\n rad_uli, rad_usi,rad_dli, rad_dsi, rad_tb, rad_par_up, rad_par_dow):')
@@ -110,9 +110,7 @@ if __name__ == "__main__":
     if ts.switch_full_panels:
         plot_full_panels()
 
-    # TODO: develop composition of different pngs into a gif.
-    #  Until now, I did it manually externally from pyhton using ffmpeg from Unix terminal. See below
-    # os.system("cd " + os.path.join(fol_out, 'gif'))  # import ffmpeg  # os.system("ffmpeg -f image2 -framerate 1 -pattern_type glob -i 'data_avail_*-*_*_p.png' data_avail_p.mp4")
+    # TODO: develop composition of different pngs into a gif.  #  Until now, I did it manually externally from pyhton using ffmpeg from Unix terminal. See below  # os.system("cd " + os.path.join(fol_out, 'gif'))  # import ffmpeg  # os.system("ffmpeg -f image2 -framerate 1 -pattern_type glob -i 'data_avail_*-*_*_p.png' data_avail_p.mp4")
 
     # # create animation  # import matplotlib.pyplot as plt  # from matplotlib.animation import FuncAnimation  #  # nframes = 30  # plt.subplots_adjust(top=1, bottom=0, left=0, right=1)  #  # def animate(i):  #     im = plt.imread(os.path.join(fol_out, 'data_avail_1990-' + str(1990 + i) + '.png'))  #     plt.imshow(im)  #  #  # anim = FuncAnimation(plt.gcf(), animate, frames=nframes, interval=(2000.0 / nframes))  # anim.save(os.path.join(fol_out, 'data_avail_1990-' + str(2020) + '.gif'), writer='imagemagick')
 

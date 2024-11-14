@@ -72,38 +72,38 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
     if missing_switch == 0:
         data_val = data_val[(data_val.index >= yy1) & (data_val.index <= yy2)]
 
-        # data na
-        data_na = pd.DataFrame()
-        data_na['date'] = pd.date_range(yy1, yy2, freq='720min')
-        data_na['mask'] = np.empty(data_na['date'].shape)
-        data_na['mask'] = False
-        data_na.index = data_na['date']
-        data_na.drop(columns=['date'], inplace=True)
+    # data na
+    data_na = pd.DataFrame()
+    data_na['date'] = pd.date_range(yy1, yy2, freq='720min')
+    data_na['mask'] = np.empty(data_na['date'].shape)
+    data_na['mask'] = False
+    data_na.index = data_na['date']
+    data_na.drop(columns=['date'], inplace=True)
 
-        # excluding seasonal unavailability
-        for i, ii in enumerate(data_na.index):
-            if (ii.month > pd.Timestamp(ts.instr_metadata.get(ts.instr_list[idx])['end_seas']).month) | (
-                    ii.month < pd.Timestamp(ts.instr_metadata.get(ts.instr_list[idx])['start_seas']).month):
-                if data_na['mask'].iloc[i] != True:
-                    data_na.loc[ii, 'mask'] = True
-            else:
-                data_na.loc[ii, 'mask'] = False
-
-        # excluding instrument missing or not installed
-        for i, ii in enumerate(data_na.index):
-            if (ii < pd.Timestamp(ts.instr_metadata.get(ts.instr_list[idx])['start_instr'])) | (
-                    ii > pd.Timestamp(ts.instr_metadata.get(ts.instr_list[idx])['end_instr'])):
+    # excluding seasonal unavailability
+    for i, ii in enumerate(data_na.index):
+        if (ii.month > pd.Timestamp(ts.instr_metadata.get(ts.instr_list[idx])['end_seas']).month) | (
+                ii.month < pd.Timestamp(ts.instr_metadata.get(ts.instr_list[idx])['start_seas']).month):
+            if data_na['mask'].iloc[i] != True:
                 data_na.loc[ii, 'mask'] = True
-            else:
-                pass
+        else:
+            data_na.loc[ii, 'mask'] = False
 
-        data_na = data_na['mask'].astype('int')
-        ys_1 = np.repeat(idx, len(data_na.index[data_na == 1].values))
-        ax.errorbar(
-                data_na.index[data_na == 1].values, ys_1, xerr=None, yerr=0.3, fmt='.', color='lightgrey', capsize=0,
-                markersize=0)
+    # excluding instrument missing or not installed
+    for i, ii in enumerate(data_na.index):
+        if (ii < pd.Timestamp(ts.instr_metadata.get(ts.instr_list[idx])['start_instr'])) | (
+                ii > pd.Timestamp(ts.instr_metadata.get(ts.instr_list[idx])['end_instr'])):
+            data_na.loc[ii, 'mask'] = True
+        else:
+            pass
 
-        # plot data
+    data_na = data_na['mask'].astype('int')
+    ys_1 = np.repeat(idx, len(data_na.index[data_na == 1].values))
+    ax.errorbar(
+            data_na.index[data_na == 1].values, ys_1, xerr=None, yerr=0.3, fmt='.', color='lightgrey', capsize=0,
+            markersize=0)
+
+    # plot data
     if missing_switch == 0:
         color = cm.rainbow(np.linspace(0, 1, 40))
         color = color[idx]
@@ -139,8 +139,8 @@ def ax_style(axx, yy1, yy2, i_labs, i_length):
         myFmt = mdates.DateFormatter('%b-%Y')
     axx.xaxis.set_major_formatter(myFmt)
 
-    #axx.set_xticks(list(np.arange(0, i_length)))
-    #axx.set_xticklabels(axx.get_xticklabels(), fontsize=14)
+    # axx.set_xticks(list(np.arange(0, i_length)))
+    # axx.set_xticklabels(axx.get_xticklabels(), fontsize=14)
     axx.set_yticks(list(np.arange(0, i_length)))
     axx.set_yticklabels(i_labs)
     for ytick in axx.get_yticklabels():
@@ -317,6 +317,7 @@ def plot_yearly_panels():
     :return:
     """
     print('YEARLY')
+    newdir = os.path.join(ts.da_folder, 'yearly')
     j = cp.copy(ts.start_y)
     j1 = j + pd.DateOffset(years=1)
     while j1 <= ts.end_y:
@@ -325,7 +326,7 @@ def plot_yearly_panels():
         ffig = draw_data_avail(j, j1)
         plt.suptitle(dt.datetime.strftime(j, '%b-%Y') + ' to ' + dt.datetime.strftime(j1, '%b-%Y'))
         plt.gcf().autofmt_xdate()
-        plt.savefig(os.path.join(ts.da_folder, 'yearly', 'thaao_data_avail_' + range_lab + '.png'), dpi=dpi)
+        plt.savefig(os.path.join(newdir, 'thaao_data_avail_' + range_lab + '.png'), dpi=dpi)
         plt.gca()
         plt.cla()
         gc.collect()
@@ -342,8 +343,8 @@ def plot_full_panels():
 
     :return:
     """
-    print('ALL')
-    newdir = os.path.join(ts.da_folder, 'all', str(ts.start_a.year) + '-' + str(ts.end_a.year))
+    print('FULL')
+    newdir = os.path.join(ts.da_folder, 'full', str(ts.start_a.year) + '-' + str(ts.end_a.year))
     os.makedirs(newdir, exist_ok=True)
     j = cp.copy(ts.start_a) + ts.time_freq_a
     while j <= ts.end_a:

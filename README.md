@@ -13,14 +13,12 @@ plots.
 Contains different plot options which you can manage through the input request.
 
 There are three types of plot:
+- yearly panels
+- gif plots?
+- full panels?
 
-- `plot_cumulative_panels()` --> Panels for gif:
-- `plot_yearly_panels()` --> Yearly panels:
-    - It requires the start and end years. It plots avery years availability starting from January 1st to December 31st.
-- `plot_full_panels()` --> Full panels:
-
-Additionally, you can specify if you want the historical events and the Italian field campaigns to be plotted.
-The instruments considered are hard coded, and you can manually modify the list in `settings.py` --> instr_list
+Additionally, you can specify if you want the historical events, the Italian field campaigns and the progress bar to be plotted.
+The instruments considered are hard coded, and you can manually modify the list in `settings.py` --> settings.instr_list
 
 ## `settings.py`
 
@@ -32,3 +30,8 @@ Contains tools for saving files in specific format and some workaround for varia
 names.
 
 ## `plots.py`
+
+- `plot_cumulative_panels()` --> Panels for gif:
+- `plot_yearly_panels()` --> Yearly panels:
+    - It requires the start and end years. It plots avery years availability starting from January 1st to December 31st.
+- `plot_full_panels()` --> Full panels:
