@@ -26,6 +26,7 @@ import os
 import pandas as pd
 
 import settings as ts
+import tools as tls
 
 instr = 'skycam'
 date_list = pd.date_range(
@@ -40,6 +41,7 @@ if __name__ == "__main__":
         fn = os.path.join(
                 folder, i.strftime('%Y'), i.strftime('%m'), i.strftime('%d'), i.strftime('%Y%m%d_%H%M_raw') + ".jpg")
         if os.path.exists(fn):
+            print(fn)
             skycam.loc[i] = [i, True]
 
     # # for online checks
@@ -56,4 +58,4 @@ if __name__ == "__main__":
     #     except urllib.request.URLError as e:
     #         pass
 
-    ts.save_txt(instr, skycam)
+    tls.save_txt(instr, skycam)
