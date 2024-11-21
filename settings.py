@@ -126,7 +126,7 @@ instr_metadata = {'metar'               : {'institution': 'U.Alaska,Florence,Sto
                                            'start_seas' : dt.datetime(1900, 1, 1),
                                            'end_seas'   : dt.datetime(1900, 12, 31)},
                   'skycam'              : {'institution': 'ENEA',
-                                           'start_instr': dt.datetime(2017, 2, 1),
+                                           'start_instr': dt.datetime(2017, 1, 1),
                                            'end_instr'  : dt.datetime.today(),
                                            'start_seas' : dt.datetime(1900, 1, 1),
                                            'end_seas'   : dt.datetime(1900, 12, 31)},

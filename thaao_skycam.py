@@ -29,11 +29,12 @@ import settings as ts
 
 instr = 'skycam'
 date_list = pd.date_range(
-        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='min').tolist()
+        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='5 min').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
 
+    # TODO: rimuovere "*_stack.jpg", "*_sod.jpg",
     skycam = pd.DataFrame(columns=['dt', 'mask'])
     for i in date_list:
         fn = os.path.join(
