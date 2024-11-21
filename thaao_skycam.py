@@ -22,7 +22,6 @@ __status__ = "Research"
 __lastupdate__ = "October 2024"
 
 import os
-import urllib.request
 
 import pandas as pd
 
@@ -30,22 +29,30 @@ import settings as ts
 
 instr = 'skycam'
 date_list = pd.date_range(
-        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
+        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='min').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
 
     skycam = pd.DataFrame(columns=['dt', 'mask'])
     for i in date_list:
-        imgURL = "https://www.thuleatmos-it.it/data/skythule/data/" + i.strftime(
-                '%Y/%Y%m%d/THULE_IMAGE_%Y%m%d_') + i.strftime('%H%M') + ".jpg"
-        try:
-            urllib.request.urlopen(imgURL)
+        fn = os.path.join(
+                folder, i.strftime('%Y'), i.strftime('%m'), i.strftime('%d'), i.strftime('%Y%m%d_%H%M_raw') + ".jpg")
+        if os.path.exists(fn):
             skycam.loc[i] = [i, True]
-            print(i)
-        except urllib.request.HTTPError as e:
-            pass
-        except urllib.request.URLError as e:
-            pass
+
+    # # for online checks
+    # import urllib.request
+    # for i in date_list:
+    #     imgURL = "https://www.thuleatmos-it.it/data/skythule/data/" + i.strftime(
+    #             '%Y/%Y%m%d/THULE_IMAGE_%Y%m%d_') + i.strftime('%H%M') + ".jpg"
+    #     try:
+    #         urllib.request.urlopen(imgURL)
+    #         skycam.loc[i] = [i, True]
+    #         print(i)
+    #     except urllib.request.HTTPError as e:
+    #         pass
+    #     except urllib.request.URLError as e:
+    #         pass
 
     ts.save_txt(instr, skycam)
