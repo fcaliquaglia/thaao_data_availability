@@ -29,20 +29,32 @@ import settings as ts
 import tools as tls
 
 instr = 'skycam'
-date_list = pd.date_range(
+date_list_old = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='5 min').tolist()
+date_list_new = pd.date_range(
+        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
 
     # TODO: rimuovere "*_stack.jpg", "*_sod.jpg",
     skycam = pd.DataFrame(columns=['dt', 'mask'])
-    for i in date_list:
-        fn = os.path.join(
-                folder, i.strftime('%Y'), i.strftime('%m'), i.strftime('%d'), i.strftime('%Y%m%d_%H%M_raw') + ".jpg")
-        if os.path.exists(fn):
-            print(fn)
-            skycam.loc[i] = [i, True]
+    for i in date_list_old:
+        while i.strftime('%Y') < 2024:
+            fn = os.path.join(
+                    folder, i.strftime('%Y'), i.strftime('%m'), i.strftime('%d'),
+                    i.strftime('%Y%m%d_%H%M_raw') + ".jpg")
+            if os.path.exists(fn):
+                print(fn)
+                skycam.loc[i] = [i, True]
+    for i in date_list_old:
+        while i.strftime('%Y') >= 2024:
+            # TODO: unzip daily folders and check the content
+            fn = os.path.join(
+                    folder, i.strftime('%Y'), i.strftime('%Y%m%d'))
+            if os.path.exists(fn):
+                print(fn)
+                skycam.loc[i] = [i, True]
 
     # # for online checks
     # import urllib.request
