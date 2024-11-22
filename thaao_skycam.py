@@ -21,25 +21,12 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
-import datetime as dt
 import os
-import shutil
-import zipfile
 
 import pandas as pd
 
 import settings as ts
 import tools as tls
-
-
-def zipdir(path, ziph):
-    # ziph is zipfile handle
-    # for root, dirs, files in os.walk(path):
-    files = os.listdir(path)
-    for file in files:
-        ziph.write(
-                os.path.join(path, file), os.path.relpath(os.path.join(path, file), os.path.join(path, '..')))
-
 
 instr = 'skycam'
 date_list = pd.date_range(
@@ -47,29 +34,6 @@ date_list = pd.date_range(
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
-
-    date_list_zip = pd.date_range(dt.datetime(2017, 1, 6), dt.datetime(2024, 12, 31), freq='D').tolist()
-    folder_zip = 'D:\\thaao_skycam_nozip\\'
-    for i in date_list_zip:
-        fn = os.path.join(folder_zip, i.strftime('%Y'), i.strftime('%m'), i.strftime('%d'))
-        fn_new = os.path.join(folder_zip, i.strftime('%Y'), i.strftime('%m'), i.strftime('%Y%m%d'))
-        try:
-            shutil.copytree(fn, fn_new)
-        except FileNotFoundError as e:
-            print(e)
-            continue
-
-        try:
-            with zipfile.ZipFile(
-                    os.path.join(folder, i.strftime('%Y'), i.strftime('%Y%m%d') + '.zip'), 'w') as zipf:
-                zipdir(fn_new, zipf)
-            print(f'zipped {fn_new}')
-            try:
-                shutil.rmtree(fn_new)
-            except FileNotFoundError as e:
-                print(e)
-        except:
-            print(f'error in zipping file {fn_new}')
 
     # TODO: rimuovere "*_stack.jpg", "*_sod.jpg",
     skycam = pd.DataFrame(columns=['dt', 'mask'])

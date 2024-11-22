@@ -21,6 +21,7 @@ __email__ = "filippo.caliquaglia@gmail.com"
 __status__ = "Research"
 __lastupdate__ = ""
 
+import datetime as dt
 import ftplib
 import os
 import shutil
@@ -34,19 +35,54 @@ import settings as ts
 WEB_network = {'domain': '192.107.92.192', 'port': '21', 'user': 'ftpthule', 'pass': 'bdg1971'}
 WEB_base_folder = 'Moonglow'
 
-local = os.path.join(settings.basefolder, 'thaao_skycam')
-dest = os.path.join(settings.basefolder, 'thaao_skycam', 'tmp')
-
 instr = 'skycam'
 
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
+date_list_zip = pd.date_range(dt.datetime(2017, 1, 6), dt.datetime(2024, 12, 31), freq='D').tolist()
+folder = os.path.join(ts.basefolder, "thaao_" + instr)
+dest = os.path.join(settings.basefolder, 'thaao_skycam', 'tmp')
+folder_zip = 'D:\\thaao_skycam_nozip\\'
 
-if __name__ == "__main__":
 
+def zipdir(path, ziph):
+    # ziph is zipfile handle
+    # for root, dirs, files in os.walk(path):
+    files = os.listdir(path)
+    for file in files:
+        ziph.write(
+                os.path.join(path, file), os.path.relpath(os.path.join(path, file), os.path.join(path, '..')))
+
+
+def daily_zipping():
+    global i, fn, e, zipf
+    for i in date_list_zip:
+        fn = os.path.join(folder_zip, i.strftime('%Y'), i.strftime('%m'), i.strftime('%d'))
+        fn_new = os.path.join(folder_zip, i.strftime('%Y'), i.strftime('%m'), i.strftime('%Y%m%d'))
+        try:
+            shutil.copytree(fn, fn_new)
+        except FileNotFoundError as e:
+            print(e)
+            continue
+
+        try:
+            with zipfile.ZipFile(
+                    os.path.join(folder, i.strftime('%Y'), i.strftime('%Y%m%d') + '.zip'), 'w') as zipf:
+                zipdir(fn_new, zipf)
+            print(f'zipped {fn_new}')
+            try:
+                shutil.rmtree(fn_new)
+            except FileNotFoundError as e:
+                print(e)
+        except:
+            print(f'error in zipping file {fn_new}')
+
+
+def filename_formatting():
+    global i, zipf, e, fn
     for i in date_list:
         with zipfile.ZipFile(
-                os.path.join(local, i.strftime('%Y'), i.strftime('%Y%m%d') + '.zip')) as zipf:
+                os.path.join(folder, i.strftime('%Y'), i.strftime('%Y%m%d') + '.zip')) as zipf:
             listOfFileNames = zipf.namelist()
             # Iterate over the file names
             for fileName in listOfFileNames:
@@ -81,3 +117,9 @@ if __name__ == "__main__":
         ftp.quit()
 
         shutil.rmtree(os.path.join(dest, p[0][:8]))
+
+
+if __name__ == "__main__":
+    daily_zipping()
+
+    filename_formatting()
