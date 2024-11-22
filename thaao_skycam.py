@@ -21,6 +21,7 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
+import datetime as dt
 import os
 import shutil
 import zipfile
@@ -47,9 +48,11 @@ folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
 
-    for i in date_list:
-        fn = os.path.join(folder, i.strftime('%Y'), i.strftime('%m'), i.strftime('%d'))
-        fn_new = os.path.join(folder, i.strftime('%Y'), i.strftime('%m'), i.strftime('%Y%m%d'))
+    date_list_zip = pd.date_range(dt.datetime(2017, 1, 6), dt.datetime(2024, 12, 31), freq='D').tolist()
+    folder_zip = 'D:\\thaao_skycam_nozip\\'
+    for i in date_list_zip:
+        fn = os.path.join(folder_zip, i.strftime('%Y'), i.strftime('%m'), i.strftime('%d'))
+        fn_new = os.path.join(folder_zip, i.strftime('%Y'), i.strftime('%m'), i.strftime('%Y%m%d'))
         try:
             shutil.copytree(fn, fn_new)
         except FileNotFoundError as e:
@@ -58,8 +61,7 @@ if __name__ == "__main__":
 
         try:
             with zipfile.ZipFile(
-                    os.path.join(folder, i.strftime('%Y'), i.strftime('%Y%m%d') + '.zip'), 'w',
-                    zipfile.ZIP_DEFLATED) as zipf:
+                    os.path.join(folder, i.strftime('%Y'), i.strftime('%Y%m%d') + '.zip'), 'w') as zipf:
                 zipdir(fn_new, zipf)
             print(f'zipped {fn_new}')
             try:
@@ -72,13 +74,28 @@ if __name__ == "__main__":
     # TODO: rimuovere "*_stack.jpg", "*_sod.jpg",
     skycam = pd.DataFrame(columns=['dt', 'mask'])
     for i in date_list:
-        while i.strftime('%Y') >= 2024:
-            # TODO: unzip daily folders and check the content
-            fn = os.path.join(
-                    folder, i.strftime('%Y'), i.strftime('%Y%m%d'))
-            if os.path.exists(fn):
-                print(fn)
-                skycam.loc[i] = [i, True]
+        # TODO: unzip daily folders and check the content at 5 minutes
+        fn = os.path.join(
+                folder, i.strftime('%Y'), i.strftime('%Y%m%d'))
+        if os.path.exists(fn):
+            print(fn)
+            skycam.loc[i] = [i, True]
+
+    # aggiustare, è solo un esempio
+    # if (os.path.exists(os.path.join(folder, i.strftime('%Y-%m') + '.zip'))) & (i.month != date_list[idx - 1].month):
+    #     try:
+    #         with zipfile.ZipFile(os.path.join(folder, i.strftime('%Y-%m') + '.zip'), 'r') as myzip:
+    #             file_list = list(set([os.path.dirname(x) for x in myzip.namelist()]))
+    #             # file_list = [re.split(r'[./]', x)[0] for x in myzip.namelist()]
+    #             myzip.close()
+    #     except FileNotFoundError:
+    #         continue
+    # elif os.path.exists(os.path.join(folder, i.strftime('%Y-%m') + '.zip')):
+    #     try:
+    #         if i.strftime('%Y-%m-%d') in file_list:
+    #             mms_trios.loc[i] = [i, True]
+    #     except IndexError:
+    #         pass
 
     # # for online checks
     # import urllib.request
