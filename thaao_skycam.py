@@ -22,6 +22,7 @@ __status__ = "Research"
 __lastupdate__ = "October 2024"
 
 import os
+import zipfile
 
 import pandas as pd
 
@@ -31,6 +32,8 @@ import tools as tls
 instr = 'skycam'
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
+date_list_min = pd.date_range(
+        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='5 min').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
@@ -41,25 +44,16 @@ if __name__ == "__main__":
         # TODO: unzip daily folders and check the content at 5 minutes
         fn = os.path.join(
                 folder, i.strftime('%Y'), i.strftime('%Y%m%d'))
-        if os.path.exists(fn):
-            print(fn)
-            skycam.loc[i] = [i, True]
-
-    # aggiustare, è solo un esempio
-    # if (os.path.exists(os.path.join(folder, i.strftime('%Y-%m') + '.zip'))) & (i.month != date_list[idx - 1].month):
-    #     try:
-    #         with zipfile.ZipFile(os.path.join(folder, i.strftime('%Y-%m') + '.zip'), 'r') as myzip:
-    #             file_list = list(set([os.path.dirname(x) for x in myzip.namelist()]))
-    #             # file_list = [re.split(r'[./]', x)[0] for x in myzip.namelist()]
-    #             myzip.close()
-    #     except FileNotFoundError:
-    #         continue
-    # elif os.path.exists(os.path.join(folder, i.strftime('%Y-%m') + '.zip')):
-    #     try:
-    #         if i.strftime('%Y-%m-%d') in file_list:
-    #             mms_trios.loc[i] = [i, True]
-    #     except IndexError:
-    #         pass
+        try:
+            with zipfile.ZipFile(f'{fn}.zip', 'r') as myzip:
+                file_list = [x.split('/')[1] for x in myzip.namelist()]
+                for j in date_list_min:
+                    if j.strftime('%Y%m%d_%H%M_raw.jpg') in file_list:
+                        print(j.strftime('%Y%m%d_%H%M_raw.jpg'))
+                        skycam.loc[j] = [j, True]
+                myzip.close()
+        except FileNotFoundError as e:
+            print(e)
 
     # # for online checks
     # import urllib.request
