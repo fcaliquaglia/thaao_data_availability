@@ -41,7 +41,6 @@ if __name__ == "__main__":
     # TODO: rimuovere "*_stack.jpg", "*_sod.jpg",
     skycam = pd.DataFrame(columns=['dt', 'mask'])
     for i in date_list:
-        # TODO: unzip daily folders and check the content at 5 minutes
         fn = os.path.join(
                 folder, i.strftime('%Y'), i.strftime('%Y%m%d'))
         try:
@@ -51,7 +50,7 @@ if __name__ == "__main__":
                     if j.strftime('%Y%m%d_%H%M_raw.jpg') in file_list:
                         print(j.strftime('%Y%m%d_%H%M_raw.jpg'))
                         skycam.loc[j] = [j, True]
-                myzip.close()
+            myzip.close()
         except FileNotFoundError as e:
             print(e)
 
