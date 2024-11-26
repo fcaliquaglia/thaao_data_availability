@@ -39,7 +39,7 @@ instr = 'skycam'
 
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
-date_list_zip = pd.date_range(dt.datetime(2017, 1, 20), dt.datetime(2024, 12, 31), freq='D').tolist()
+date_list_zip = pd.date_range(dt.datetime(2019, 1, 20), dt.datetime(2024, 12, 31), freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 dest = os.path.join(settings.basefolder, 'thaao_skycam', 'tmp')
 folder_zip = 'D:\\thaao_skycam_nozip\\'
@@ -120,6 +120,5 @@ def filename_formatting():
 
 
 if __name__ == "__main__":
-
     daily_zipping()
     filename_formatting()
