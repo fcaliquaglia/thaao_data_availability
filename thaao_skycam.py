@@ -23,9 +23,7 @@ __lastupdate__ = "October 2024"
 
 import os
 import zipfile
-
 import pandas as pd
-
 import settings as ts
 import tools as tls
 
