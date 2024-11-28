@@ -37,9 +37,10 @@ WEB_base_folder = 'Moonglow'
 
 instr = 'skycam'
 
-date_list = pd.date_range(
-        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
-date_list_zip = pd.date_range(dt.datetime(2019, 1, 20), dt.datetime(2024, 12, 31), freq='D').tolist()
+# date_list = pd.date_range(
+#        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
+date_list = pd.date_range(dt.datetime(2017, 1, 1), dt.datetime(2017, 12, 31), freq='D').tolist()
+date_list_zip = pd.date_range(dt.datetime(2021, 9, 1), dt.datetime(2024, 12, 31), freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 dest = os.path.join(settings.basefolder, 'thaao_skycam', 'tmp')
 folder_zip = 'D:\\thaao_skycam_nozip\\'
@@ -81,18 +82,22 @@ def daily_zipping():
 def filename_formatting():
     global i, zipf, e, fn
     for i in date_list:
-        with zipfile.ZipFile(
-                os.path.join(folder, i.strftime('%Y'), i.strftime('%Y%m%d') + '.zip')) as zipf:
-            listOfFileNames = zipf.namelist()
+        try:
+            with zipfile.ZipFile(
+                    os.path.join(folder, i.strftime('%Y'), i.strftime('%Y%m%d') + '.zip')) as zipf:
+                listOfFileNames = zipf.namelist()
+
             # Iterate over the file names
-            for fileName in listOfFileNames:
-                # Check filename endswith csv
-                if fileName.endswith('5_raw.jpg') | fileName.endswith('0_raw.png'):
-                    # Extract a single file from zip
-                    zipf.extract(fileName, dest)
+                for fileName in listOfFileNames:
+                    # Check filename endswith csv
+                    if fileName.endswith('5_raw.jpg') | fileName.endswith('0_raw.jpg'):
+                        # Extract a single file from zip
+                        zipf.extract(fileName, dest)
 
-        p = os.listdir(os.path.join(dest, i.strftime('%Y%m%d')))
-
+            p = os.listdir(os.path.join(dest, i.strftime('%Y%m%d')))
+        except FileNotFoundError as e:
+            print(e)
+            continue
         # push data to web
         try:
             ftp = ftplib.FTP(WEB_network['domain'], WEB_network['user'], WEB_network['pass'])
@@ -120,5 +125,5 @@ def filename_formatting():
 
 
 if __name__ == "__main__":
-    daily_zipping()
+    # daily_zipping()
     filename_formatting()
