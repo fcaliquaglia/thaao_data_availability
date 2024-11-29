@@ -29,7 +29,6 @@ import zipfile
 
 import pandas as pd
 
-import settings
 import settings as ts
 
 WEB_network = {'domain': '192.107.92.192', 'port': '21', 'user': 'ftpthule', 'pass': 'bdg1971'}
@@ -39,11 +38,11 @@ instr = 'skycam'
 
 # date_list = pd.date_range(
 #        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
-date_list = pd.date_range(dt.datetime(2017, 1, 1), dt.datetime(2017, 12, 31), freq='D').tolist()
-date_list_zip = pd.date_range(dt.datetime(2021, 9, 1), dt.datetime(2024, 12, 31), freq='D').tolist()
+date_list_upload = pd.date_range(dt.datetime(2017, 1, 1), dt.datetime(2024, 1, 1), freq='D').tolist()
+date_list_zip = pd.date_range(dt.datetime(2021, 8, 1), dt.datetime(2022, 12, 31), freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
-dest = os.path.join(settings.basefolder, 'thaao_skycam', 'tmp')
 folder_zip = 'D:\\thaao_skycam_nozip\\'
+dest = os.path.join(folder_zip, 'tmp')
 
 
 def zipdir(path, ziph):
@@ -81,13 +80,13 @@ def daily_zipping():
 
 def filename_formatting():
     global i, zipf, e, fn
-    for i in date_list:
+    for i in date_list_upload:
         try:
             with zipfile.ZipFile(
                     os.path.join(folder, i.strftime('%Y'), i.strftime('%Y%m%d') + '.zip')) as zipf:
                 listOfFileNames = zipf.namelist()
 
-            # Iterate over the file names
+                # Iterate over the file names
                 for fileName in listOfFileNames:
                     # Check filename endswith csv
                     if fileName.endswith('5_raw.jpg') | fileName.endswith('0_raw.jpg'):
@@ -95,7 +94,7 @@ def filename_formatting():
                         zipf.extract(fileName, dest)
 
             p = os.listdir(os.path.join(dest, i.strftime('%Y%m%d')))
-        except FileNotFoundError as e:
+        except (FileNotFoundError, zipfile.BadZipFile) as e:
             print(e)
             continue
         # push data to web

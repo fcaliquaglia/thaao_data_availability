@@ -22,8 +22,9 @@ __status__ = "Research"
 __lastupdate__ = "October 2024"
 
 import os
-import zipfile
+
 import pandas as pd
+
 import settings as ts
 import tools as tls
 
@@ -31,7 +32,7 @@ instr = 'skycam'
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 date_list_min = pd.date_range(
-        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='5 min').tolist()
+        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='60 min').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
@@ -42,13 +43,18 @@ if __name__ == "__main__":
         fn = os.path.join(
                 folder, i.strftime('%Y'), i.strftime('%Y%m%d'))
         try:
-            with zipfile.ZipFile(f'{fn}.zip', 'r') as myzip:
-                file_list = [x.split('/')[1] for x in myzip.namelist()]
-                for j in date_list_min:
-                    if j.strftime('%Y%m%d_%H%M_raw.jpg') in file_list:
-                        print(j.strftime('%Y%m%d_%H%M_raw.jpg'))
-                        skycam.loc[j] = [j, True]
-            myzip.close()
+            # check daily folder
+            if os.path.exists(fn + '.zip'):
+                print(i)
+                skycam.loc[i] = [i, True]
+            # check at x minutes inside zip
+            # with zipfile.ZipFile(f'{fn}.zip', 'r') as myzip:
+            #     file_list = [x.split('/')[1] for x in myzip.namelist()]
+            #     for j in date_list_min:
+            #         if j.strftime('%Y%m%d_%H%M_raw.jpg') in file_list:
+            #             print(j.strftime('%Y%m%d_%H%M_raw.jpg'))
+            #             skycam.loc[j] = [j, True]
+            # myzip.close()
         except FileNotFoundError as e:
             print(e)
 
