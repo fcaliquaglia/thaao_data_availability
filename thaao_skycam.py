@@ -79,4 +79,4 @@ if __name__ == "__main__":
     #         pass
 
     tls.save_txt(instr, skycam)
-    tls.save_txt(instr, skycam, missing=True)
+    tls.save_txt(instr, skycam_missing, missing=True)
