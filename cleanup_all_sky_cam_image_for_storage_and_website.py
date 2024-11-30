@@ -38,11 +38,11 @@ instr = 'skycam'
 
 # date_list = pd.date_range(
 #        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
-date_list_upload = pd.date_range(dt.datetime(2017, 1, 1), dt.datetime(2024, 1, 1), freq='D').tolist()
-date_list_zip = pd.date_range(dt.datetime(2021, 8, 1), dt.datetime(2022, 12, 31), freq='D').tolist()
+date_list_upload = pd.date_range(dt.datetime(2017, 2, 18), dt.datetime(2024, 10, 31), freq='D').tolist()
+date_list_zip = pd.date_range(dt.datetime(2021, 11, 10), dt.datetime(2021, 12, 31), freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 folder_zip = 'D:\\thaao_skycam_nozip\\'
-dest = os.path.join(folder_zip, 'tmp')
+dest = os.path.join('C:\\Users\\FCQ\\Desktop\\', 'tmp')
 
 
 def zipdir(path, ziph):
@@ -78,7 +78,7 @@ def daily_zipping():
             print(f'error in zipping file {fn_new}')
 
 
-def filename_formatting():
+def  file_upload():
     global i, zipf, e, fn
     for i in date_list_upload:
         try:
@@ -125,4 +125,4 @@ def filename_formatting():
 
 if __name__ == "__main__":
     # daily_zipping()
-    filename_formatting()
+    file_upload()

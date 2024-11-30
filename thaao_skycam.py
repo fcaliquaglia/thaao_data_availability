@@ -22,6 +22,7 @@ __status__ = "Research"
 __lastupdate__ = "October 2024"
 
 import os
+import zipfile
 
 import pandas as pd
 
@@ -39,24 +40,29 @@ if __name__ == "__main__":
 
     # TODO: rimuovere "*_stack.jpg", "*_sod.jpg",
     skycam = pd.DataFrame(columns=['dt', 'mask'])
+    skycam_missing = pd.DataFrame(columns=['dt', 'mask'])
     for i in date_list:
         fn = os.path.join(
                 folder, i.strftime('%Y'), i.strftime('%Y%m%d'))
+        print(fn)
         try:
-            # check daily folder
-            if os.path.exists(fn + '.zip'):
-                print(i)
-                skycam.loc[i] = [i, True]
+            # # check daily folders
+            # if os.path.exists(fn + '.zip'):
+            #     print(i)
+            #     skycam.loc[i] = [i, True]
             # check at x minutes inside zip
-            # with zipfile.ZipFile(f'{fn}.zip', 'r') as myzip:
-            #     file_list = [x.split('/')[1] for x in myzip.namelist()]
-            #     for j in date_list_min:
-            #         if j.strftime('%Y%m%d_%H%M_raw.jpg') in file_list:
-            #             print(j.strftime('%Y%m%d_%H%M_raw.jpg'))
-            #             skycam.loc[j] = [j, True]
-            # myzip.close()
-        except FileNotFoundError as e:
+            with zipfile.ZipFile(f'{fn}.zip', 'r') as myzip:
+                file_list = [x.split('/')[1] for x in myzip.namelist()]
+                for j in date_list_min:
+                    if j.strftime('%Y%m%d_%H%M_raw.jpg') in file_list:
+                        # print(j.strftime('%Y%m%d_%H%M_raw.jpg'))
+                        skycam.loc[j] = [j, True]
+                    else:
+                        skycam_missing.loc[j] = [j, False]
+            myzip.close()
+        except (FileNotFoundError,zipfile.BadZipFile) as e:
             print(e)
+            print(fn)
 
     # # for online checks
     # import urllib.request
@@ -73,3 +79,4 @@ if __name__ == "__main__":
     #         pass
 
     tls.save_txt(instr, skycam)
+    tls.save_txt(instr, skycam, missing=True)

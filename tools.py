@@ -88,16 +88,22 @@ def save_mask_txt(data_val, fol_out, instr_nm):
     return
 
 
-def save_txt(instr_nm, data_val):
+def save_txt(instr_nm, data_val, missing=False):
     """
 
+    :param missing:
     :param data_val:
     :param instr_nm:
     :return:
     """
     fol_out = os.path.join(ts.basefolder, f'thaao_{instr_nm}')
 
-    print('Saving: ' + instr_nm)
-    np.savetxt(os.path.join(fol_out, f'{instr_nm}_data_avail_list.txt'), data_val, fmt='%s')
-    print('Saved ' + str(os.path.join(fol_out, instr_nm + '_data_avail_list.txt')))
+    if missing:
+        print('Saving missing: ' + instr_nm)
+        np.savetxt(os.path.join(fol_out, f'{instr_nm}_data_missing_list.txt'), data_val, fmt='%s')
+        print('Saved ' + str(os.path.join(fol_out, instr_nm + '_data_missing_list.txt')))
+    else:
+        print('Saving: ' + instr_nm)
+        np.savetxt(os.path.join(fol_out, f'{instr_nm}_data_avail_list.txt'), data_val, fmt='%s')
+        print('Saved ' + str(os.path.join(fol_out, instr_nm + '_data_avail_list.txt')))
     return
