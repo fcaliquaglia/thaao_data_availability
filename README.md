@@ -14,8 +14,8 @@ Contains different plot options which you can manage through the input request.
 
 There are three types of plot:
 - yearly panels
-- gif plots?
-- cumulative panels?
+- gif panels (for animations)
+- cumulative panels
 
 Additionally, you can specify if you want the historical events, the Italian field campaigns and the progress bar to be plotted.
 The instruments considered are hard coded, and you can manually modify the list in `settings.py` --> settings.instr_list
