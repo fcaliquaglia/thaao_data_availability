@@ -153,10 +153,10 @@ def list_files_recursive(path='.'):
 
 if __name__ == "__main__":
     # compress daily folders from hdd to the drive data storage
-    daily_zipping()
+    # daily_zipping()
 
     # upload files from the hdd (organized in daily folders) to the thule-atmos-it.it website
-    # file_upload()
+    file_upload()
 
     # reformat files from web format to hdd
     # file_from_web_to_storage()
