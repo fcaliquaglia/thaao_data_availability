@@ -36,11 +36,8 @@ WEB_base_folder = 'Moonglow'
 
 instr = 'skycam'
 
-# date_list = pd.date_range(
-#        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
-date_list_upload = pd.date_range(dt.datetime(2017, 2, 18), dt.datetime(2024, 10, 31), freq='D').tolist()
-date_list_zip = pd.date_range(dt.datetime(2021, 11, 10), dt.datetime(2021, 12, 31), freq='D').tolist()
-date_list_from_web = pd.date_range(dt.datetime(2018, 1, 1), dt.datetime(2018, 12, 31), freq='1 min').tolist()
+date_list_upload = pd.date_range(dt.datetime(2018, 1, 1), dt.datetime(2018, 12, 31), freq='D').tolist()
+date_list_zip = pd.date_range(dt.datetime(2018, 1, 1), dt.datetime(2018, 12, 31), freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 folder_zip = 'D:\\thaao_skycam_nozip\\'
 dest = os.path.join('C:\\Users\\FCQ\\Desktop\\', 'tmp')
@@ -123,27 +120,43 @@ def file_upload():
 
 
 def file_from_web_to_storage():
-    for i in date_list_from_web:
-        fn = os.path.join(
-                folder_zip, i.strftime('_%Y'), i.strftime('%Y%m%d'),
-                'THULE_IMAGE_' + i.strftime('%Y%m%d_%H%M') + '.jpg')
-        fn_new = os.path.join(
-                folder_zip, i.strftime('%Y'), i.strftime('%Y%m%d'),  i.strftime('%Y%m%d_%H%M') + '_raw.jpg')
-        try:
-            shutil.copytree(fn, fn_new)
-        except FileNotFoundError as e:
-            print(e)
-            continue
+    # Specify the directory path you want to start from
+    directory_path = os.path.join(folder_zip, '_2018\\')
+    files = list_files_recursive(directory_path)
+
+    for file in files:
+        if (file.split('\\')[-1].startswith('THULE_IMAGE_')) & (len(file.split('\\')[-1]) == 29):
+            fn_new_fold = os.path.join(folder_zip, '2018', file.split('\\')[-1][16:18], file.split('\\')[-1][18:20])
+            try:
+                os.makedirs(fn_new_fold, exist_ok=True)
+                new_dest = os.path.join(fn_new_fold, file.split('\\')[-1][12:25] + '_raw.jpg')
+                shutil.copy(file, new_dest)
+                print(new_dest)
+            except FileNotFoundError as e:
+                print(e)
+                continue
 
     return
 
 
+def list_files_recursive(path='.'):
+    cc = []
+    for entry in os.listdir(path):
+        full_path = os.path.join(path, entry)
+        if os.path.isdir(full_path):
+            for i in os.listdir(full_path):
+                cc.append(os.path.join(full_path, i))
+        else:
+            cc.append(full_path)
+    return cc
+
+
 if __name__ == "__main__":
     # compress daily folders from hdd to the drive data storage
-    # daily_zipping()
+    daily_zipping()
 
     # upload files from the hdd (organized in daily folders) to the thule-atmos-it.it website
     # file_upload()
 
     # reformat files from web format to hdd
-    file_from_web_to_storage()
+    # file_from_web_to_storage()
