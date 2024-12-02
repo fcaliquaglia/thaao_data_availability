@@ -40,6 +40,7 @@ instr = 'skycam'
 #        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 date_list_upload = pd.date_range(dt.datetime(2017, 2, 18), dt.datetime(2024, 10, 31), freq='D').tolist()
 date_list_zip = pd.date_range(dt.datetime(2021, 11, 10), dt.datetime(2021, 12, 31), freq='D').tolist()
+date_list_from_web = pd.date_range(dt.datetime(2018, 1, 1), dt.datetime(2018, 12, 31), freq='1 min').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 folder_zip = 'D:\\thaao_skycam_nozip\\'
 dest = os.path.join('C:\\Users\\FCQ\\Desktop\\', 'tmp')
@@ -55,7 +56,6 @@ def zipdir(path, ziph):
 
 
 def daily_zipping():
-    global i, fn, e, zipf
     for i in date_list_zip:
         fn = os.path.join(folder_zip, i.strftime('%Y'), i.strftime('%m'), i.strftime('%d'))
         fn_new = os.path.join(folder_zip, i.strftime('%Y'), i.strftime('%m'), i.strftime('%Y%m%d'))
@@ -78,8 +78,7 @@ def daily_zipping():
             print(f'error in zipping file {fn_new}')
 
 
-def  file_upload():
-    global i, zipf, e, fn
+def file_upload():
     for i in date_list_upload:
         try:
             with zipfile.ZipFile(
@@ -123,6 +122,28 @@ def  file_upload():
         shutil.rmtree(os.path.join(dest, p[0][:8]))
 
 
+def file_from_web_to_storage():
+    for i in date_list_from_web:
+        fn = os.path.join(
+                folder_zip, i.strftime('_%Y'), i.strftime('%Y%m%d'),
+                'THULE_IMAGE_' + i.strftime('%Y%m%d_%H%M') + '.jpg')
+        fn_new = os.path.join(
+                folder_zip, i.strftime('%Y'), i.strftime('%Y%m%d'),  i.strftime('%Y%m%d_%H%M') + '_raw.jpg')
+        try:
+            shutil.copytree(fn, fn_new)
+        except FileNotFoundError as e:
+            print(e)
+            continue
+
+    return
+
+
 if __name__ == "__main__":
+    # compress daily folders from hdd to the drive data storage
     # daily_zipping()
-    file_upload()
+
+    # upload files from the hdd (organized in daily folders) to the thule-atmos-it.it website
+    # file_upload()
+
+    # reformat files from web format to hdd
+    file_from_web_to_storage()

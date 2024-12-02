@@ -32,8 +32,6 @@ import tools as tls
 instr = 'skycam'
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
-date_list_min = pd.date_range(
-        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='60 min').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
@@ -41,28 +39,31 @@ if __name__ == "__main__":
     # TODO: rimuovere "*_stack.jpg", "*_sod.jpg",
     skycam = pd.DataFrame(columns=['dt', 'mask'])
     skycam_missing = pd.DataFrame(columns=['dt', 'mask'])
-    for i in date_list:
+    for ii, i in enumerate(date_list[:-1]):
         fn = os.path.join(
                 folder, i.strftime('%Y'), i.strftime('%Y%m%d'))
-        print(fn)
+        date_list_int = pd.date_range(
+                date_list[ii], date_list[ii+1], freq='5 min', inclusive='left').tolist()
         try:
             # # check daily folders
             # if os.path.exists(fn + '.zip'):
             #     print(i)
             #     skycam.loc[i] = [i, True]
+            # else:
+            #     skycam_missing.loc[i] = [i, False]
             # check at x minutes inside zip
             with zipfile.ZipFile(f'{fn}.zip', 'r') as myzip:
                 file_list = [x.split('/')[1] for x in myzip.namelist()]
-                for j in date_list_min:
+                for j in date_list_int:
                     if j.strftime('%Y%m%d_%H%M_raw.jpg') in file_list:
                         # print(j.strftime('%Y%m%d_%H%M_raw.jpg'))
                         skycam.loc[j] = [j, True]
                     else:
                         skycam_missing.loc[j] = [j, False]
             myzip.close()
-        except (FileNotFoundError,zipfile.BadZipFile) as e:
-            print(e)
             print(fn)
+        except (FileNotFoundError, zipfile.BadZipFile) as e:
+            print(e)
 
     # # for online checks
     # import urllib.request
