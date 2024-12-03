@@ -24,7 +24,7 @@ __lastupdate__ = ""
 import datetime as dt
 import os
 
-basefolder = os.path.join("H:\\Shared drives", "Dati")
+basefolder = os.path.join("H:\\Shared drives", "Dati_THAAO")
 da_folder = os.path.join(basefolder, 'thaao_data_availability')
 
 instr_list = ['skycam']#'uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'rs_sondes', 'gbms', 'wv_isotopes', 'metar',
