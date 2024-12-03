@@ -108,6 +108,7 @@ def save_txt(instr_nm, data_val, missing=False):
         print('Saved ' + str(os.path.join(fol_out, instr_nm + '_data_avail_list.txt')))
     return
 
+
 def zipdir(path, ziph):
     # ziph is zipfile handle
     # for root, dirs, files in os.walk(path):

@@ -31,6 +31,7 @@ import settings as ts
 import tools as tls
 
 instr = 'dir_rad_trkr'
+
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr, 'solcom')
@@ -55,8 +56,9 @@ def daily_zipping():
             continue
 
         try:
+            os.makedirs(os.path.join(folder, i.strftime('%Y')), exist_ok=True)
             with zipfile.ZipFile(
-                    os.path.join(folder, i.strftime('%Y%m%d') + '.zip'), 'w') as zipf:
+                    os.path.join(folder, i.strftime('%Y'), i.strftime('%Y%m%d') + '.zip'), 'w') as zipf:
                 tls.zipdir(fn_new, zipf)
             print(f'zipped {fn_new}')
             try:
@@ -69,7 +71,7 @@ def daily_zipping():
 
 if __name__ == "__main__":
     # for reordering old files
-    # daily_zipping()
+    daily_zipping()
 
     dir_rad_trkr = pd.DataFrame(columns=['dt', 'mask'])
     dir_rad_trkr_missing = pd.DataFrame(columns=['dt', 'mask'])
@@ -86,7 +88,6 @@ if __name__ == "__main__":
             print(fn)
         except (FileNotFoundError, zipfile.BadZipFile) as e:
             print(e)
-
 
     tls.save_txt(instr, dir_rad_trkr)
     tls.save_txt(instr, dir_rad_trkr_missing, missing=True)
