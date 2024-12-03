@@ -30,26 +30,20 @@ import zipfile
 import pandas as pd
 
 import settings as ts
+import tools as tls
 
 WEB_network = {'domain': '192.107.92.192', 'port': '21', 'user': 'ftpthule', 'pass': 'bdg1971'}
 WEB_base_folder = 'Moonglow'
 
 instr = 'skycam'
 
-date_list_upload = pd.date_range(dt.datetime(2018, 1, 1), dt.datetime(2018, 12, 31), freq='D').tolist()
-date_list_zip = pd.date_range(dt.datetime(2018, 1, 1), dt.datetime(2018, 12, 31), freq='D').tolist()
+year = 2017
+date_list_upload = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
+date_list_zip = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 folder_zip = 'D:\\thaao_skycam_nozip\\'
+folder_reformat = 'D:\\thaao_skycam_nozip\\_2019'
 dest = os.path.join('C:\\Users\\FCQ\\Desktop\\', 'tmp')
-
-
-def zipdir(path, ziph):
-    # ziph is zipfile handle
-    # for root, dirs, files in os.walk(path):
-    files = os.listdir(path)
-    for file in files:
-        ziph.write(
-                os.path.join(path, file), os.path.relpath(os.path.join(path, file), os.path.join(path, '..')))
 
 
 def daily_zipping():
@@ -58,6 +52,7 @@ def daily_zipping():
         fn_new = os.path.join(folder_zip, i.strftime('%Y'), i.strftime('%m'), i.strftime('%Y%m%d'))
         try:
             shutil.copytree(fn, fn_new)
+            print(fn_new)
         except FileNotFoundError as e:
             print(e)
             continue
@@ -65,7 +60,7 @@ def daily_zipping():
         try:
             with zipfile.ZipFile(
                     os.path.join(folder, i.strftime('%Y'), i.strftime('%Y%m%d') + '.zip'), 'w') as zipf:
-                zipdir(fn_new, zipf)
+                tls.zipdir(fn_new, zipf)
             print(f'zipped {fn_new}')
             try:
                 shutil.rmtree(fn_new)
@@ -121,12 +116,13 @@ def file_upload():
 
 def file_from_web_to_storage():
     # Specify the directory path you want to start from
-    directory_path = os.path.join(folder_zip, '_2018\\')
+    directory_path = os.path.join(folder_reformat)
     files = list_files_recursive(directory_path)
 
     for file in files:
         if (file.split('\\')[-1].startswith('THULE_IMAGE_')) & (len(file.split('\\')[-1]) == 29):
-            fn_new_fold = os.path.join(folder_zip, '2018', file.split('\\')[-1][16:18], file.split('\\')[-1][18:20])
+            fn_new_fold = os.path.join(
+                    folder_zip, file.split('\\')[-1][12:16], file.split('\\')[-1][16:18], file.split('\\')[-1][18:20])
             try:
                 os.makedirs(fn_new_fold, exist_ok=True)
                 new_dest = os.path.join(fn_new_fold, file.split('\\')[-1][12:25] + '_raw.jpg')
@@ -152,11 +148,10 @@ def list_files_recursive(path='.'):
 
 
 if __name__ == "__main__":
-    # compress daily folders from hdd to the drive data storage
-    # daily_zipping()
-
-    # upload files from the hdd (organized in daily folders) to the thule-atmos-it.it website
-    file_upload()
-
     # reformat files from web format to hdd
     # file_from_web_to_storage()
+
+    # compress daily folders from hdd to the drive data storage
+    daily_zipping()
+
+    # upload files from the hdd (organized in daily folders) to the thule-atmos-it.it website  # file_upload()

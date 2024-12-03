@@ -107,3 +107,11 @@ def save_txt(instr_nm, data_val, missing=False):
         np.savetxt(os.path.join(fol_out, f'{instr_nm}_data_avail_list.txt'), data_val, fmt='%s')
         print('Saved ' + str(os.path.join(fol_out, instr_nm + '_data_avail_list.txt')))
     return
+
+def zipdir(path, ziph):
+    # ziph is zipfile handle
+    # for root, dirs, files in os.walk(path):
+    files = os.listdir(path)
+    for file in files:
+        ziph.write(
+                os.path.join(path, file), os.path.relpath(os.path.join(path, file), os.path.join(path, '..')))
