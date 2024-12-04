@@ -38,7 +38,7 @@ if __name__ == "__main__":
     macmap_tide_gauge = pd.DataFrame(columns=['dt', 'mask'])
     macmap_tide_gauge_missing = pd.DataFrame(columns=['dt', 'mask'])
     for i in date_list:
-        fn = os.path.join(folder, "Thule_1_2_" + i.strftime('%y%m%d') + "_corr.dat")
+        fn = os.path.join(folder, i.strftime('%Y'), "Thule_1_2_" + i.strftime('%y%m%d') + "_corr.dat")
         if os.path.exists(fn):
             macmap_tide_gauge.loc[i] = [i, True]
         else:

@@ -3,7 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
-Brief description
+OK
 """
 
 # =============================================================
@@ -36,7 +36,6 @@ folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
 
-    # TODO: rimuovere "*_stack.jpg", "*_sod.jpg",
     skycam = pd.DataFrame(columns=['dt', 'mask'])
     skycam_missing = pd.DataFrame(columns=['dt', 'mask'])
     for ii, i in enumerate(date_list[:-1]):

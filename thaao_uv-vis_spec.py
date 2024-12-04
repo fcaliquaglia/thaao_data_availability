@@ -3,7 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
-Brief description
+OK
 """
 
 # =============================================================
@@ -27,6 +27,7 @@ from glob import glob
 import pandas as pd
 
 import settings as ts
+import tools as tls
 
 instr = 'uv-vis_spec'
 date_list = pd.date_range(
@@ -35,10 +36,14 @@ folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
     uv_vis_spec = pd.DataFrame(columns=['dt', 'mask'])
+    uv_vis_spec_missing = pd.DataFrame(columns=['dt', 'mask'])
 
     for i in date_list:
         fn = os.path.join(folder, 'thtc' + i.strftime('%y%m') + '.erv')
-        if glob(fn):
+        if os.path.exists(fn):
             uv_vis_spec.loc[i] = [i, True]
+        else:
+            uv_vis_spec_missing.loc[i] = [i, True]
 
-    ts.save_txt(instr, uv_vis_spec)
+    tls.save_txt(instr, uv_vis_spec)
+    tls.save_txt(instr, uv_vis_spec_missing, missing=True)

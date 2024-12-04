@@ -3,7 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
-Brief description
+OK
 """
 
 # =============================================================
@@ -27,6 +27,7 @@ from glob import glob
 import pandas as pd
 
 import settings as ts
+import tools as tls
 
 instr = 'o3_sondes'
 date_list = pd.date_range(
@@ -36,13 +37,17 @@ folder = os.path.join(ts.basefolder, "thaao_" + instr)
 if __name__ == "__main__":
 
     o3_sondes = pd.DataFrame(columns=['dt', 'mask'])
+    o3_sondes_missing = pd.DataFrame(columns=['dt', 'mask'])
 
     for i in date_list:
         fn = glob(os.path.join(folder, 'th' + i.strftime('%y%m%d') + '.*'))
         try:
-            if fn[0]:
+            if os.path.exists(fn[0]):
                 o3_sondes.loc[i] = [i, True]
+            else:
+                o3_sondes_missing.loc[i] = [i, True]
         except IndexError:
             pass
 
-    ts.save_txt(instr, o3_sondes)
+    tls.save_txt(instr, o3_sondes)
+    tls.save_txt(instr, o3_sondes_missing, missing=True)
