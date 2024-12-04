@@ -3,7 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
-Brief description
+OK
 """
 
 # =============================================================
@@ -33,10 +33,10 @@ instr = 'hatpro'
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
-    dateparse = lambda x: dt.datetime.strptime(x, '%Y-%m-%d %H:%M:%S')
+
     data_avail_hat = pd.read_table(
             os.path.join(ts.basefolder, "thaao_hatpro", 'IWV_20170101_20220919.txt'), skiprows=10, header=None,
-            sep='\s+', parse_dates={'datetime': [0, 1]}, date_parser=dateparse, index_col='datetime')
+            sep='\s+', parse_dates={'datetime': [0, 1]}, date_format='%Y-%m-%d %H:%M:%S', index_col='datetime')
     data_avail_hat.columns = ['IWV[kg/m2]', 'STD_IWV[kg/m2]', 'Num']
 
     tls.save_mask_txt(data_avail_hat['IWV[kg/m2]'], folder, instr)

@@ -27,6 +27,7 @@ from glob import glob
 import pandas as pd
 
 import settings as ts
+import tools as tls
 
 instr = 'lidar_ae'
 date_list = pd.date_range(
@@ -39,7 +40,7 @@ if __name__ == "__main__":
 
     for i in date_list:
         fn = os.path.join(folder, 'WWW-AIR_1685207569988', 'thae' + i.strftime('%y%m') + '.*')
-        if glob(fn):
+        if os.path.exists(fn):
             lidar_ae.loc[i] = [i, True]
 
-    ts.save_txt(instr, lidar_ae)
+    tls.save_txt(instr, lidar_ae)

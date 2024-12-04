@@ -3,7 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
-Brief description
+OK
 """
 
 # =============================================================
@@ -27,6 +27,7 @@ import numpy as np
 import pandas as pd
 
 import settings as ts
+import tools as tls
 
 
 if __name__ == "__main__":
@@ -47,22 +48,26 @@ if __name__ == "__main__":
                 val = str(i[0][-8:])
             date_converted.append(val)
 
-        if station == 1:
-            for man_dat in np.arange(125, 155):
-                date_converted.append('2023.' + str(man_dat))
-        if station == 2:
-            for man_dat in np.arange(113, 120):
-                date_converted.append('2023.' + str(man_dat))
-        if station == 3:
-            for man_dat in np.arange(110, 155):
-                date_converted.append('2023.' + str(man_dat))
-        if station == 4:
-            for man_dat in np.arange(113, 155):
-                date_converted.append('2023.' + str(man_dat))
+        # if station == 1:
+        #     for man_dat in np.arange(125, 155):
+        #         date_converted.append('2023.' + str(man_dat))
+        # if station == 2:
+        #     for man_dat in np.arange(113, 120):
+        #         date_converted.append('2023.' + str(man_dat))
+        # if station == 3:
+        #     for man_dat in np.arange(110, 155):
+        #         date_converted.append('2023.' + str(man_dat))
+        # if station == 4:
+        #     for man_dat in np.arange(113, 155):
+        #         date_converted.append('2023.' + str(man_dat))
 
         macmap_seismo = pd.DataFrame(columns=['dt', 'mask'])
+        macmap_seismo_missing = pd.DataFrame(columns=['dt', 'mask'])
         for i in date_list:
             if i.strftime('%Y.%j') in date_converted:
                 macmap_seismo.loc[i] = [i, True]
+            else:
+                macmap_seismo_missing.loc[i] = [i, True]
 
-        ts.save_txt(instr, macmap_seismo)
+        tls.save_txt(instr, macmap_seismo)
+        tls.save_txt(instr, macmap_seismo_missing, missing=True)

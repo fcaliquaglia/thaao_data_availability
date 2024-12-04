@@ -3,7 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
-Brief description
+# TODO:
 """
 
 # =============================================================
@@ -27,6 +27,7 @@ from glob import glob
 import pandas as pd
 
 import settings as ts
+import tools as tls
 
 instr = 'lidar_temp'
 date_list = pd.date_range(
@@ -40,11 +41,11 @@ if __name__ == "__main__":
     for i in date_list:
         if i.year <= 2020:
             fn = os.path.join(folder, 'WWW-AIR_1685207569988', 'thte' + i.strftime('%y%m') + '.*')
-            if glob(fn):
+            if os.path.exists(fn):
                 lidar_temp.loc[i] = [i, True]
         else:
             fn = os.path.join(folder, i.strftime('%y%m%d') + '.zip')
-            if glob(fn):
+            if os.path.exists(fn):
                 lidar_temp.loc[i] = [i, True]
 
-    ts.save_txt(instr, lidar_temp)
+    tls.save_txt(instr, lidar_temp)

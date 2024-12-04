@@ -3,7 +3,7 @@
 # -------------------------------------------------------------------------------
 #
 """
-Brief description
+OK
 """
 
 # =============================================================
@@ -21,12 +21,12 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
-import datetime as dt
 import os
 
 import pandas as pd
 
 import settings as ts
+import tools as tls
 
 instr = 'macmap_tide_gauge'
 date_list = pd.date_range(
@@ -35,18 +35,15 @@ folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
 
-    dateparse = lambda x: dt.datetime.strptime(x, ' %d/%m/%Y')
-    date_converted = pd.DataFrame()
+    macmap_tide_gauge = pd.DataFrame(columns=['dt', 'mask'])
+    macmap_tide_gauge_missing = pd.DataFrame(columns=['dt', 'mask'])
     for i in date_list:
-        try:
-            fn = os.path.join(folder, "Thule_" + i.strftime('%y%m') + ".dat")
-            list_file = pd.read_table(fn, sep='|', parse_dates={'datetime': [0]}, date_parser=dateparse)
-            date_converted = pd.concat([date_converted, list_file['datetime'].drop_duplicates()])
-        except FileNotFoundError:
+        fn = os.path.join(folder, "Thule_1_2_" + i.strftime('%y%m%d') + "_corr.dat")
+        if os.path.exists(fn):
+            macmap_tide_gauge.loc[i] = [i, True]
+        else:
+            macmap_tide_gauge_missing.loc[i] = [i, True]
             print('file ' + str(fn) + ' not found')
 
-    macmap_tide_gauge = pd.DataFrame(columns=['dt', 'mask'])
-    for i in date_list:
-        if i.strftime('%Y-%m-%d') in pd.to_datetime(date_converted.values.flatten()):
-            macmap_tide_gauge.loc[i] = [i, True]
-    ts.save_txt(instr, macmap_tide_gauge)
+    tls.save_txt(instr, macmap_tide_gauge)
+    tls.save_txt(instr, macmap_tide_gauge_missing, missing=True)
