@@ -40,7 +40,7 @@ if __name__ == "__main__":
     vespa_dt = pd.read_table(os.path.join(folder, 'vespaPWVClearSky.txt'), delimiter='\s+')
     vespa_dt['dt'] = vespa_dt['yyyy-mm-dd'].values + ' ' + vespa_dt['HH:MM:SS'].values
     # rounding datetime index to hour
-    vespa_dt.index = pd.DatetimeIndex(vespa_dt['dt']).round('H')
+    vespa_dt.index = pd.DatetimeIndex(vespa_dt['dt']).round('h')
 
     for i in date_list:
         if i in vespa_dt.index:
