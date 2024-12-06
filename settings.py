@@ -156,7 +156,7 @@ instr_metadata = {'metar'               : {'institution': 'U.Alaska,Florence,Sto
                                            'start_seas' : dt.datetime(1900, 1, 1),
                                            'end_seas'   : dt.datetime(1900, 12, 31)},
                   'wv_isotopes'         : {'institution': 'U.Alaska,Florence,StonyBrook/USSF',
-                                           'start_instr': dt.datetime(2017, 8, 1),
+                                           'start_instr': dt.datetime(2011, 6, 1),
                                            'end_instr'  : dt.datetime(2019, 12, 31),
                                            'start_seas' : dt.datetime(1900, 1, 1),
                                            'end_seas'   : dt.datetime(1900, 12, 31)},
