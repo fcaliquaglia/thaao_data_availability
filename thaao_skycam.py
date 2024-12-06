@@ -32,7 +32,7 @@ import tools as tls
 instr = 'skycam'
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
-folder = os.path.join(ts.basefolder, "thaao_" + instr)
+folder = os.path.join(ts.basefolder_skycam, "thaao_" + instr)
 
 if __name__ == "__main__":
 

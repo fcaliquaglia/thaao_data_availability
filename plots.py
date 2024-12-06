@@ -36,6 +36,7 @@ from matplotlib.pyplot import cm
 from PIL import Image, ImageDraw
 
 import settings as ts
+import switches as sw
 import tools as tls
 
 dpi_fac = 2  # if increased, dpi resolution increases
@@ -207,9 +208,9 @@ def draw_data_avail(a1, a2):
     for instr_idx, instr_name in enumerate(ts.instr_list):
         inp_file, i_labs = tls.input_file_selection(instr_idx, i_labs, instr_name)
         plot_data_avail(ax, inp_file, a1, a2, instr_idx)
-    if ts.switch_history:
+    if sw.switch_history:
         draw_events(ax, a1, a2)
-    if ts.switch_campaigns:
+    if sw.switch_campaigns:
         draw_campaigns(ax, a1, a2)
     ax_style(ax, a1, a2, i_labs, len(i_labs))
     ax_style(ax2, a1, a2, i_labs, len(i_labs))
@@ -305,7 +306,7 @@ def plot_cumulative_panels():
         gc.collect()
         plt.close(ffig)
 
-        if ts.switch_prog_bar:
+        if sw.switch_prog_bar:
             draw_progress_bar(newdir, range_lab, ts.start_c, ts.end_c, j)
 
         j += ts.time_freq_c
