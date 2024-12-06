@@ -42,7 +42,7 @@ if __name__ == "__main__":
         fn = os.path.join(
                 folder, i.strftime('%Y'), i.strftime('%Y%m%d'))
         date_list_int = pd.date_range(
-                date_list[ii], date_list[ii+1], freq='5 min', inclusive='left').tolist()
+                date_list[ii], date_list[ii + 1], freq='5 min', inclusive='left').tolist()
         try:
             # # check daily folders
             # if os.path.exists(fn + '.zip'):

@@ -35,11 +35,11 @@ if __name__ == "__main__":
         sw.switch_cumulative_panels = True
         window_size = int(input('window size (in years): '))
         lag_c = int(input('lag (in months): '))  # 3  # in months
-        ts.time_window_c = pd.DateOffset(years=window_size)
-        ts.time_freq_c = pd.DateOffset(months=lag_c)
+        sw.time_window_c = pd.DateOffset(years=window_size)
+        sw.time_freq_c = pd.DateOffset(months=lag_c)
         strt_y = int(input('start year: '))
-        ts.start_c = dt.datetime(strt_y, 1, 1) + ts.time_window_c
-        ts.end_c = dt.datetime.today() + dt.timedelta(minutes=500000)
+        sw.start_c = dt.datetime(strt_y, 1, 1) + sw.time_window_c
+        sw.end_c = dt.datetime.today() + dt.timedelta(minutes=500000)
 
     # yearly panels
     sw.switch_yearly_panels = input('Plot yearly panels? (yes/no)\n')
@@ -47,9 +47,9 @@ if __name__ == "__main__":
         sw.switch_yearly_panels = False
     elif sw.switch_yearly_panels == 'yes':
         strt_y = int(input('start year: '))
-        ts.start_y = dt.datetime(strt_y, 1, 1)
+        sw.start_y = dt.datetime(strt_y, 1, 1)
         nd_y = int(input('end year: '))
-        ts.end_y = dt.datetime(nd_y, 12, 31)
+        sw.end_y = dt.datetime(nd_y, 12, 31)
 
     # Full panels
     sw.switch_full_panels = input('Plot full panels? (yes/no)\n')
@@ -57,13 +57,13 @@ if __name__ == "__main__":
         sw.switch_full_panels = False
     elif sw.switch_full_panels == 'yes':
         strt_y = int(input('start year: '))
-        ts.start_a = dt.datetime(strt_y, 1, 1)
+        sw.start_a = dt.datetime(strt_y, 1, 1)
         nd_y = int(input('end year: '))
-        ts.end_a = dt.datetime(nd_y, 12, 31)
+        sw.end_a = dt.datetime(nd_y, 12, 31)
         # window_size = int(input('window size (in years):'))
         # time_window = pd.DateOffset(years=window_size)
         lag_a = int(input('lag (in months): '))
-        ts.time_freq_a = pd.DateOffset(months=lag_a)
+        sw.time_freq_a = pd.DateOffset(months=lag_a)
 
     # Field Campaigns
     switch_campaigns = input('Draw field campaigns? (yes/no)\n')

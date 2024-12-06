@@ -289,11 +289,11 @@ def plot_cumulative_panels():
     :return:
     """
     print('CUMULATIVE')
-    newdir = os.path.join(ts.da_folder, 'gif', f'{ts.start_c.year}-{ts.end_c.year}')
+    newdir = os.path.join(ts.da_folder, 'gif', f'{sw.start_c.year}-{sw.end_c.year}')
     os.makedirs(newdir, exist_ok=True)
-    j = cp.copy(ts.start_c)
-    while j + ts.time_window_c <= ts.end_c + ts.time_window_c:
-        yyyy1, yyyy2 = (j - ts.time_window_c, j)
+    j = cp.copy(sw.start_c)
+    while j + sw.time_window_c <= sw.end_c + sw.time_window_c:
+        yyyy1, yyyy2 = (j - sw.time_window_c, j)
         range_lab = dt.datetime.strftime(yyyy1, '%Y%m') + '_' + dt.datetime.strftime(yyyy2, '%Y%m')
         print(range_lab)
         ffig = draw_data_avail(yyyy1, yyyy2)
@@ -307,9 +307,9 @@ def plot_cumulative_panels():
         plt.close(ffig)
 
         if sw.switch_prog_bar:
-            draw_progress_bar(newdir, range_lab, ts.start_c, ts.end_c, j)
+            draw_progress_bar(newdir, range_lab, sw.start_c, sw.end_c, j)
 
-        j += ts.time_freq_c
+        j += sw.time_freq_c
     return
 
 
@@ -319,9 +319,9 @@ def plot_yearly_panels():
     """
     print('YEARLY')
     newdir = os.path.join(ts.da_folder, 'yearly')
-    j = cp.copy(ts.start_y)
+    j = cp.copy(sw.start_y)
     j1 = j + pd.DateOffset(years=1)
-    while j1 <= ts.end_y:
+    while j1 <= sw.end_y:
         print(j)
         range_lab = dt.datetime.strftime(j, '%Y')
         ffig = draw_data_avail(j, j1)
@@ -345,21 +345,21 @@ def plot_full_panels():
     :return:
     """
     print('FULL')
-    newdir = os.path.join(ts.da_folder, 'full', str(ts.start_a.year) + '-' + str(ts.end_a.year))
+    newdir = os.path.join(ts.da_folder, 'full', str(sw.start_a.year) + '-' + str(sw.end_a.year))
     os.makedirs(newdir, exist_ok=True)
-    j = cp.copy(ts.start_a) + ts.time_freq_a
-    while j <= ts.end_a:
-        yyyy1, yyyy2 = (ts.start_a, j)
+    j = cp.copy(sw.start_a) + sw.time_freq_a
+    while j <= sw.end_a:
+        yyyy1, yyyy2 = (sw.start_a, j)
         range_lab = dt.datetime.strftime(yyyy1, '%Y%m') + '_' + dt.datetime.strftime(yyyy2, '%Y%m')
         print(range_lab)
-        ffig = draw_data_avail(ts.start_a, j)
-        plt.suptitle(dt.datetime.strftime(ts.start_a, '%b-%Y') + ' to ' + dt.datetime.strftime(j, '%b-%Y'))
+        ffig = draw_data_avail(sw.start_a, j)
+        plt.suptitle(dt.datetime.strftime(sw.start_a, '%b-%Y') + ' to ' + dt.datetime.strftime(j, '%b-%Y'))
         plt.gcf().autofmt_xdate()
         plt.savefig(os.path.join(newdir, f'thaao_data_avail_{range_lab}.png'), dpi=dpi)
         plt.gca()
         plt.cla()
         gc.collect()
         plt.close(ffig)
-        j += ts.time_freq_a
+        j += sw.time_freq_a
 
     return
