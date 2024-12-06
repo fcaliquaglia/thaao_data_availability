@@ -15,7 +15,7 @@ Contains different plot options which you can manage through the input request.
 There are three types of plot:
 - yearly panels
 - gif panels (for animations)
-- cumulative panels
+- rolling panels
 
 Additionally, you can specify if you want the historical events, the Italian field campaigns and the progress bar to be plotted.
 The instruments considered are hard coded, and you can manually modify the list in `settings.py` --> settings.instr_list
@@ -31,7 +31,7 @@ names.
 
 ## `plots.py`
 
-- `plot_cumulative_panels()` --> Panels for gif:
+- `plot_rolling_panels()` --> Panels for gif:
 - `plot_yearly_panels()` --> Yearly panels:
     - It requires the start and end years. It plots avery years availability starting from January 1st to December 31st.
-- `plot_cumulative_panels()` --> Full panels:
+- `plot_rolling_panels()` --> Full panels:

@@ -27,12 +27,12 @@ from plots import *
 import switches as sw
 
 if __name__ == "__main__":
-    # panel for cumulative (for gifs, by i years)
-    switch_cumulative_panels = input('Plot cumulative panels (for gif?) (yes/no)\n')
-    if switch_cumulative_panels == 'no':
-        sw.switch_cumulative_panels = False
-    elif switch_cumulative_panels == 'yes':
-        sw.switch_cumulative_panels = True
+    # panel for rolling (for gifs, by i years)
+    switch_rolling_panels = input('Plot rolling panels (yes/no)\n')
+    if switch_rolling_panels == 'no':
+        sw.switch_rolling_panels = False
+    elif switch_rolling_panels == 'yes':
+        sw.switch_rolling_panels = True
         window_size = int(input('window size (in years): '))
         lag_c = int(input('lag (in months): '))  # 3  # in months
         sw.time_window_c = pd.DateOffset(years=window_size)
@@ -53,10 +53,10 @@ if __name__ == "__main__":
         sw.end_y = dt.datetime(nd_y, 12, 31)
 
     # Full panels
-    switch_full_panels = input('Plot full panels? (yes/no)\n')
-    if switch_full_panels == 'no':
-        sw.switch_full_panels = False
-    elif switch_full_panels == 'yes':
+    switch_cumulative_panels = input('Plot cumulative panels? (yes/no)\n')
+    if switch_cumulative_panels == 'no':
+        sw.switch_cumulative_panels = False
+    elif switch_cumulative_panels == 'yes':
         sw.switch_yearly_panels = True
         strt_y = int(input('start year: '))
         sw.start_a = dt.datetime(strt_y, 1, 1)
@@ -100,17 +100,17 @@ if __name__ == "__main__":
 
     print(f'These instruments are plotted (hard-coded): {ts.instr_list}')
 
-    # cumulative panels
-    if sw.switch_cumulative_panels:
-        plot_cumulative_panels()
+    # rolling panels
+    if sw.switch_rolling_panels:
+        plot_rolling_panels()
 
     # yearly panels
     if sw.switch_yearly_panels:
         plot_yearly_panels()
 
-    # full panels
-    if sw.switch_full_panels:
-        plot_full_panels()
+    # cumulative panels
+    if sw.switch_cumulative_panels:
+        plot_cumulative_panels()
 
     # TODO: develop composition of different pngs into a gif.  #  Until now, I did it manually externally from pyhton using ffmpeg from Unix terminal. See below  # os.system("cd " + os.path.join(fol_out, 'gif'))  # import ffmpeg  # os.system("ffmpeg -f image2 -framerate 1 -pattern_type glob -i 'data_avail_*-*_*_p.png' data_avail_p.mp4")
 

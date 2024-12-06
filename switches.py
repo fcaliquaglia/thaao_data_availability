@@ -23,11 +23,11 @@ __lastupdate__ = ""
 
 # switches
 switch_campaigns = ''  # Draw field campaigns?
-switch_full_panels = ''  # Plot full panels?
+switch_cumulative_panels = ''  # Plot cumulative panels?
 switch_history = ''  # Draw historical events?
 switch_yearly_panels = ''  # Plot single-year panels?
 switch_prog_bar = ''  # Draw progress bar?
-switch_cumulative_panels = ''  # Plot panels for gif?
+switch_rolling_panels = ''  # Plot panels for gif?
 
 # inputs
 start_a = ''

@@ -283,7 +283,7 @@ def drawProgressBar(d, x, y, w, h, progress_func, bg="black", fg="red"):
     return d
 
 
-def plot_cumulative_panels():
+def plot_rolling_panels():
     """
 
     :return:
@@ -339,13 +339,13 @@ def plot_yearly_panels():
     return
 
 
-def plot_full_panels():
+def plot_cumulative_panels():
     """
 
     :return:
     """
     print('FULL')
-    newdir = os.path.join(ts.da_folder, 'full', str(sw.start_a.year) + '-' + str(sw.end_a.year))
+    newdir = os.path.join(ts.da_folder, 'cumulative', str(sw.start_a.year) + '-' + str(sw.end_a.year))
     os.makedirs(newdir, exist_ok=True)
     j = cp.copy(sw.start_a) + sw.time_freq_a
     while j <= sw.end_a:
