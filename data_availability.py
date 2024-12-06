@@ -57,7 +57,7 @@ if __name__ == "__main__":
     if switch_cumulative_panels == 'no':
         sw.switch_cumulative_panels = False
     elif switch_cumulative_panels == 'yes':
-        sw.switch_yearly_panels = True
+        sw.switch_cumulative_panels = True
         strt_y = int(input('start year: '))
         sw.start_a = dt.datetime(strt_y, 1, 1)
         nd_y = int(input('end year: '))
