@@ -205,7 +205,7 @@ events_dict = {1 : {'date': dt.datetime(2012, 6, 30), 'label': 'bldg. #1985 --> 
                51: {'date': dt.datetime(1947, 1, 30), 'label': 'DMI Geomagnetic Obs'},
                52: {'date': dt.datetime(1953, 6, 30), 'label': 'Pituffik inhabitants \n relocated to Qaanaaq'},
                53: {'date': dt.datetime(1941, 6, 30), 'label': 'Bluie West Program \n starts'},
-               54: {'date': dt.datetime(2024, 6, 1), 'label': 'NASA ARCSIX'},
+               54: {'date': dt.datetime(2024, 7, 1), 'label': 'NASA ARCSIX'},
                55: {'date': dt.datetime(2024, 6, 1), 'label': 'THAAO funded as \n INGV infrastructure'}, }
 
 campaigns_dict = {1 : {'start': dt.datetime(1991, 1, 1), 'end': dt.datetime(1991, 1, 31)},
@@ -242,4 +242,4 @@ campaigns_dict = {1 : {'start': dt.datetime(1991, 1, 1), 'end': dt.datetime(1991
                   32: {'start': dt.datetime(2024, 3, 19), 'end': dt.datetime(2024, 4, 6)},
                   33: {'start': dt.datetime(2024, 5, 25), 'end': dt.datetime(2024, 6, 17)},
                   34: {'start': dt.datetime(2024, 7, 22), 'end': dt.datetime(2024, 8, 7)},
-                  36: {'start': dt.datetime(2024, 9, 26), 'end': dt.datetime(2024, 10, 5)}}
+                  35: {'start': dt.datetime(2024, 9, 26), 'end': dt.datetime(2024, 10, 5)}}
