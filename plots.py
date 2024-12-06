@@ -301,9 +301,9 @@ def plot_rolling_panels():
                 dt.datetime.strftime(yyyy1, '%b %Y') + ' to ' + dt.datetime.strftime(yyyy2, '%b %Y'), fontsize=20)
 
         plt.savefig(os.path.join(newdir, 'thaao_data_avail_' + range_lab + '.png'), dpi=dpi, transparent=True)
-        plt.gca()
-        plt.cla()
-        gc.collect()
+        # plt.gca()
+        # plt.cla()
+        # gc.collect()
         plt.close(ffig)
 
         if sw.switch_prog_bar:
@@ -326,11 +326,11 @@ def plot_yearly_panels():
         range_lab = dt.datetime.strftime(j, '%Y')
         ffig = draw_data_avail(j, j1)
         plt.suptitle(dt.datetime.strftime(j, '%Y'))
-        plt.gcf().autofmt_xdate()
+        # plt.gcf().autofmt_xdate()
         plt.savefig(os.path.join(newdir, 'thaao_data_avail_' + range_lab + '.png'), dpi=dpi)
-        plt.gca()
-        plt.cla()
-        gc.collect()
+        # plt.gca()
+        # plt.cla()
+        # gc.collect()
         plt.close(ffig)
 
         j += pd.DateOffset(years=1)
@@ -354,11 +354,11 @@ def plot_cumulative_panels():
         print(range_lab)
         ffig = draw_data_avail(sw.start_a, j)
         plt.suptitle(dt.datetime.strftime(sw.start_a, '%b-%Y') + ' to ' + dt.datetime.strftime(j, '%b-%Y'))
-        plt.gcf().autofmt_xdate()
+        # plt.gcf().autofmt_xdate()
         plt.savefig(os.path.join(newdir, f'thaao_data_avail_{range_lab}.png'), dpi=dpi)
-        plt.gca()
-        plt.cla()
-        gc.collect()
+        # plt.gca()
+        # plt.cla()
+        # gc.collect()
         plt.close(ffig)
         j += sw.time_freq_a
 

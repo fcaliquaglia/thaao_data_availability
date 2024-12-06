@@ -45,6 +45,8 @@ def input_file_selection(i_idx, i_list, i_name):
             inp_file = os.path.join(ts.basefolder, 'thaao_meteo', i_name + '_data_avail_list.txt')
         if i_name[0:7] == 'skycam':
             inp_file = os.path.join(ts.basefolder_skycam, 'thaao_skycam', i_name + '_data_avail_list.txt')
+        if i_name[0:3] == 'rad':
+            inp_file = os.path.join(ts.basefolder, 'thaao_rad', i_name + '_data_avail_list.txt')
         # elif i_name[0:5] == 'lidar':
         #     inp_file = os.path.join(fol_input, 'thaao_lidar', i_name + '_data_avail_list.txt')
         # elif i_name[0:5] == 'metar':
