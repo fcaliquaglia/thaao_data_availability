@@ -37,10 +37,10 @@ WEB_base_folder = 'Moonglow'
 
 instr = 'skycam'
 
-year = 2021
+year = 2017
 date_list_upload = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
 date_list_zip = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
-folder = os.path.join(ts.basefolder, "thaao_" + instr)
+folder = os.path.join("H:\\Shared drives", "Dati_THAAO_skycam", "thaao_" + instr)
 folder_zip = 'D:\\thaao_skycam_nozip\\'
 folder_reformat = 'D:\\thaao_skycam_nozip\\_2019'
 dest = os.path.join('C:\\Users\\FCQ\\Desktop\\', 'tmp')
@@ -152,7 +152,7 @@ if __name__ == "__main__":
     # file_from_web_to_storage()
 
     # compress daily folders from hdd to the drive data storage
-    daily_zipping()
+    # daily_zipping()
 
     # upload files from the hdd (organized in daily folders) to the thule-atmos-it.it website
-    # file_upload()
+    file_upload()
