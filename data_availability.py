@@ -46,6 +46,7 @@ if __name__ == "__main__":
     if switch_yearly_panels == 'no':
         sw.switch_yearly_panels = False
     elif switch_yearly_panels == 'yes':
+        sw.switch_yearly_panels = True
         strt_y = int(input('start year: '))
         sw.start_y = dt.datetime(strt_y, 1, 1)
         nd_y = int(input('end year: '))
@@ -56,6 +57,7 @@ if __name__ == "__main__":
     if switch_full_panels == 'no':
         sw.switch_full_panels = False
     elif switch_full_panels == 'yes':
+        sw.switch_yearly_panels = True
         strt_y = int(input('start year: '))
         sw.start_a = dt.datetime(strt_y, 1, 1)
         nd_y = int(input('end year: '))
