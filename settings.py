@@ -28,8 +28,8 @@ basefolder = os.path.join("H:\\Shared drives", "Dati_THAAO")
 basefolder_skycam = os.path.join("H:\\Shared drives", "Dati_THAAO_skycam")
 da_folder = os.path.join(basefolder, 'thaao_data_availability')
 
-instr_list = [
-    'skycam']  # 'uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'rs_sondes', 'gbms', 'wv_isotopes', 'metar',
+instr_list = ['rad_uli', 'rad_usi', 'rad_dli', 'rad_dsi', 'rad_tb', 'skycam', 'mms_trios']
+# 'uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'rs_sondes', 'gbms', 'wv_isotopes', 'metar',
 # 'vespa', 'ceilometer', 'hatpro', 'dir_rad_trkr', 'pm10', 'ftir', 'aeronet', 'ecapac_mrr',
 # 'ecapac_aws_snow', 'ecapac_disdro_precip', 'aws_vespa', 'mms_trios', 'lidar_temp',
 # 'skycam', 'gnss', 'macmap_seismometer_1', 'macmap_seismometer_2', 'macmap_seismometer_3',
