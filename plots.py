@@ -325,7 +325,7 @@ def plot_yearly_panels():
         print(j)
         range_lab = dt.datetime.strftime(j, '%Y')
         ffig = draw_data_avail(j, j1)
-        plt.suptitle(dt.datetime.strftime(j, '%b-%Y') + ' to ' + dt.datetime.strftime(j1, '%b-%Y'))
+        plt.suptitle(dt.datetime.strftime(j, '%Y'))
         plt.gcf().autofmt_xdate()
         plt.savefig(os.path.join(newdir, 'thaao_data_avail_' + range_lab + '.png'), dpi=dpi)
         plt.gca()
