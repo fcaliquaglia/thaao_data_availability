@@ -49,7 +49,6 @@ def read_rad(date_f):
 
     rad.index = pd.DatetimeIndex(
         pd.to_datetime(date_f.strftime('%Y') + '-1-1') + pd.to_timedelta(rad['JDAY_UT'], unit='D'))
-    rad.index = rad.index.strftime('%Y')
     rad.index.name = 'datetime'
 
     data = rad.drop(
@@ -63,7 +62,7 @@ def read_alb(date_f):
     """
     Function for reading albedo data and formatting data strings.
     :param date_f: (YYYY)
-    :return: radiation data as DataFrame (pandas). Index is datetime and columns are: ['SZA', 'SW', 'LW', 'PAR', 'TB']
+    :return: radiation data as DataFrame (pandas).
     """
 
     print('Reading ALBEDO data for year ', date_f.strftime('%Y'))
