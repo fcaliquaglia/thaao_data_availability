@@ -33,9 +33,9 @@ if __name__ == "__main__":
         sw.switch_rolling_panels = False
     elif switch_rolling_panels == 'yes':
         sw.switch_rolling_panels = True
-        window_size = int(input('window size (in years): '))
-        lag_c = int(input('lag (in months): '))  # 3  # in months
-        sw.time_window_c = pd.DateOffset(years=window_size)
+        window_size = int(input('window size (in months): '))
+        lag_c = int(input('lag (in months): '))
+        sw.time_window_c = pd.DateOffset(months=window_size)
         sw.time_freq_c = pd.DateOffset(months=lag_c)
         strt_y = int(input('start year: '))
         sw.start_c = dt.datetime(strt_y, 1, 1) + sw.time_window_c

@@ -288,8 +288,8 @@ def plot_rolling_panels():
 
     :return:
     """
-    print('CUMULATIVE')
-    newdir = os.path.join(ts.da_folder, 'gif', f'{sw.start_c.year}-{sw.end_c.year}')
+    print('ROLLING')
+    newdir = os.path.join(ts.da_folder, 'rolling', f'{sw.start_c.year}-{sw.end_c.year}')
     os.makedirs(newdir, exist_ok=True)
     j = cp.copy(sw.start_c)
     while j + sw.time_window_c <= sw.end_c + sw.time_window_c:
@@ -344,7 +344,7 @@ def plot_cumulative_panels():
 
     :return:
     """
-    print('FULL')
+    print('CUMULATIVE')
     newdir = os.path.join(ts.da_folder, 'cumulative', str(sw.start_a.year) + '-' + str(sw.end_a.year))
     os.makedirs(newdir, exist_ok=True)
     j = cp.copy(sw.start_a) + sw.time_freq_a
