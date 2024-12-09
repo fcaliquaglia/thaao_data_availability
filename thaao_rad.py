@@ -24,8 +24,8 @@ __lastupdate__ = "October 2024"
 import datetime as dt
 import os
 
-import julian
-import numpy as np
+# import julian
+# import numpy as np
 import pandas as pd
 
 import settings as ts
@@ -58,28 +58,28 @@ def read_rad(date_f):
     return data
 
 
-def read_alb(date_f):
-    """
-    Function for reading albedo data and formatting data strings.
-    :param date_f: (YYYY)
-    :return: radiation data as DataFrame (pandas).
-    """
-
-    print('Reading ALBEDO data for year ', date_f.strftime('%Y'))
-    file_rad = os.path.join(folder, 'ALBEDO_SW_' + date_f.strftime('%Y') + '_5MIN.DAT')
-    alb = pd.read_table(file_rad, skiprows=None, header=0, decimal='.', sep='\s+')
-    tmp = np.empty(alb['JDAY_UT'].shape, dtype=dt.datetime)
-    for ii, el in enumerate(alb['JDAY_UT']):
-        new_jd_ass = el + julian.to_jd(dt.datetime(int(date_f.strftime('%Y')) - 1, 12, 31, 0, 0), fmt='jd')
-        tmp[ii] = julian.from_jd(new_jd_ass, fmt='jd')
-        tmp[ii] = tmp[ii].replace(microsecond=0)
-
-    alb.index = pd.DatetimeIndex(tmp)
-    alb.index.name = 'datetime'
-
-    data = alb.drop(['JDAY_UT', 'JDAY_LOC', 'SZA', 'SW_DOWN'], axis=1)
-
-    return data
+# def read_alb(date_f):
+#     """
+#     Function for reading albedo data and formatting data strings.
+#     :param date_f: (YYYY)
+#     :return: radiation data as DataFrame (pandas).
+#     """
+#
+#     print('Reading ALBEDO data for year ', date_f.strftime('%Y'))
+#     file_rad = os.path.join(folder, 'ALBEDO_SW_' + date_f.strftime('%Y') + '_5MIN.DAT')
+#     alb = pd.read_table(file_rad, skiprows=None, header=0, decimal='.', sep='\s+')
+#     tmp = np.empty(alb['JDAY_UT'].shape, dtype=dt.datetime)
+#     for ii, el in enumerate(alb['JDAY_UT']):
+#         new_jd_ass = el + julian.to_jd(dt.datetime(int(date_f.strftime('%Y')) - 1, 12, 31, 0, 0), fmt='jd')
+#         tmp[ii] = julian.from_jd(new_jd_ass, fmt='jd')
+#         tmp[ii] = tmp[ii].replace(microsecond=0)
+#
+#     alb.index = pd.DatetimeIndex(tmp)
+#     alb.index.name = 'datetime'
+#
+#     data = alb.drop(['JDAY_UT', 'JDAY_LOC', 'SZA', 'SW_DOWN'], axis=1)
+#
+#     return data
 
 
 if __name__ == "__main__":
