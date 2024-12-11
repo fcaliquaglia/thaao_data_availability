@@ -26,9 +26,7 @@ import ftplib
 import os
 import shutil
 import zipfile
-
 import pandas as pd
-
 import settings as ts
 import tools as tls
 
@@ -37,13 +35,13 @@ WEB_base_folder = 'Moonglow'
 
 instr = 'skycam'
 
-year = 2017
+year = 2017 #CARICATI GLI ANNI: 2016-2017
 date_list_upload = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
 date_list_zip = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
 folder = os.path.join("H:\\Shared drives", "Dati_THAAO_skycam", "thaao_" + instr)
-folder_zip = 'D:\\thaao_skycam_nozip\\'
+folder_zip = 'E:\\thaao_skycam_nozip\\' #CAMBIARE IL PATH
 folder_reformat = 'D:\\thaao_skycam_nozip\\_2019'
-dest = os.path.join('C:\\Users\\FCQ\\Desktop\\', 'tmp')
+dest = os.path.join(folder_zip, 'tmp')
 
 
 def daily_zipping():
@@ -69,7 +67,7 @@ def daily_zipping():
         except:
             print(f'error in zipping file {fn_new}')
 
-
+angelica = 20
 def file_upload():
     for i in date_list_upload:
         try:
@@ -77,18 +75,18 @@ def file_upload():
                     os.path.join(folder, i.strftime('%Y'), i.strftime('%Y%m%d') + '.zip')) as zipf:
                 listOfFileNames = zipf.namelist()
 
-                # Iterate over the file names
+                # ITERATE over the file names
                 for fileName in listOfFileNames:
-                    # Check filename endswith csv
+                    # CHECK filename endswith csv
                     if fileName.endswith('5_raw.jpg') | fileName.endswith('0_raw.jpg'):
-                        # Extract a single file from zip
+                        # EXTRACT a single file from zip
                         zipf.extract(fileName, dest)
 
             p = os.listdir(os.path.join(dest, i.strftime('%Y%m%d')))
         except (FileNotFoundError, zipfile.BadZipFile) as e:
             print(e)
             continue
-        # push data to web
+        # PUSH DATA TO WEB
         try:
             ftp = ftplib.FTP(WEB_network['domain'], WEB_network['user'], WEB_network['pass'])
             ftp.cwd(WEB_base_folder)
@@ -115,7 +113,7 @@ def file_upload():
 
 
 def file_from_web_to_storage():
-    # Specify the directory path you want to start from
+    # SPECIFY the directory path you want to start from
     directory_path = os.path.join(folder_reformat)
     files = list_files_recursive(directory_path)
 
@@ -148,11 +146,11 @@ def list_files_recursive(path='.'):
 
 
 if __name__ == "__main__":
-    # reformat files from web format to hdd
+    # #REFORMAT files from web format to hdd
     # file_from_web_to_storage()
 
     # compress daily folders from hdd to the drive data storage
-    # daily_zipping()
+    daily_zipping()
 
-    # upload files from the hdd (organized in daily folders) to the thule-atmos-it.it website
-    file_upload()
+    # # UPLOAD files from the hdd (organized in daily folders) to the thule-atmos-it.it website
+    # file_upload()
