@@ -1,5 +1,26 @@
 # DATA AVAILABILITY AT THAAO
 
+> [!IMPORTANT]  
+> This is a ongoing project.
+
+## TODO (Thanks!)
+
+### Efficiency improvements
+- [ ] improve efficiency and speed
+- [ ] automatize instrument availability list creation if older than x months
+- [ ] develop gif creation
+
+### Most urgent 
+- [ ] finish updating all sky camera zip files on the GDrive
+- [ ] finish updating all sky camera file son the THAAO portal
+- [ ] run data availability for each instrument
+- [ ] check missing data with other members of the THAAO community
+
+### Legacy data
+- [ ] collect legacy weather data and homogenize them (from AdS)
+- [ ] collect legacy radiation data and homogenize them (from AdS)
+- [ ] collect other legacy data and homogenize them (from ???)
+
 Suite of scripts for instruments at THAAO to generate data availability lists and plots.
 
 Every script checks the existence of data (files) and create a .txt for each instrument.
