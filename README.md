@@ -6,7 +6,7 @@
 ## TODO (Thanks!)
 
 ### Efficiency improvements
-- [ ] improve efficiency and speed
+- [ ] improve efficiency and speed (in cosa e dove cosa dove cosa?CSMT)
 - [ ] automatize instrument availability list creation if older than x months
 - [ ] develop gif creation
 
