@@ -5,16 +5,16 @@
 
 ## TODO (Thanks!)
 
-### Efficiency improvements
-- [ ] improve efficiency and speed
-- [ ] automatize instrument availability list creation if older than x months
-- [ ] develop gif creation
-
 ### Most urgent 
 - [ ] finish updating all sky camera zip files on the GDrive
 - [ ] finish updating all sky camera file son the THAAO portal
 - [ ] run data availability for each instrument
 - [ ] check missing data with other members of the THAAO community
+
+### Efficiency improvements
+- [ ] improve efficiency and speed
+- [ ] automatize instrument availability list creation if older than x months
+- [ ] develop gif creation
 
 ### Legacy data
 - [ ] collect legacy weather data and homogenize them (from AdS)
