@@ -25,7 +25,7 @@
 - [ ] 2020
 - [ ] 2021
 - [ ] 2022
-- [ ] 2023
+- [x] 2023
 
 ### Most urgent
 - [ ] run data availability for each instrument
