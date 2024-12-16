@@ -5,9 +5,29 @@
 
 ## TODO (Thanks!)
 
-### Most urgent 
-- [ ] finish updating all sky camera zip files on the GDrive
-- [ ] finish updating all sky camera file son the THAAO portal
+
+### SKYCAM
+#### to GDrive
+- [x] 2016
+- [x] 2017
+- [x] 2018
+- [ ] 2019
+- [ ] 2020
+- [ ] 2021
+- [ ] 2022
+- [ ] 2023
+
+#### to THAAO website
+- [x] 2016
+- [ ] 2017
+- [ ] 2018
+- [ ] 2019
+- [ ] 2020
+- [ ] 2021
+- [ ] 2022
+- [ ] 2023
+
+### Most urgent
 - [ ] run data availability for each instrument
 - [ ] check missing data with other members of the THAAO community
 
