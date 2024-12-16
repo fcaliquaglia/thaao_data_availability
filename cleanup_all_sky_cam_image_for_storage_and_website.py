@@ -26,7 +26,9 @@ import ftplib
 import os
 import shutil
 import zipfile
+
 import pandas as pd
+
 import tools as tls
 
 WEB_network = {'domain': '192.107.92.192', 'port': '21', 'user': 'ftpthule', 'pass': 'bdg1971'}
@@ -38,7 +40,7 @@ year = 2016  # ho spostato i dettagli degli anni nel README.md. Poi cancellare q
 date_list_upload = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
 date_list_zip = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
 folder = os.path.join("H:\\Shared drives", "Dati_THAAO_skycam", "thaao_" + instr)
-folder_zip = 'E:\\thaao_skycam_nozip\\' # CAMBIARE IL PATH
+folder_zip = 'E:\\thaao_skycam_nozip\\'  # CAMBIARE IL PATH
 folder_reformat = 'D:\\thaao_skycam_nozip\\_2019'
 dest = os.path.join('C:\\Users\\FCQ\\Desktop\\', 'tmp')
 
@@ -66,7 +68,10 @@ def daily_zipping():
         except:
             print(f'error in zipping file {fn_new}')
 
+
 angelica = 20
+
+
 def file_upload():
     for i in date_list_upload:
         try:
