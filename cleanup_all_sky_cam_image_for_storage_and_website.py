@@ -40,9 +40,16 @@ year = 2016  # ho spostato i dettagli degli anni nel README.md. Poi cancellare q
 date_list_upload = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
 date_list_zip = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
 folder = os.path.join("H:\\Shared drives", "Dati_THAAO_skycam", "thaao_" + instr)
-folder_zip = 'E:\\thaao_skycam_nozip\\'  # CAMBIARE IL PATH
+
+# PATH Filippo
+folder_zip = 'D:\\thaao_skycam_nozip\\'
 folder_reformat = 'D:\\thaao_skycam_nozip\\_2019'
 dest = os.path.join('C:\\Users\\FCQ\\Desktop\\', 'tmp')
+
+# # PATH Monica
+# folder_zip = 'E:\\thaao_skycam_nozip\\'
+# folder_reformat = 'D:\\thaao_skycam_nozip\\_2019'
+# dest = os.path.join('C:\\Users\\FCQ\\Desktop\\', 'tmp')
 
 
 def daily_zipping():
