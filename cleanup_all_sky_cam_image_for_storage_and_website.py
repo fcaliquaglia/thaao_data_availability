@@ -27,7 +27,6 @@ import os
 import shutil
 import zipfile
 import pandas as pd
-import settings as ts
 import tools as tls
 
 WEB_network = {'domain': '192.107.92.192', 'port': '21', 'user': 'ftpthule', 'pass': 'bdg1971'}
@@ -35,13 +34,13 @@ WEB_base_folder = 'Moonglow'
 
 instr = 'skycam'
 
-year = 2018  # ho spostato i dettagli degli anni nel README.md. Poi cancellare questo commento
+year = 2016  # ho spostato i dettagli degli anni nel README.md. Poi cancellare questo commento
 date_list_upload = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
 date_list_zip = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
 folder = os.path.join("H:\\Shared drives", "Dati_THAAO_skycam", "thaao_" + instr)
-folder_zip = 'E:\\thaao_skycam_nozip\\' #CAMBIARE IL PATH
+folder_zip = 'E:\\thaao_skycam_nozip\\' # CAMBIARE IL PATH
 folder_reformat = 'D:\\thaao_skycam_nozip\\_2019'
-dest = os.path.join(folder_zip, 'tmp')
+dest = os.path.join('C:\\Users\\FCQ\\Desktop\\', 'tmp')
 
 
 def daily_zipping():
@@ -149,8 +148,8 @@ if __name__ == "__main__":
     # #REFORMAT files from web format to hdd
     # file_from_web_to_storage()
 
-    # compress daily folders from hdd to the drive data storage
-    daily_zipping()
+    # # compress daily folders from hdd to the drive data storage
+    # daily_zipping()
 
-    # # UPLOAD files from the hdd (organized in daily folders) to the thule-atmos-it.it website
-    # file_upload()
+    # UPLOAD files from the hdd (organized in daily folders) to the thule-atmos-it.it website
+    file_upload()
