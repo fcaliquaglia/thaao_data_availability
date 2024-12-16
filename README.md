@@ -26,7 +26,7 @@
 - [ ] 2019
 - [ ] 2020
 - [ ] 2021
-- [ ] 2022
+- [] 2022
 - [x] 2023
 
 ### Most urgent
@@ -39,7 +39,6 @@
 - [ ] improve efficiency and speed (in cosa e dove cosa dove cosa?CSMT)
 - [ ] automatize instrument availability list creation if older than x months
 - [ ] develop gif creation
--
 
 ### Legacy data
 
@@ -52,8 +51,7 @@ Suite of scripts for instruments at THAAO to generate data availability lists an
 Every script checks the existence of data (files) and create a .txt for each instrument.
 
 Each script has to be launched singularly. Then `data_availability.py` can be launched inserting input to produce
-specific
-plots.
+specific plots.
 
 ## `data_availability.py`
 
