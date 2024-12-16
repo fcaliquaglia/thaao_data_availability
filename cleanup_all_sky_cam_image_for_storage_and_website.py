@@ -35,7 +35,7 @@ WEB_base_folder = 'Moonglow'
 
 instr = 'skycam'
 
-year = 2018 #CARICATI GLI ANNI: 2016-2017-2018
+year = 2024 #CARICATI GLI ANNI: 2016-2017-2018-2019-2020-2021-2022-2023-2024
 date_list_upload = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
 date_list_zip = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
 folder = os.path.join("H:\\Shared drives", "Dati_THAAO_skycam", "thaao_" + instr)
