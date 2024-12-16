@@ -46,6 +46,7 @@ folder_zip = 'D:\\thaao_skycam_nozip\\'
 folder_reformat = 'D:\\thaao_skycam_nozip\\_2019'
 dest = os.path.join('C:\\Users\\FCQ\\Desktop\\', 'tmp')
 
+
 # # PATH Monica
 # folder_zip = 'E:\\thaao_skycam_nozip\\'
 # folder_reformat = 'D:\\thaao_skycam_nozip\\_2019'
