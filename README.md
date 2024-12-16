@@ -32,7 +32,7 @@
 - [ ] check missing data with other members of the THAAO community
 
 ### Efficiency improvements
-- [ ] improve efficiency and speed (in cosa e dove cosa dove cosa?CSMT)
+- [ ] improve efficiency and speed 
 - [ ] automatize instrument availability list creation if older than x months
 - [ ] develop gif creation
 
