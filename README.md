@@ -1,13 +1,14 @@
 # DATA AVAILABILITY AT THAAO
 
 > [!IMPORTANT]  
-> This is a ongoing project.
+> This is an ongoing project.
 
 ## TODO (Thanks!)
 
-
 ### SKYCAM
+
 #### to GDrive
+
 - [x] 2016
 - [x] 2017
 - [x] 2018
@@ -18,6 +19,7 @@
 - [x] 2023
 
 #### to THAAO website
+
 - [x] 2016
 - [ ] 2017
 - [ ] 2018
@@ -28,15 +30,19 @@
 - [x] 2023
 
 ### Most urgent
+
 - [ ] run data availability for each instrument
 - [ ] check missing data with other members of the THAAO community
 
 ### Efficiency improvements
+
 - [ ] improve efficiency and speed (in cosa e dove cosa dove cosa?CSMT)
 - [ ] automatize instrument availability list creation if older than x months
 - [ ] develop gif creation
+-
 
 ### Legacy data
+
 - [ ] collect legacy weather data and homogenize them (from AdS)
 - [ ] collect legacy radiation data and homogenize them (from AdS)
 - [ ] collect other legacy data and homogenize them (from ???)
@@ -54,11 +60,13 @@ plots.
 Contains different plot options which you can manage through the input request.
 
 There are three types of plot:
+
 - yearly panels
 - gif panels (for animations)
 - rolling panels
 
-Additionally, you can specify if you want the historical events, the Italian field campaigns and the progress bar to be plotted.
+Additionally, you can specify if you want the historical events, the Italian field campaigns and the progress bar to be
+plotted.
 The instruments considered are hard coded, and you can manually modify the list in `settings.py` --> settings.instr_list
 
 ## `settings.py`
