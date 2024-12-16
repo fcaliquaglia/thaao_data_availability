@@ -5,16 +5,36 @@
 
 ## TODO (Thanks!)
 
+
+### SKYCAM
+#### to GDrive
+- [x] 2016
+- [x] 2017
+- [x] 2018
+- [ ] 2019
+- [ ] 2020
+- [ ] 2021
+- [ ] 2022
+- [ ] 2023
+
+#### to THAAO website
+- [x] 2016
+- [ ] 2017
+- [ ] 2018
+- [ ] 2019
+- [ ] 2020
+- [ ] 2021
+- [ ] 2022
+- [ ] 2023
+
+### Most urgent
+- [ ] run data availability for each instrument
+- [ ] check missing data with other members of the THAAO community
+
 ### Efficiency improvements
 - [ ] improve efficiency and speed (in cosa e dove cosa dove cosa?CSMT)
 - [ ] automatize instrument availability list creation if older than x months
 - [ ] develop gif creation
-
-### Most urgent 
-- [ ] finish updating all sky camera zip files on the GDrive
-- [ ] finish updating all sky camera file son the THAAO portal
-- [ ] run data availability for each instrument
-- [ ] check missing data with other members of the THAAO community
 
 ### Legacy data
 - [ ] collect legacy weather data and homogenize them (from AdS)
