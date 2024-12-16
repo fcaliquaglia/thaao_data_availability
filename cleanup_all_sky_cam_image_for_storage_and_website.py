@@ -67,7 +67,7 @@ def daily_zipping():
         except:
             print(f'error in zipping file {fn_new}')
 
-angelica = 20
+
 def file_upload():
     for i in date_list_upload:
         try:
