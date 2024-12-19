@@ -36,7 +36,7 @@ WEB_base_folder = 'Moonglow'
 
 instr = 'skycam'
 
-year = 2019
+year = 2018
 
 date_list_upload = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
 date_list_zip = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
