@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 """
+OK
 Reading and plotting data from EDT radiosounding.
 ATTENTION! Before plotting data you need to format the data file using the script
 C:\\Users\\FCQ\\iCloudDrive\\Documents\\bin\\thaao_rs_raw\\rs_1_convert_2022-on.py -- from 2022 onward
@@ -31,11 +32,12 @@ from glob import glob
 import pandas as pd
 
 import settings as ts
+import tools as tls
 
 instr = 'rs_sondes'
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
-folder = os.path.join(ts.basefolder, "thaao_" + instr)
+folder = os.path.join(ts.basefolder, "thaao_" + instr, 'txt')
 if __name__ == "__main__":
 
     rs_sondes = pd.DataFrame(columns=['dt', 'mask'])
@@ -45,4 +47,4 @@ if __name__ == "__main__":
         if glob(fn):
             rs_sondes.loc[i] = [i, True]
 
-    ts.save_txt(instr, rs_sondes)
+    tls.save_txt(instr, rs_sondes)

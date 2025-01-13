@@ -38,7 +38,7 @@ instr = 'skycam'
 
 year = 2017
 
-date_list_upload = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
+date_list_upload = pd.date_range(dt.datetime(year, 6, 14), dt.datetime(year, 12, 31), freq='D').tolist()
 date_list_zip = pd.date_range(dt.datetime(year, 1, 1), dt.datetime(year, 12, 31), freq='D').tolist()
 folder = os.path.join("H:\\Shared drives", "Dati_THAAO_skycam", "thaao_" + instr)
 
