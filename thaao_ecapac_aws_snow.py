@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
     for i in date_list:
         fn = os.path.join(
-                folder, "AWS_ECAPAC", "AWS_THAAO_" + i.strftime('%Y_%m_%d') + '_00_00' + ".dat")
+                folder, "AWS_ECAPAC", i.strftime('%Y'), "AWS_THAAO_" + i.strftime('%Y_%m_%d') + '_00_00' + ".dat")
         if os.path.exists(fn):
             ecapac_aws_snow.loc[i] = [i, True]
 

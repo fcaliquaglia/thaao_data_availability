@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
     for i in date_list:
         fn = os.path.join(
-                folder, 'DISDRO', "DISDRO_THAAO_" + i.strftime('%Y_%m_%d') + '_00_00' + ".dat")
+                folder, 'DISDRO', i.strftime('%Y'), "DISDRO_THAAO_" + i.strftime('%Y_%m_%d') + '_00_00' + ".dat")
         if os.path.exists(fn):
             ecapac_disdro_precip.loc[i] = [i, True]
 
