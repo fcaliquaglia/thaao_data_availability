@@ -32,7 +32,7 @@ import tools as tls
 
 instr = 'metar'
 
-folder = os.path.join(ts.basefolder, instr)
+folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
     url = (
