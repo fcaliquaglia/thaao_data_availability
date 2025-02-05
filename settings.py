@@ -28,14 +28,14 @@ basefolder = os.path.join("H:\\Shared drives", "Dati_THAAO")
 basefolder_skycam = os.path.join("H:\\Shared drives", "Dati_THAAO_skycam")
 da_folder = os.path.join(basefolder, 'thaao_data_availability')
 
-instr_list = ['rs_sondes']  # 'rad_uli', 'rad_usi', 'rad_dli', 'rad_dsi', 'rad_tb', 'skycam', 'mms_trios']
-# 'uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'rs_sondes', 'gbms', 'wv_isotopes', 'metar',
-# 'vespa', 'ceilometer', 'hatpro', 'dir_rad_trkr', 'pm10', 'ftir', 'aeronet', 'ecapac_mrr',
-# 'ecapac_aws_snow', 'ecapac_disdro_precip', 'aws_vespa', 'mms_trios', 'lidar_temp',
-# 'skycam', 'gnss', 'macmap_seismometer_1', 'macmap_seismometer_2', 'macmap_seismometer_3',
-# 'macmap_seismometer_4', 'macmap_tide_gauge', 'rad_uli', 'rad_usi', 'rad_dli', 'rad_dsi', 'rad_tb',
-# 'rad_par_up', 'rad_par_down']
-
+instr_list = []
+instr_list_current = ['rs_sondes', 'rad_uli', 'rad_usi', 'rad_dli', 'rad_dsi', 'rad_par_up', 'rad_par_down', 'rad_tb',
+                      'skycam', 'mms_trios', 'metar', 'vespa', 'ceilometer', 'hatpro', 'dir_rad_trkr', 'pm10', 'ftir',
+                      'aeronet', 'gnss', 'ecapac_mrr', 'ecapac_mrr', 'ecapac_aws_snow', 'ecapac_disdro_precip',
+                      'aws_vespa']
+instr_list_legacy = ['uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'gbms', 'wv_isotopes', 'lidar_temp']
+instr_list_macmap = ['macmap_seismometer_1', 'macmap_seismometer_2', 'macmap_seismometer_3', 'macmap_seismometer_4',
+                     'macmap_tide_gauge']
 
 # This dictionary summarizes when instruments are not available and/or when they are not acquiring (i.e., sun below the horizon)
 # start_instr: when the instrument was installed

@@ -23,10 +23,22 @@ __status__ = "Research"
 __lastupdate__ = "October 2024"
 
 from plots import *
-
-import switches as sw
+import settings as ts
 
 if __name__ == "__main__":
+
+    # instrument list selection
+    switch_instr_list = input(
+            'Which category of instruments (Default to : all. Otherwise chose one or more among: current, legacy, macmap, separated by space)\n')
+    if 'all' in switch_instr_list.split():
+        ts.instr_list = ts.instr_list_current + ts.instr_list_legacy + ts.instr_list_macmap
+    if 'macmap' in switch_instr_list.split():
+        ts.instr_list += ts.instr_list_macmap
+    if 'legacy' in switch_instr_list.split():
+        ts.instr_list += ts.instr_list_legacy
+    if 'current' in switch_instr_list.split():
+        ts.instr_list += ts.instr_list_current
+
     # panel for rolling (for gifs, by i years)
     switch_rolling_panels = input('Plot rolling panels (yes/no)\n')
     if switch_rolling_panels == 'no':
@@ -87,16 +99,6 @@ if __name__ == "__main__":
         sw.switch_prog_bar = True
     elif switch_prog_bar == 'no':
         sw.switch_prog_bar = False
-
-    # TODO: instrument selection from input
-    # instr_list = input(
-    # 'insert list of instruments separated by comma (choosing from: '
-    # '\n uv-vis_spec, lidar_ae, o3_sondes, aero_sondes, wv_isotopes, gbms, hatpro,'
-    # '\n ftir, aeronet, metar,'
-    # '\n rs_sondes, vespa, ceilometer, dir_rad_trkr, pm10, aws_vespa, mms_trios, lidar_temp, skycam, gnss, '
-    # '\n ecapac_aws_snow, ecapac_disdro_precip, ecapac_aws, ecapac_mrr, '
-    # '\n macmap_tide_gauge, macmap_seismometer_1, macmap_seismometer_2, macmap_seismometer_3, macmap_seismometer_4, '
-    # '\n rad_uli, rad_usi,rad_dli, rad_dsi, rad_tb, rad_par_up, rad_par_dow):')
 
     print(f'These instruments are plotted (hard-coded): {ts.instr_list}')
 

@@ -22,6 +22,7 @@ __status__ = "Research"
 __lastupdate__ = ""
 
 # switches
+switch_instr_list = ''
 switch_campaigns = ''  # Draw field campaigns?
 switch_cumulative_panels = ''  # Plot cumulative panels?
 switch_history = ''  # Draw historical events?
@@ -30,6 +31,8 @@ switch_prog_bar = ''  # Draw progress bar?
 switch_rolling_panels = ''  # Plot panels for gif?
 
 # inputs
+instr_list = []
+
 start_a = ''
 end_a = ''
 time_freq_a = ''
