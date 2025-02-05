@@ -29,7 +29,7 @@ basefolder_skycam = os.path.join("H:\\Shared drives", "Dati_THAAO_skycam")
 da_folder = os.path.join(basefolder, 'thaao_data_availability')
 
 instr_list = []
-instr_list_current = ['rs_sondes', 'rad_uli', 'rad_usi', 'rad_dli', 'rad_dsi', 'rad_par_up', 'rad_par_down', 'rad_tb',
+instr_list_current = ['rs_sondes', 'rad_uli', 'rad_dli', 'rad_usi', 'rad_dsi', 'rad_par_up', 'rad_par_down', 'rad_tb',
                       'skycam', 'mms_trios', 'metar', 'vespa', 'ceilometer', 'hatpro', 'dir_rad_trkr', 'pm10', 'ftir',
                       'aeronet', 'gnss', 'ecapac_mrr', 'ecapac_aws_snow', 'ecapac_disdro_precip', 'aws_vespa']
 instr_list_legacy = ['uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'gbms', 'wv_isotopes', 'lidar_temp']
