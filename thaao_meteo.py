@@ -68,4 +68,4 @@ if __name__ == "__main__":
     # create_netcdf_file()
 
     all_weekly = xr.open_dataset(os.path.join(folder, 'Meteo_weekly_all.nc'))
-    tls.save_mask_txt(all_weekly['Air_K'], folder, instr)
+    tls.save_mask_txt(all_weekly['Air_K'].to_dataframe(), folder, instr)
