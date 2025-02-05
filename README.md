@@ -5,30 +5,6 @@
 
 ## TODO (Thanks!)
 
-### SKYCAM
-
-#### to GDrive
-
-- [x] 2016
-- [x] 2017
-- [x] 2018
-- [x] 2019
-- [x] 2020
-- [x] 2021
-- [x] 2022
-- [x] 2023
-
-#### to THAAO website
-
-- [x] 2016
-- [x] 2017
-- [x] 2018
-- [x] 2019
-- [x] 2020
-- [x] 2021
-- [x] 2022
-- [x] 2023
-
 ### Most urgent
 
 - [ ] run data availability for each instrument
@@ -36,8 +12,8 @@
 
 ### Efficiency improvements
 
-- [ ] improve efficiency and speed (in cosa e dove cosa dove cosa?CSMT)
-- [ ] automatize instrument availability list creation if older than x months
+- [ ] improve efficiency and speed (in cosa e dove cosa dove cosa? CSMT)
+- [x] automatize instrument availability list creation if older than x months (for single instrument)
 - [ ] develop gif creation
 
 ### Legacy data
