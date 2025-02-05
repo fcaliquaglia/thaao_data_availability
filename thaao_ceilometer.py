@@ -15,6 +15,7 @@ __status__ = "Research"
 __lastupdate__ = "October 2024"
 
 import os
+import zipfile
 
 import pandas as pd
 
@@ -29,11 +30,24 @@ folder = os.path.join(ts.basefolder, "thaao_" + instr)
 if __name__ == "__main__":
 
     ceilometer = pd.DataFrame(columns=['dt', 'mask'])
-
-    for i in date_list:
+    ceilometer_missing = pd.DataFrame(columns=['dt', 'mask'])
+    for ii, i in enumerate(date_list[:-1]):
         fn = os.path.join(
-                folder, i.strftime('%Y'), i.strftime('%Y%m') + "_Thule_CHM190147.nc", i.strftime('%Y%m%d') + "_Thule_CHM190147_000.nc")
-        if os.path.exists(fn):
-            ceilometer.loc[i] = [i, True]
+                folder, i.strftime('%Y'), i.strftime('%Y%m') + '_Thule_CHM190147.nc')
+        date_list_int = pd.date_range(
+                date_list[ii], date_list[ii + 1], freq='D', inclusive='left').tolist()
+        try:
+            with zipfile.ZipFile(f'{fn}.zip', 'r') as myzip:
+                file_list = [x.split('_')[0] for x in myzip.namelist()]
+                for j in date_list_int:
+                    if j.strftime('%Y%m%d') in file_list:
+                        ceilometer.loc[j] = [j, True]
+                    else:
+                        ceilometer_missing.loc[j] = [j, False]
+            myzip.close()
+            print(fn)
+        except (FileNotFoundError, zipfile.BadZipFile) as e:
+            print(e)
 
     tls.save_txt(instr, ceilometer)
+    tls.save_txt(instr, ceilometer_missing, missing=True)
