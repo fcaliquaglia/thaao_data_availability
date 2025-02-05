@@ -21,25 +21,23 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
-import datetime as dt
+import glob
 import os
 
 import pandas as pd
-import tools as tls
+import xarray as xr
 
 import settings as ts
+import tools as tls
 
-instr = 'meteo'
+instr = 'aws_vespa'
+date_list = pd.date_range(
+        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='H').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
-if __name__ == "__main__":
 
-    start = dt.datetime(2016, 3, 8, 0, 0, 0)
-    days = 2000
-
+def create_netcdf_file():
     # merge together all the weekly files from Giovanni
-    import glob
-
     ls_f = glob.glob(os.path.join(folder, 'weekly', 'DatiMeteoThule*'))
     all_weekly = pd.DataFrame()
     for f in ls_f:
@@ -58,10 +56,16 @@ if __name__ == "__main__":
             file.drop(columns=["RECORD", "TIMESTAMP"], inplace=True)
 
         all_weekly = pd.concat([all_weekly, file])
-
     all_weekly.sort_index(inplace=True)
     all_weekly = all_weekly[~all_weekly.index.duplicated(keep='first')]
     all_weekly_xr = all_weekly.to_xarray()
     all_weekly_xr.to_netcdf(os.path.join(folder, 'Meteo_weekly_all.nc'))
+    return
 
-    tls.save_mask_txt(all_weekly['Air_K'], folder, 'aws_vespa')
+
+if __name__ == "__main__":
+    # create netcdf file from all weekly files
+    # create_netcdf_file()
+
+    all_weekly = xr.open_dataset(os.path.join(folder, 'Meteo_weekly_all.nc'))
+    tls.save_mask_txt(all_weekly['Air_K'], folder, instr)
