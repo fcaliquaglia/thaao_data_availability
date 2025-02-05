@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
     for i in date_list:
         fn = os.path.join(
-                folder, i.strftime('%Y%m') + "_Thule_CHM190147.nc", i.strftime('%Y%m%d') + "_Thule_CHM190147_000.nc")
+                folder, i.strftime('%Y'), i.strftime('%Y%m') + "_Thule_CHM190147.nc", i.strftime('%Y%m%d') + "_Thule_CHM190147_000.nc")
         if os.path.exists(fn):
             ceilometer.loc[i] = [i, True]
 
