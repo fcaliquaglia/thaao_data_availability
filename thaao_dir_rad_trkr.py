@@ -39,9 +39,9 @@ folder = os.path.join(ts.basefolder, "thaao_" + instr, 'solcom')
 
 def daily_zipping():
     for i in date_list:
-        fn = os.path.join(folder, 'old', i.strftime('%Y'))
+        fn = os.path.join(folder, i.strftime('%Y'))
         fn_new = os.path.join(folder, i.strftime('%Y%m%d'))
-        files = [j for j in os.listdir(os.path.join(folder, 'old', i.strftime('%Y'))) if
+        files = [j for j in os.listdir(os.path.join(folder, i.strftime('%Y'))) if
                  j.startswith(i.strftime('%Y%m%d'))]
         try:
             if files == []:
@@ -71,21 +71,21 @@ def daily_zipping():
 
 if __name__ == "__main__":
     # for reordering old files
-    daily_zipping()
+    # daily_zipping()
 
     dir_rad_trkr = pd.DataFrame(columns=['dt', 'mask'])
     dir_rad_trkr_missing = pd.DataFrame(columns=['dt', 'mask'])
     for ii, i in enumerate(date_list[:-1]):
         fn = os.path.join(
-                folder, i.strftime('%Y%m%d'))
+                folder, i.strftime('%Y'), i.strftime('%Y%m%d'))
         try:
             if os.path.exists(fn + '.zip'):
-                print(i)
+                print(f'available: {fn}')
                 dir_rad_trkr.loc[i] = [i, True]
             else:
                 dir_rad_trkr_missing.loc[i] = [i, False]
+                print(f'missing: {fn}')
 
-            print(fn)
         except (FileNotFoundError, zipfile.BadZipFile) as e:
             print(e)
 
