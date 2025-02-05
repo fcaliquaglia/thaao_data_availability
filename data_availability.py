@@ -100,7 +100,7 @@ if __name__ == "__main__":
     elif switch_prog_bar == 'no':
         sw.switch_prog_bar = False
 
-    print(f'These instruments are plotted (hard-coded): {ts.instr_list}')
+    print(f'These instruments are plotted: {ts.instr_list}')
 
     # rolling panels
     if sw.switch_rolling_panels:
