@@ -32,7 +32,7 @@ import tools as tls
 
 instr = 'aws_vespa'
 date_list = pd.date_range(
-        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='H').tolist()
+        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='h').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 
