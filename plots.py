@@ -434,7 +434,7 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
             data_na.index[data_na], np.full_like(data_na.index[data_na], idx), fmt='.', color='lightgrey', markersize=0)
 
     if not data_val.empty:
-        data_val = data_val.loc[yy1:yy2]
+        data_val = data_val[data_val.index.to_series().between(yy1,yy2)]
         ax.errorbar(
                 data_val.index[data_val['mask'] == 1], np.full_like(data_val.index[data_val['mask'] == 1], idx),
                 fmt='.', color=cm.rainbow(np.linspace(0, 1, 40))[idx], markersize=0)
@@ -473,6 +473,7 @@ def draw_data_avail(a1, a2):
     i_labs = [instr for instr in ts.instr_list]
 
     for idx, instr in enumerate(ts.instr_list):
+        print(instr)
         inp_file = tls.input_file_selection(i_labs, instr)
         plot_data_avail(ax, inp_file, a1, a2, idx)
 
