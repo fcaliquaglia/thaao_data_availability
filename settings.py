@@ -85,8 +85,7 @@ instr_metadata = {
         end_seas=dt.datetime(1900, 3, 31)),
     'lidar_ae'            : create_instr_metadata(
             dt.datetime(1991, 9, 1), dt.datetime(1996, 3, 31),
-            institution='U.Sap+ENEA',
-            start_seas=dt.datetime(1900, 9, 1), end_seas=dt.datetime(1900, 3, 31)),
+            institution='U.Sap+ENEA'),
     'macmap_seismometer_1': create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
     'macmap_seismometer_2': create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
     'macmap_seismometer_3': create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
