@@ -138,7 +138,7 @@ def file_from_web_to_storage():
             fn_new_fold = os.path.join(
                     folder_zip, file.split('\\')[-1][12:16], file.split('\\')[-1][16:18], file.split('\\')[-1][18:20])
             try:
-                os.makedirs(fn_new_fold, exist_ok=True)
+                os.makedirs(fn_new_fold, parents=True, exist_ok=True)
                 new_dest = os.path.join(fn_new_fold, file.split('\\')[-1][12:25] + '_raw.jpg')
                 shutil.copy(file, new_dest)
                 print(new_dest)

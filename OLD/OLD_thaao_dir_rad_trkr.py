@@ -48,7 +48,7 @@ def daily_zipping():
                 continue
             else:
                 for f in files:
-                    os.makedirs(fn_new, exist_ok=True)
+                    os.makedirs(fn_new, parents=True, exist_ok=True)
                     shutil.copy(os.path.join(fn, f), os.path.join(fn_new, f))
                     print(os.path.join(fn_new, f))
         except FileNotFoundError as e:
@@ -56,7 +56,7 @@ def daily_zipping():
             continue
 
         try:
-            os.makedirs(os.path.join(folder, i.strftime('%Y')), exist_ok=True)
+            os.makedirs(os.path.join(folder, i.strftime('%Y')), parents=True, exist_ok=True)
             with zipfile.ZipFile(
                     os.path.join(folder, i.strftime('%Y'), i.strftime('%Y%m%d') + '.zip'), 'w') as zipf:
                 tls.zipdir(fn_new, zipf)

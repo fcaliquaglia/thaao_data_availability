@@ -203,7 +203,6 @@ def input_file_selection(i_list, i_name):
     :return:
     """
     try:
-
         if i_name == 'skycam':
             inp_file = os.path.join(ts.basefolder_skycam, 'thaao_skycam', i_name + '_data_avail_list.txt')
         elif i_name[0:3] == 'rad':
@@ -274,7 +273,7 @@ def plot_rolling_panels():
         yyyy1, yyyy2 = j - sw.time_window_c, j
         range_lab = f'{yyyy1.strftime("%Y%m")}_{yyyy2.strftime("%Y%m")}'
         fig = draw_data_avail(yyyy1, yyyy2)
-        plt.savefig(os.path.join(newdir, f'thaao_data_avail_{range_lab}.png'), dpi=dpi, transparent=True)
+        plt.savefig(os.path.join(newdir, f'thaao_data_avail_{range_lab}.png'), dpi=dpi, transparent=False)
         plt.close(fig)
 
 
