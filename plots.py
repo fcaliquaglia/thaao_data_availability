@@ -460,8 +460,8 @@ def draw_data_avail(a1, a2):
 
     ii_labs = []
     instrument_data = [input_file_selection(ii_labs, instr_name) for instr_idx, instr_name in enumerate(ts.instr_list)]
-    start = a1.strftime('%j %Y')
-    end = a2.strftime('%j %Y')
+    start = a1.strftime('%b %Y')
+    end = a2.strftime('%b %Y')
     print(f'period:{start}-{end}')
     for instr_idx, (inp_file, _) in enumerate(instrument_data):
         print(f'{instr_idx:02}:{ts.instr_list[instr_idx]}')
@@ -481,8 +481,8 @@ def draw_data_avail(a1, a2):
     legend_elements = [Line2D([0], [0], marker='', lw=0, color=ts.institution_colors[elem], label=elem) for elem in
                        ts.institution_colors]
     legend_elements.extend(
-            [patches.Rectangle((0, 0), 1, 1, facecolor='cyan', label='Field Campaign'),
-             patches.Rectangle((0, 0), 1, 1, facecolor='black', label='N/A')])
+            [patches.Rectangle((0, 0), 1, 1, facecolor='cyan', fontcolor='cyan', label='Field Campaign'),
+             patches.Rectangle((0, 0), 1, 1, facecolor='black', fontcolor='black', label='N/A')])
 
     ax.legend(
             handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.05), fancybox=True, shadow=True,
@@ -493,6 +493,8 @@ def draw_data_avail(a1, a2):
 
 def plot_panels(plot_type):
     """Generates panels for different types (rolling, yearly, cumulative)."""
+    print(plot_type)
+
     if plot_type == 'rolling':
         newdir = os.path.join(ts.da_folder, 'rolling', f'{sw.start_c.year}-{sw.end_c.year}')
         os.makedirs(newdir, exist_ok=True)
@@ -501,7 +503,7 @@ def plot_panels(plot_type):
             yyyy1, yyyy2 = j - sw.time_window_c, j
             range_lab = f'{yyyy1.strftime("%Y%m")}_{yyyy2.strftime("%Y%m")}'
             fig = draw_data_avail(yyyy1, yyyy2)
-            plt.savefig(os.path.join(newdir, f'thaao_data_avail_{range_lab}.png'), dpi=dpi, transparent=False)
+            plt.savefig(os.path.join(newdir, f'thaao_data_avail_{range_lab}_{sw.switch_instr_list}.png'), dpi=dpi, transparent=False)
             plt.close(fig)
 
     elif plot_type == 'yearly':
@@ -510,7 +512,7 @@ def plot_panels(plot_type):
 
         for year in pd.date_range(sw.start_y, sw.end_y, freq='YS'):
             fig = draw_data_avail(year, year + pd.DateOffset(years=1))
-            plt.savefig(os.path.join(newdir, f'thaao_data_avail_{year.strftime("%Y")}.png'), dpi=dpi)
+            plt.savefig(os.path.join(newdir, f'thaao_data_avail_{year.strftime("%Y")}_{sw.switch_instr_list}.png'), dpi=dpi)
             plt.close(fig)
 
     elif plot_type == 'cumulative':
@@ -519,5 +521,5 @@ def plot_panels(plot_type):
 
         for date in pd.date_range(sw.start_a, sw.end_a, freq=sw.time_freq_a):
             fig = draw_data_avail(sw.start_a, date + sw.time_freq_a)
-            plt.savefig(os.path.join(newdir, f'thaao_data_avail_{date.strftime("%Y%m")}.png'), dpi=dpi)
+            plt.savefig(os.path.join(newdir, f'thaao_data_avail_{date.strftime("%Y%m")}_{sw.switch_instr_list}.png'), dpi=dpi)
             plt.close(fig)
