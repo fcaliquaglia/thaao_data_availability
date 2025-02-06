@@ -98,7 +98,10 @@ def save_txt(instr_nm, data_val, missing=False):
     :param instr_nm:
     :return:
     """
-    fol_out = os.path.join(ts.basefolder, f'thaao_{instr_nm}')
+    if instr_nm == 'skycam':
+        fol_out = os.path.join(ts.basefolder_skycam, f'thaao_{instr_nm}')
+    else:
+        fol_out = os.path.join(ts.basefolder, f'thaao_{instr_nm}')
 
     if missing:
         print('Saving missing: ' + instr_nm)
