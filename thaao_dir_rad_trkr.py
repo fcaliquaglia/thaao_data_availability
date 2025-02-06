@@ -24,40 +24,6 @@ instr = 'dir_rad_trkr'
 date_list = pd.date_range(ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr, 'solcom')
 
-
-def daily_zipping():
-    for i in date_list:
-        fn = os.path.join(folder, i.strftime('%Y'))
-        fn_new = os.path.join(folder, i.strftime('%Y%m%d'))
-        files = [f for f in os.listdir(fn) if f.startswith(i.strftime('%Y%m%d'))]
-
-        if not files:
-            continue
-
-        # Ensure the directory exists before copying files
-        os.makedirs(fn_new, exist_ok=True)
-
-        for f in files:
-            try:
-                shutil.copy(os.path.join(fn, f), os.path.join(fn_new, f))
-                print(f"Copied: {os.path.join(fn_new, f)}")
-            except FileNotFoundError as e:
-                print(f"Error copying {f}: {e}")
-
-        try:
-            os.makedirs(os.path.join(folder, i.strftime('%Y')), exist_ok=True)
-            with zipfile.ZipFile(os.path.join(folder, i.strftime('%Y'), i.strftime('%Y%m%d') + '.zip'), 'w') as zipf:
-                tls.zipdir(fn_new, zipf)
-            print(f"Zipped: {fn_new}")
-        except Exception as e:
-            print(f"Error zipping file {fn_new}: {e}")
-
-        try:
-            shutil.rmtree(fn_new)
-        except FileNotFoundError as e:
-            print(f"Error deleting {fn_new}: {e}")
-
-
 def main():
     dir_rad_trkr = []
     dir_rad_trkr_missing = []

@@ -29,8 +29,6 @@ import zipfile
 
 import pandas as pd
 
-import tools as tls
-
 WEB_network = {'domain': '192.107.92.192', 'port': '21', 'user': 'ftpthule', 'pass': 'bdg1971'}
 WEB_base_folder = 'Moonglow'
 
@@ -53,6 +51,14 @@ dest = os.path.join('C:\\Users\\FCQ\\Desktop\\', 'tmp')
 # folder_reformat = 'D:\\thaao_skycam_nozip\\_2019'
 # dest = os.path.join('C:\\Users\\FCQ\\Desktop\\', 'tmp')
 
+def zipdir(path, ziph):
+    # ziph is zipfile handle
+    # for root, dirs, files in os.walk(path):
+    files = os.listdir(path)
+    for file in files:
+        ziph.write(
+                os.path.join(path, file), os.path.relpath(os.path.join(path, file), os.path.join(path, '..')))
+
 
 def daily_zipping():
     for i in date_list_zip:
@@ -68,7 +74,7 @@ def daily_zipping():
         try:
             with zipfile.ZipFile(
                     os.path.join(folder, i.strftime('%Y'), i.strftime('%Y%m%d') + '.zip'), 'w') as zipf:
-                tls.zipdir(fn_new, zipf)
+                zipdir(fn_new, zipf)
             print(f'zipped {fn_new}')
             try:
                 shutil.rmtree(fn_new)

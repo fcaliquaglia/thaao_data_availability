@@ -29,29 +29,6 @@ import pandas as pd
 import settings as ts
 
 
-def input_file_selection(i_list, i_name):
-    """
-
-    :param i_list:
-    :param i_name:
-    :return:
-    """
-    try:
-
-        if i_name == 'skycam':
-            inp_file = os.path.join(ts.basefolder_skycam, 'thaao_skycam', i_name + '_data_avail_list.txt')
-        elif i_name[0:3] == 'rad':
-            inp_file = os.path.join(ts.basefolder, 'thaao_rad', i_name + '_data_avail_list.txt')
-        else:
-            inp_file = os.path.join(ts.basefolder, 'thaao_' + i_name, i_name + '_data_avail_list.txt')
-        i_list.append(i_name)
-    except FileNotFoundError:
-        inp_file = None
-        print('file for ' + i_name + ' was not found')
-
-    return inp_file, i_name
-
-
 def save_mask_txt(data_val, fol_out, instr_nm):
     """
 
@@ -101,12 +78,3 @@ def save_txt(instr_nm, data_val, missing=False):
         np.savetxt(os.path.join(fol_out, f'{instr_nm}_data_avail_list.txt'), data_val, fmt='%s')
         print('Saved ' + str(os.path.join(fol_out, instr_nm + '_data_avail_list.txt')))
     return
-
-
-def zipdir(path, ziph):
-    # ziph is zipfile handle
-    # for root, dirs, files in os.walk(path):
-    files = os.listdir(path)
-    for file in files:
-        ziph.write(
-                os.path.join(path, file), os.path.relpath(os.path.join(path, file), os.path.join(path, '..')))
