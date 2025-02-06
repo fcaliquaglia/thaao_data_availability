@@ -22,11 +22,11 @@ __status__ = "Research"
 __lastupdate__ = ""
 
 # switches
-switch_instr_list = ''
+switch_instr_list = 'current'
 
 switch_campaigns = 'True'  # Draw field campaigns?
 switch_history = 'False'  # Draw historical events?
-switch_prog_bar = ''  # Draw progress bar?
+switch_prog_bar = 'False'  # Draw progress bar?
 
 switch_cumulative_panels = 'False'  # Plot cumulative panels?
 switch_yearly_panels = 'False'  # Plot single-year panels?
@@ -34,14 +34,14 @@ switch_rolling_panels = 'False'  # Plot panels for gif?
 
 # inputs
 
-start_a = ''
-end_a = ''
-time_freq_a = ''
+start_a = '2020'
+end_a = '2024'
+time_freq_a = '6'
 
-start_y = ''
-end_y = ''
+start_y = '2020'
+end_y = '2022'
 
-start_c = ''
-end_c = ''
-time_freq_c = ''
-time_window_c = ''
+start_c = '2020'
+end_c = '2022'
+time_freq_c = '6'
+time_window_c = '6'

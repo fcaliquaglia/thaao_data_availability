@@ -428,7 +428,7 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
     start_instr, end_instr = instr_metadata.get('start_instr', yy1), instr_metadata.get('end_instr', yy2)
 
     data_na = pd.Series(False, index=pd.date_range(yy1, yy2, freq='720min'))
-    data_na[(data_na.index.month < start_seas) | (data_na.index.month > end_seas) | (data_na.index < start_instr) | (
+    data_na[(data_na.index.month < start_seas.month) | (data_na.index.month > end_seas.month) | (data_na.index < start_instr) | (
                 data_na.index > end_instr)] = True
 
     ax.errorbar(
@@ -472,7 +472,7 @@ def draw_data_avail(a1, a2):
     i_labs = [instr for instr in ts.instr_list]
 
     for idx, instr in enumerate(ts.instr_list):
-        inp_file, _ = tls.input_file_selection(i_labs, instr)
+        inp_file = tls.input_file_selection(i_labs, instr)
         plot_data_avail(ax, inp_file, a1, a2, idx)
 
     if sw.switch_history:

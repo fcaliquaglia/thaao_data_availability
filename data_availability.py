@@ -73,8 +73,6 @@ def main():
     sw.switch_instr_list = simpledialog.askstring(
             "Instrument Category",
             'Which category of instruments (Default to: all. Otherwise choose one or more among: current, legacy, macmap, separated by space)?')
-    if not sw.switch_instr_list:
-        sw.switch_instr_list = 'all'  # Default to 'all' if the user doesn't provide input
     update_instr_list()
 
     # Panel selections with boolean logic and defaulting to 'n' (False)
