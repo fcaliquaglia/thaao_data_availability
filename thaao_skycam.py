@@ -7,7 +7,7 @@ OK
 """
 
 # =============================================================
-# CREATED: 
+# CREATED:
 # AFFILIATION: INGV
 # AUTHORS: Filippo Cali' Quaglia
 # =============================================================
@@ -23,9 +23,7 @@ __lastupdate__ = "October 2024"
 
 import os
 import zipfile
-
 import pandas as pd
-
 import settings as ts
 import tools as tls
 
@@ -34,49 +32,54 @@ date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 folder = os.path.join(ts.basefolder_skycam, "thaao_" + instr)
 
-if __name__ == "__main__":
 
+def process_zip_file(zip_file_path, date_list_int):
+    try:
+        with zipfile.ZipFile(zip_file_path, 'r') as myzip:
+            file_list = set(x.split('/')[1] for x in myzip.namelist())  # Use a set for faster lookups
+            found_dates = []
+            missing_dates = []
+            for j in date_list_int:
+                filename = j.strftime('%Y%m%d_%H%M_raw.jpg')
+                if filename in file_list:
+                    found_dates.append(j)
+                else:
+                    missing_dates.append(j)
+        return found_dates, missing_dates
+    except (FileNotFoundError, zipfile.BadZipFile) as e:
+        print(f"Error with file {zip_file_path}: {e}")
+        return [], []
+
+
+def main():
     skycam = pd.DataFrame(columns=['dt', 'mask'])
     skycam_missing = pd.DataFrame(columns=['dt', 'mask'])
+
     for ii, i in enumerate(date_list[:-1]):
-        fn = os.path.join(
-                folder, i.strftime('%Y'), i.strftime('%Y%m%d'))
-        date_list_int = pd.date_range(
-                date_list[ii], date_list[ii + 1], freq='5 min', inclusive='left').tolist()
-        try:
-            # # check daily folders
-            # if os.path.exists(fn + '.zip'):
-            #     print(i)
-            #     skycam.loc[i] = [i, True]
-            # else:
-            #     skycam_missing.loc[i] = [i, False]
-            # check at x minutes inside zip
-            with zipfile.ZipFile(f'{fn}.zip', 'r') as myzip:
-                file_list = [x.split('/')[1] for x in myzip.namelist()]
-                for j in date_list_int:
-                    if j.strftime('%Y%m%d_%H%M_raw.jpg') in file_list:
-                        # print(j.strftime('%Y%m%d_%H%M_raw.jpg'))
-                        skycam.loc[j] = [j, True]
-                    else:
-                        skycam_missing.loc[j] = [j, False]
-            myzip.close()
-            print(fn)
-        except (FileNotFoundError, zipfile.BadZipFile) as e:
-            print(e)
+        fn = os.path.join(folder, i.strftime('%Y'), i.strftime('%Y%m%d'))
+        date_list_int = pd.date_range(date_list[ii], date_list[ii + 1], freq='5 min', inclusive='left').tolist()
 
-    # # for online checks
-    # import urllib.request
-    # for i in date_list:
-    #     imgURL = "https://www.thuleatmos-it.it/data/skythule/data/" + i.strftime(
-    #             '%Y/%Y%m%d/THULE_IMAGE_%Y%m%d_') + i.strftime('%H%M') + ".jpg"
-    #     try:
-    #         urllib.request.urlopen(imgURL)
-    #         skycam.loc[i] = [i, True]
-    #         print(i)
-    #     except urllib.request.HTTPError as e:
-    #         pass
-    #     except urllib.request.URLError as e:
-    #         pass
+        zip_file_path = f'{fn}.zip'
 
+        # Process the zip file
+        found_dates, missing_dates = process_zip_file(zip_file_path, date_list_int)
+
+        # Add found dates to the dataframe
+        if found_dates:
+            found_df = pd.DataFrame({'dt': found_dates, 'mask': True})
+            skycam = pd.concat([skycam, found_df], ignore_index=True)
+
+        # Add missing dates to the missing dataframe
+        if missing_dates:
+            missing_df = pd.DataFrame({'dt': missing_dates, 'mask': False})
+            skycam_missing = pd.concat([skycam_missing, missing_df], ignore_index=True)
+
+        print(fn)
+
+    # Save data to txt files using optimized saving
     tls.save_txt(instr, skycam)
     tls.save_txt(instr, skycam_missing, missing=True)
+
+
+if __name__ == "__main__":
+    main()
