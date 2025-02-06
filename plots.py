@@ -1,4 +1,3 @@
-import datetime as dt
 import os
 
 import matplotlib.cm as cm
@@ -11,33 +10,15 @@ from matplotlib.lines import Line2D
 
 import settings as ts
 import switches as sw
+import tools as tls
 
 dpi_fac = 2
 dpi = 200 * dpi_fac
 
 
-def load_data_file(inp):
-    """
-    Loads the data from the input file. Returns a DataFrame with 'datetime' as the index
-    and 'mask' column indicating data availability.
-    """
-    try:
-        data_val = pd.read_table(inp, sep=' ')
-        data_val.columns = ['date', 'time', 'mask']
-        data_val['datetime'] = pd.to_datetime(data_val['date'] + ' ' + data_val['time'])
-        data_val.set_index('datetime', inplace=True)
-        data_val.drop(columns=['date', 'time'], inplace=True)
-        return data_val
-    except FileNotFoundError:
-        print(f'{inp} not found or corrupted!')
-        # Return an empty DataFrame for missing data
-        return pd.DataFrame(
-                {'mask': []}, index=pd.date_range(dt.datetime(1900, 1, 1), dt.datetime.today(), freq='720min'))
-
-
 def plot_data_avail(ax, inp, yy1, yy2, idx):
     """Optimized function to plot data availability"""
-    data_val = load_data_file(inp)
+    data_val = tls.load_data_file(inp)
 
     # Filter data within the specified range (yy1, yy2)
     data_val = data_val[(data_val.index >= yy1) & (data_val.index <= yy2)]
@@ -132,30 +113,14 @@ def draw_campaigns(ax, a1, a2):
             ax.axvspan(campaign['start'], campaign['end'], alpha=0.25, color='cyan', zorder=10)
 
 
-def input_file_selection(i_list, i_name):
-    """Select the appropriate input file for each instrument."""
-    try:
-        if i_name == 'skycam':
-            inp_file = os.path.join(ts.basefolder_skycam, 'thaao_skycam', i_name + '_data_avail_list.txt')
-        elif i_name.startswith('rad'):
-            inp_file = os.path.join(ts.basefolder, 'thaao_rad', i_name + '_data_avail_list.txt')
-        else:
-            inp_file = os.path.join(ts.basefolder, 'thaao_' + i_name, i_name + '_data_avail_list.txt')
-        i_list.append(i_name)
-    except FileNotFoundError:
-        inp_file = None
-        print(f'File for {i_name} was not found')
-
-    return inp_file, i_name
-
-
 def draw_data_avail(a1, a2):
     """Draws data availability with legends for instruments and campaigns."""
     fig, ax = plt.subplots(figsize=(len(ts.instr_list) / 2 * 1.5, len(ts.instr_list) / 2))
     ax2 = ax.twinx()
 
     ii_labs = []
-    instrument_data = [input_file_selection(ii_labs, instr_name) for instr_idx, instr_name in enumerate(ts.instr_list)]
+    instrument_data = [tls.input_file_selection(ii_labs, instr_name) for instr_idx, instr_name in
+                       enumerate(ts.instr_list)]
     start = a1.strftime('%b %Y')
     end = a2.strftime('%b %Y')
     print(f'period:{start}-{end}')
