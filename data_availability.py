@@ -64,7 +64,7 @@ def set_date_params(start_prompt, end_prompt, date_type):
         sw.end_a = end_date
 
 
-# Main execution code (optimized)
+# Main execution code
 def main():
     # Create root for dialog boxes
     root = create_root()
@@ -104,13 +104,11 @@ def main():
 
     # Plot the panels based on the switches
     if sw.switch_rolling_panels:
-        plot_rolling_panels()
-
+        plot_panels('rolling')
     if sw.switch_yearly_panels:
-        plot_yearly_panels()
-
+        plot_panels('yearly')
     if sw.switch_cumulative_panels:
-        plot_cumulative_panels()
+        plot_panels('cumulative')
 
     print('END')
 
