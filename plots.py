@@ -422,18 +422,19 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
         print(f'File not found: {inp}')
         return
 
-    data_val = data_val.loc[yy1:yy2]
     instr_metadata = ts.instr_metadata.get(ts.instr_list[idx], {})
     start_seas, end_seas = instr_metadata.get('start_seas', 1), instr_metadata.get('end_seas', 12)
     start_instr, end_instr = instr_metadata.get('start_instr', yy1), instr_metadata.get('end_instr', yy2)
 
     data_na = pd.Series(False, index=pd.date_range(yy1, yy2, freq='720min'))
-    data_na[(data_na.index.month < start_seas.month) | (data_na.index.month > end_seas.month) | (data_na.index < start_instr) | (
-                data_na.index > end_instr)] = True
-
+    data_na[(data_na.index.month < start_seas.month) | (data_na.index.month > end_seas.month) | (
+                data_na.index < start_instr) | (
+                    data_na.index > end_instr)] = True
     ax.errorbar(
             data_na.index[data_na], np.full_like(data_na.index[data_na], idx), fmt='.', color='lightgrey', markersize=0)
+
     if not data_val.empty:
+        data_val = data_val.loc[yy1:yy2]
         ax.errorbar(
                 data_val.index[data_val['mask'] == 1], np.full_like(data_val.index[data_val['mask'] == 1], idx),
                 fmt='.', color=cm.rainbow(np.linspace(0, 1, 40))[idx], markersize=0)
