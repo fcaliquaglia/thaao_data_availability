@@ -363,8 +363,8 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
 
     # Plotting missing data (grey color)
     ax.errorbar(
-            data_na.index[data_na['mask']], np.repeat(idx, len(data_na.index[data_na['mask']])), xerr=None, yerr=0.3,
-            fmt='.', color='lightgrey', capsize=0, markersize=0)
+            data_na.index[data_na['mask']], np.repeat(idx, len(data_na.index[data_na['mask']])), xerr=None,
+            yerr=len(ts.instr_sets['all']) / 0.5, fmt='.', color='lightgrey', capsize=0, markersize=0)
 
     # Plotting actual data availability
     color = cm.rainbow(np.linspace(0, 1, 40))[idx] if not data_val.empty else 'black'
@@ -373,18 +373,20 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
     try:
         data_val = data_val['mask'].astype(int)
         ax.errorbar(
-                data_val.index[data_val == 1], np.repeat(idx, len(data_val.index[data_val == 1])), xerr=None, yerr=0.3,
-                fmt='.', color=color, capsize=0, markersize=0)
+                data_val.index[data_val == 1], np.repeat(idx, len(data_val.index[data_val == 1])), xerr=None,
+                yerr=len(ts.instr_sets['all']) / 0.5, fmt='.', color=color, capsize=0, markersize=0)
     except pd.errors.IntCastingNaNError:
         print(f'{ts.instr_list[idx]} - all data are NAN')
     return
 
 
-def ax_style(axx, yy1, yy2, i_labs, i_length):
+def ax_style(axx, yy1, yy2, i_labs):
     """
     Customizes the axis appearance, including setting limits, formatting date ticks,
     and styling y-ticks based on instrument metadata.
     """
+
+    i_length = len(i_labs)
     axx.set_xlim(yy1, yy2)
     axx.set_ylim(-1, i_length)
 
@@ -431,7 +433,7 @@ def draw_campaigns(ax, a1, a2):
 
     for campaign in ts.campaigns_dict.values():
         if campaign['start'] in campaign_range:
-            ax.axvspan(campaign['start'], campaign['end'], alpha=0.3, color='cyan', zorder=10)
+            ax.axvspan(campaign['start'], campaign['end'], alpha=0.25, color='cyan', zorder=10)
 
 
 def input_file_selection(i_list, i_name):
@@ -453,13 +455,13 @@ def input_file_selection(i_list, i_name):
 
 def draw_data_avail(a1, a2):
     """Draws data availability with legends for instruments and campaigns."""
-    fig, ax = plt.subplots(figsize=(15, 10))
+    fig, ax = plt.subplots(figsize=(len(ts.instr_sets['all']), 10))
     ax2 = ax.twinx()
 
     ii_labs = []
     instrument_data = [input_file_selection(ii_labs, instr_name) for instr_idx, instr_name in enumerate(ts.instr_list)]
-    start=a1.strptime('%j %Y')
-    end=a2.strptime('%j %Y')
+    start = a1.strftime('%j %Y')
+    end = a2.strftime('%j %Y')
     print(f'period:{start}-{end}')
     for instr_idx, (inp_file, _) in enumerate(instrument_data):
         print(f'{instr_idx:02}:{ts.instr_list[instr_idx]}')
@@ -472,8 +474,8 @@ def draw_data_avail(a1, a2):
         draw_campaigns(ax, a1, a2)
 
     # Style the axis
-    ax_style(ax, a1, a2, ii_labs, len(ii_labs))
-    ax_style(ax2, a1, a2, ii_labs, len(ii_labs))
+    ax_style(ax, a1, a2, ii_labs)
+    ax_style(ax2, a1, a2, ii_labs)
 
     # Generate the legend efficiently
     legend_elements = [Line2D([0], [0], marker='', lw=0, color=ts.institution_colors[elem], label=elem) for elem in
