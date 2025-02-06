@@ -38,7 +38,7 @@ def input_file_selection(i_idx, i_list, i_name):
     :return:
     """
     try:
-        print(f'{i_idx:02}' + ' ' + i_name)
+
         # if i_name[0:3] == 'rad':
         #     inp_file = os.path.join(fol_input, 'thaao_rad', i_name + '_data_avail_list.txt')
         if i_name[0:7] == 'skycam':

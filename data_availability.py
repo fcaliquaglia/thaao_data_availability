@@ -40,10 +40,10 @@ if __name__ == "__main__":
         ts.instr_list += ts.instr_list_current
 
     # panel for rolling (for gifs, by i years)
-    switch_rolling_panels = input('Plot rolling panels (yes/no)\n')
-    if switch_rolling_panels == 'no':
+    switch_rolling_panels = input('Plot rolling panels (y/n)\n')
+    if switch_rolling_panels == 'n':
         sw.switch_rolling_panels = False
-    elif switch_rolling_panels == 'yes':
+    elif switch_rolling_panels == 'y':
         sw.switch_rolling_panels = True
         window_size = int(input('window size (in months): '))
         lag_c = int(input('lag (in months): '))
@@ -54,10 +54,10 @@ if __name__ == "__main__":
         sw.end_c = dt.datetime.today() + dt.timedelta(minutes=500000)
 
     # yearly panels
-    switch_yearly_panels = input('Plot yearly panels? (yes/no)\n')
-    if switch_yearly_panels == 'no':
+    switch_yearly_panels = input('Plot yearly panels? (y/n)\n')
+    if switch_yearly_panels == 'n':
         sw.switch_yearly_panels = False
-    elif switch_yearly_panels == 'yes':
+    elif switch_yearly_panels == 'y':
         sw.switch_yearly_panels = True
         strt_y = int(input('start year: '))
         sw.start_y = dt.datetime(strt_y, 1, 1)
@@ -65,10 +65,10 @@ if __name__ == "__main__":
         sw.end_y = dt.datetime(nd_y, 12, 31)
 
     # Full panels
-    switch_cumulative_panels = input('Plot cumulative panels? (yes/no)\n')
-    if switch_cumulative_panels == 'no':
+    switch_cumulative_panels = input('Plot cumulative panels? (y/n)\n')
+    if switch_cumulative_panels == 'n':
         sw.switch_cumulative_panels = False
-    elif switch_cumulative_panels == 'yes':
+    elif switch_cumulative_panels == 'y':
         sw.switch_cumulative_panels = True
         strt_y = int(input('start year: '))
         sw.start_a = dt.datetime(strt_y, 1, 1)
@@ -80,24 +80,24 @@ if __name__ == "__main__":
         sw.time_freq_a = pd.DateOffset(months=lag_a)
 
     # Field Campaigns
-    switch_campaigns = input('Draw field campaigns? (yes/no)\n')
-    if switch_campaigns == 'yes':
+    switch_campaigns = input('Draw field campaigns? (y/n)\n')
+    if switch_campaigns == 'y':
         sw.switch_campaigns = True
-    elif switch_campaigns == 'no':
+    elif switch_campaigns == 'n':
         sw.switch_campaigns = False
 
     # Historical events
-    switch_history = input('Draw historical events? (yes/no)\n')
-    if switch_history == 'yes':
+    switch_history = input('Draw historical events? (y/n)\n')
+    if switch_history == 'y':
         sw.switch_history = True
-    elif switch_history == 'no':
+    elif switch_history == 'n':
         sw.switch_history = False
 
     # Time-progress bar
-    switch_prog_bar = input('Draw progress bar? (yes/no)\n')
-    if switch_prog_bar == 'yes':
+    switch_prog_bar = input('Draw progress bar? (y/n)\n')
+    if switch_prog_bar == 'y':
         sw.switch_prog_bar = True
-    elif switch_prog_bar == 'no':
+    elif switch_prog_bar == 'n':
         sw.switch_prog_bar = False
 
     print(f'These instruments are plotted: {ts.instr_list}')

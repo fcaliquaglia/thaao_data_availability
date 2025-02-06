@@ -23,7 +23,6 @@ __lastupdate__ = ""
 
 import copy as cp
 import datetime as dt
-import gc
 import os
 
 import matplotlib.dates as mdates
@@ -116,8 +115,6 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
             data_val.index[data_val == 1].values, ys, xerr=None, yerr=0.3, fmt='.', color=color, capsize=0,
             markersize=0)
 
-    del data_val
-
     return
 
 
@@ -194,46 +191,95 @@ def draw_campaigns(ax, a1, a2):
 
 def draw_data_avail(a1, a2):
     """
-
-    :param a1:
-    :param a2:
-    :return:
+    Draws data availability with legends for instruments and campaigns.
+    :param a1: Start date
+    :param a2: End date
+    :return: Matplotlib figure
     """
-    # with plt.xkcd():
-    # fig, ax = plt.subplots(figsize=(15, 10))
-    fig = plt.figure(figsize=(15, 10))
-    ax = fig.add_axes([0.15, 0.1, 0.7, 0.8])
+
+    fig, ax = plt.subplots(figsize=(15, 10))
     ax2 = ax.twinx()
+
     i_labs = []
-    for instr_idx, instr_name in enumerate(ts.instr_list):
-        inp_file, i_labs = tls.input_file_selection(instr_idx, i_labs, instr_name)
+
+    # Precompute instrument inputs
+    instrument_data = [tls.input_file_selection(instr_idx, i_labs, instr_name) for instr_idx, instr_name in
+        enumerate(ts.instr_list)]
+
+    for instr_idx, (inp_file, _) in enumerate(instrument_data):
+        print(f'{instr_idx:02}')
         plot_data_avail(ax, inp_file, a1, a2, instr_idx)
+
+    # Check switches
     if sw.switch_history:
         draw_events(ax, a1, a2)
     if sw.switch_campaigns:
         draw_campaigns(ax, a1, a2)
-    ax_style(ax, a1, a2, i_labs, len(i_labs))
-    ax_style(ax2, a1, a2, i_labs, len(i_labs))
-    # legend of institutions
-    legend_elements = []
-    legend_colors = []
-    for idx, elem in enumerate(ts.institution_colors.keys()):
-        legend_elements.append(
-                Line2D(
-                        [0], [0], marker='', markersize=0, lw=0, color=ts.institution_colors.get(elem), label=elem))
-        legend_colors.append(ts.institution_colors.get(elem))
-    # N/A legend
-    # campaign legend
-    rect1 = patches.Rectangle((0, 0), 1, 1, facecolor='cyan', label='Field Campaign')
-    rect2 = patches.Rectangle((0, 0), 1, 1, facecolor='black', label='N/A')
-    legend_elements.append(rect1)
-    legend_colors.append('cyan')
-    legend_elements.append(rect2)
-    legend_colors.append('black')
+
+    # Compute labels length once
+    num_labs = len(i_labs)
+    ax_style(ax, a1, a2, i_labs, num_labs)
+    ax_style(ax2, a1, a2, i_labs, num_labs)
+
+    # Optimize legend creation using list comprehension
+    legend_elements = [Line2D([0], [0], marker='', lw=0, color=ts.institution_colors[elem], label=elem) for elem in
+        ts.institution_colors]
+
+    # Add additional legend elements
+    legend_elements.extend(
+            [patches.Rectangle((0, 0), 1, 1, facecolor='cyan', label='Field Campaign'),
+                patches.Rectangle((0, 0), 1, 1, facecolor='black', label='N/A')])
+
     ax.legend(
             handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.05), fancybox=True, shadow=True,
-            ncol=6, labelcolor=legend_colors, prop={'weight': 'bold'})
+            ncol=6, labelcolor=[ts.institution_colors[elem] for elem in
+        ts.institution_colors], prop={'weight': 'bold'})
+
     return fig
+
+
+# def draw_data_avail(a1, a2):
+#     """
+#
+#     :param a1:
+#     :param a2:
+#     :return:
+#     """
+#     # with plt.xkcd():
+#     fig = plt.figure(figsize=(15, 10))
+#     ax = fig.add_axes([0.15, 0.1, 0.7, 0.8])
+#     ax2 = ax.twinx()
+#     i_labs = []
+#     for instr_idx, instr_name in enumerate(ts.instr_list):
+#         inp_file, i_labs = tls.input_file_selection(instr_idx, i_labs, instr_name)
+#         plot_data_avail(ax, inp_file, a1, a2, instr_idx)
+#     if sw.switch_history:
+#         draw_events(ax, a1, a2)
+#     if sw.switch_campaigns:
+#         draw_campaigns(ax, a1, a2)
+#     num_labs=len(i_labs)
+#     ax_style(ax, a1, a2, i_labs, num_labs)
+#     ax_style(ax2, a1, a2, i_labs, num_labs)
+#     # legend of institutions
+#     legend_elements = []
+#     legend_colors = []
+#     for idx, elem in enumerate(ts.institution_colors.keys()):
+#         legend_elements.append(
+#                 Line2D(
+#                         [0], [0], marker='', markersize=0, lw=0, color=ts.institution_colors.get(elem), label=elem))
+#         legend_colors.append(ts.institution_colors.get(elem))
+#     # N/A legend
+#     # campaign legend
+#     rect1 = patches.Rectangle((0, 0), 1, 1, facecolor='cyan', label='Field Campaign')
+#     rect2 = patches.Rectangle((0, 0), 1, 1, facecolor='black', label='N/A')
+#     legend_elements.append(rect1)
+#     legend_colors.append('cyan')
+#     legend_elements.append(rect2)
+#     legend_colors.append('black')
+#     ax.legend(
+#             handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.05), fancybox=True, shadow=True,
+#             ncol=6, labelcolor=legend_colors, prop={'weight': 'bold'})
+#     return fig
 
 
 def draw_progress_bar(n_dir, range_lab_f, strt_ff, end_ff, jj):
