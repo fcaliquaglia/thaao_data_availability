@@ -29,30 +29,19 @@ import pandas as pd
 import settings as ts
 
 
-def input_file_selection(i_idx, i_list, i_name):
+def input_file_selection(i_list, i_name):
     """
 
-    :param i_idx:
     :param i_list:
     :param i_name:
     :return:
     """
     try:
 
-        # if i_name[0:3] == 'rad':
-        #     inp_file = os.path.join(fol_input, 'thaao_rad', i_name + '_data_avail_list.txt')
-        if i_name[0:7] == 'skycam':
+        if i_name == 'skycam':
             inp_file = os.path.join(ts.basefolder_skycam, 'thaao_skycam', i_name + '_data_avail_list.txt')
-        if i_name[0:3] == 'rad':
+        elif i_name[0:3] == 'rad':
             inp_file = os.path.join(ts.basefolder, 'thaao_rad', i_name + '_data_avail_list.txt')
-        # elif i_name[0:5] == 'lidar':
-        #     inp_file = os.path.join(fol_input, 'thaao_lidar', i_name + '_data_avail_list.txt')
-        # elif i_name[0:5] == 'metar':
-        #     inp_file = os.path.join(fol_input, i_name + '_data_avail_list.txt')
-        # elif i_name[0:13] == 'macmap_seismometers':
-        #     inp_file = os.path.join(fol_input, 'thaao_macmap_seismometers', i_name + '_data_avail_list.txt')
-        # elif (i_name[0:11] == 'ecapac_snow') | (i_name[0:10] == 'ecapac_aws'):
-        #     inp_file = os.path.join(fol_input, 'thaao_ecapac_aws_snow', i_name + '_data_avail_list.txt')
         else:
             inp_file = os.path.join(ts.basefolder, 'thaao_' + i_name, i_name + '_data_avail_list.txt')
         i_list.append(i_name)

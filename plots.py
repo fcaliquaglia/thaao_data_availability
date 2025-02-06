@@ -35,82 +35,144 @@ import tools as tls
 dpi_fac = 2  # if increased, dpi resolution increases
 dpi = 300 * dpi_fac
 
+import numpy as np
+import pandas as pd
+import matplotlib.cm as cm
+import matplotlib.pyplot as plt
+
 
 def plot_data_avail(ax, inp, yy1, yy2, idx):
-    """
+    """Optimized function to plot data availability"""
 
-    :param ax:
-    :param idx:
-    :param inp:
-    :param yy1:
-    :param yy2:
-    :return:
-    """
-
-    # data
+    # Try reading the data
     try:
         data_val = pd.read_table(inp, sep=' ')
         data_val.columns = ['date', 'time', 'mask']
-        data_val = data_val.set_index(pd.DatetimeIndex(data_val['date'] + 'T' + data_val['time']))
-        data_val = data_val.drop(columns=['date', 'time'])
+        data_val['datetime'] = pd.to_datetime(data_val['date'] + ' ' + data_val['time'])
+        data_val.set_index('datetime', inplace=True)
+        data_val.drop(columns=['date', 'time'], inplace=True)
         missing_switch = 0
     except FileNotFoundError:
         print(f'{inp} not found or corrupted!')
         missing_switch = 1
-        data_val = pd.DataFrame(data=np.empty((0, 2)))
-        data_val.columns = ['datetime', 'mask']
+        data_val = pd.DataFrame({'mask': [True] * 0})  # Empty DataFrame
         data_val['datetime'] = pd.date_range(dt.datetime(1900, 1, 1), dt.datetime.today(), freq='720min')
-        data_val = data_val.set_index(pd.DatetimeIndex(data_val['datetime']))
-        data_val = data_val.drop(columns=['datetime'])
-        data_val['mask'] = True
+        data_val.set_index('datetime', inplace=True)
 
+    # Filter data within specified range (yy1, yy2)
     if missing_switch == 0:
         data_val = data_val[(data_val.index >= yy1) & (data_val.index <= yy2)]
 
-    # data na
-    data_na = pd.DataFrame()
-    data_na['date'] = pd.date_range(yy1, yy2, freq='720min')
-    data_na['mask'] = np.empty(data_na['date'].shape)
-    data_na['mask'] = False
-    data_na.index = data_na['date']
-    data_na.drop(columns=['date'], inplace=True)
+    # Initialize 'data_na' for missing data mask
+    data_na = pd.DataFrame(index=pd.date_range(yy1, yy2, freq='720min'), columns=['mask'], data=False)
 
-    # excluding seasonal unavailability
-    for i, ii in enumerate(data_na.index):
-        if (ii.month > pd.Timestamp(ts.instr_metadata.get(ts.instr_list[idx])['end_seas']).month) | (
-                ii.month < pd.Timestamp(ts.instr_metadata.get(ts.instr_list[idx])['start_seas']).month):
-            if data_na['mask'].iloc[i] != True:
-                data_na.loc[ii, 'mask'] = True
-        else:
-            data_na.loc[ii, 'mask'] = False
+    # Excluding seasonal unavailability using vectorized operations
+    instr_metadata = ts.instr_metadata.get(ts.instr_list[idx])
+    start_seas = pd.Timestamp(instr_metadata['start_seas']).month
+    end_seas = pd.Timestamp(instr_metadata['end_seas']).month
+    start_instr = pd.Timestamp(instr_metadata['start_instr'])
+    end_instr = pd.Timestamp(instr_metadata['end_instr'])
 
-    # excluding instrument missing or not installed
-    for i, ii in enumerate(data_na.index):
-        if (ii < pd.Timestamp(ts.instr_metadata.get(ts.instr_list[idx])['start_instr'])) | (
-                ii > pd.Timestamp(ts.instr_metadata.get(ts.instr_list[idx])['end_instr'])):
-            data_na.loc[ii, 'mask'] = True
-        else:
-            pass
+    data_na['mask'] = np.where(
+        (data_na.index.month < start_seas) | (data_na.index.month > end_seas) |
+        (data_na.index < start_instr) | (data_na.index > end_instr), True, False)
 
-    data_na = data_na['mask'].astype('int')
-    ys_1 = np.repeat(idx, len(data_na.index[data_na == 1].values))
+    # Plotting: Error bars for missing data
+    ys_1 = np.repeat(idx, len(data_na.index[data_na['mask']]))
     ax.errorbar(
-            data_na.index[data_na == 1].values, ys_1, xerr=None, yerr=0.3, fmt='.', color='lightgrey', capsize=0,
+            data_na.index[data_na['mask']], ys_1, xerr=None, yerr=0.3, fmt='.', color='lightgrey', capsize=0,
             markersize=0)
 
-    # plot data
+    # Plotting actual data availability
     if missing_switch == 0:
-        color = cm.rainbow(np.linspace(0, 1, 40))
-        color = color[idx]
+        color = cm.rainbow(np.linspace(0, 1, 40))[idx]
     else:
         color = 'black'
-    data_val = data_val['mask'].astype('int')
-    ys = np.repeat(idx, len(data_val.index[data_val == 1].values))
-    ax.errorbar(
-            data_val.index[data_val == 1].values, ys, xerr=None, yerr=0.3, fmt='.', color=color, capsize=0,
-            markersize=0)
 
+    try:
+        data_val = data_val['mask'].astype(int)
+        ys = np.repeat(idx, len(data_val.index[data_val == 1]))
+        ax.errorbar(data_val.index[data_val == 1], ys, xerr=None, yerr=0.3, fmt='.', color=color, capsize=0, markersize=0)
+    except pd.errors.IntCastingNaNError:
+        print(f'{ts.instr_list[idx]} -  all data are NAN')
     return
+
+
+# def plot_data_avail(ax, inp, yy1, yy2, idx):
+#     """
+#
+#     :param ax:
+#     :param idx:
+#     :param inp:
+#     :param yy1:
+#     :param yy2:
+#     :return:
+#     """
+#
+#     # data
+#     try:
+#         data_val = pd.read_table(inp, sep=' ')
+#         data_val.columns = ['date', 'time', 'mask']
+#         data_val = data_val.set_index(pd.DatetimeIndex(data_val['date'] + 'T' + data_val['time']))
+#         data_val = data_val.drop(columns=['date', 'time'])
+#         missing_switch = 0
+#     except FileNotFoundError:
+#         print(f'{inp} not found or corrupted!')
+#         missing_switch = 1
+#         data_val = pd.DataFrame(data=np.empty((0, 2)))
+#         data_val.columns = ['datetime', 'mask']
+#         data_val['datetime'] = pd.date_range(dt.datetime(1900, 1, 1), dt.datetime.today(), freq='720min')
+#         data_val = data_val.set_index(pd.DatetimeIndex(data_val['datetime']))
+#         data_val = data_val.drop(columns=['datetime'])
+#         data_val['mask'] = True
+#
+#     if missing_switch == 0:
+#         data_val = data_val[(data_val.index >= yy1) & (data_val.index <= yy2)]
+#
+#     # data na
+#     data_na = pd.DataFrame()
+#     data_na['date'] = pd.date_range(yy1, yy2, freq='720min')
+#     data_na['mask'] = np.empty(data_na['date'].shape)
+#     data_na['mask'] = False
+#     data_na.index = data_na['date']
+#     data_na.drop(columns=['date'], inplace=True)
+#
+#     # excluding seasonal unavailability
+#     for i, ii in enumerate(data_na.index):
+#         if (ii.month > pd.Timestamp(ts.instr_metadata.get(ts.instr_list[idx])['end_seas']).month) | (
+#                 ii.month < pd.Timestamp(ts.instr_metadata.get(ts.instr_list[idx])['start_seas']).month):
+#             if data_na['mask'].iloc[i] != True:
+#                 data_na.loc[ii, 'mask'] = True
+#         else:
+#             data_na.loc[ii, 'mask'] = False
+#
+#     # excluding instrument missing or not installed
+#     for i, ii in enumerate(data_na.index):
+#         if (ii < pd.Timestamp(ts.instr_metadata.get(ts.instr_list[idx])['start_instr'])) | (
+#                 ii > pd.Timestamp(ts.instr_metadata.get(ts.instr_list[idx])['end_instr'])):
+#             data_na.loc[ii, 'mask'] = True
+#         else:
+#             pass
+#
+#     data_na = data_na['mask'].astype('int')
+#     ys_1 = np.repeat(idx, len(data_na.index[data_na == 1].values))
+#     ax.errorbar(
+#             data_na.index[data_na == 1].values, ys_1, xerr=None, yerr=0.3, fmt='.', color='lightgrey', capsize=0,
+#             markersize=0)
+#
+#     # plot data
+#     if missing_switch == 0:
+#         color = cm.rainbow(np.linspace(0, 1, 40))
+#         color = color[idx]
+#     else:
+#         color = 'black'
+#     data_val = data_val['mask'].astype('int')
+#     ys = np.repeat(idx, len(data_val.index[data_val == 1].values))
+#     ax.errorbar(
+#             data_val.index[data_val == 1].values, ys, xerr=None, yerr=0.3, fmt='.', color=color, capsize=0,
+#             markersize=0)
+#
+#     return
 
 
 def ax_style(axx, yy1, yy2, i_labs, i_length):
@@ -298,7 +360,7 @@ def draw_data_avail(a1, a2):
     i_labs = []
 
     # Precompute instrument inputs
-    instrument_data = [tls.input_file_selection(instr_idx, i_labs, instr_name) for instr_idx, instr_name in
+    instrument_data = [tls.input_file_selection(i_labs, instr_name) for instr_idx, instr_name in
                        enumerate(ts.instr_list)]
 
     for instr_idx, (inp_file, _) in enumerate(instrument_data):
