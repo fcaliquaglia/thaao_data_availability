@@ -50,70 +50,72 @@ def create_instr_metadata(start_instr, end_instr=today, start_seas=start_season,
 
 
 # Instrument metadata with optimized structure
-instr_metadata = {'aeronet'                                                                : create_instr_metadata(
-        dt.datetime(2007, 3, 1), institution='NCAR/NASA'), 'aero_sondes'                   : create_instr_metadata(
-        dt.datetime(1992, 1, 1), dt.datetime(1998, 12, 31), institution='DMI'), 'aws_vespa': create_instr_metadata(
-        dt.datetime(2016, 1, 1), institution='INGV'), 'ceilometer'                         : create_instr_metadata(
-        dt.datetime(2019, 11, 1), institution='ENEA'), 'dir_rad_trkr'                      : create_instr_metadata(
-        dt.datetime(2002, 10, 1), institution='DMI+ENEA', start_seas=dt.datetime(1900, 2, 1),
-        end_seas=dt.datetime(1900, 10, 31)), 'ecapac_mrr'                                  : create_instr_metadata(
-        dt.datetime(2022, 9, 1), institution='ENEA'), 'ecapac_aws_snow'                    : create_instr_metadata(
-        dt.datetime(2022, 9, 1), institution='ENEA'), 'ecapac_disdro_precip'               : create_instr_metadata(
-        dt.datetime(2022, 9, 1), institution='ENEA'), 'ftir'                               : create_instr_metadata(
-        dt.datetime(1999, 10, 1), institution='NCAR/NASA', start_seas=dt.datetime(1900, 3, 1),
-        end_seas=dt.datetime(1900, 10, 31)), 'gbms'                                        : create_instr_metadata(
-        dt.datetime(1992, 1, 1), dt.datetime(2012, 12, 31), institution='U.Alaska,Florence,StonyBrook/USSF'),
-    'hatpro'                                                                               : create_instr_metadata(
-        dt.datetime(2017, 1, 1), dt.datetime(2024, 9, 30), institution='ENEA'),
-    'lidar_temp'                                                                           : create_instr_metadata(
-            dt.datetime(1993, 11, 1), institution='U.Sap+ENEA', start_seas=dt.datetime(1900, 11, 1),
-            end_seas=dt.datetime(1900, 3, 31)), 'lidar_ae'                                 : create_instr_metadata(
-            dt.datetime(1991, 9, 1), dt.datetime(1996, 3, 31), institution='U.Sap+ENEA',
-            start_seas=dt.datetime(1900, 9, 1),
-            end_seas=dt.datetime(1900, 3, 31)),
-    'macmap_seismometer_1'                                                                 : create_instr_metadata(
-        dt.datetime(2021, 8, 1), institution='INGV'),
-    'macmap_seismometer_2'                                                                 : create_instr_metadata(
-        dt.datetime(2021, 8, 1), institution='INGV'),
-    'macmap_seismometer_3'                                                                 : create_instr_metadata(
-        dt.datetime(2021, 8, 1), institution='INGV'),
-    'macmap_seismometer_4'                                                                 : create_instr_metadata(
-        dt.datetime(2022, 9, 1), institution='INGV'),
-    'macmap_tide_gauge'                                                                    : create_instr_metadata(
-        dt.datetime(2021, 8, 1), institution='INGV'),
-    'metar'                                                                                : create_instr_metadata(
+instr_metadata = {
+    'aeronet'             : create_instr_metadata(
+            dt.datetime(2007, 3, 1),
+            institution='NCAR/NASA',
+            start_seas=dt.datetime(1900, 3, 1),
+            end_seas=dt.datetime(1900, 10, 31)),
+    'aero_sondes'         : create_instr_metadata(
+            dt.datetime(1992, 1, 1), dt.datetime(1998, 12, 31),
+            institution='DMI'),
+    'aws_vespa'           : create_instr_metadata(dt.datetime(2016, 1, 1), institution='INGV'),
+    'ceilometer'          : create_instr_metadata(dt.datetime(2019, 11, 1), institution='ENEA'),
+    'dir_rad_trkr'        : create_instr_metadata(
+        dt.datetime(2002, 10, 1), institution='DMI+ENEA',
+        start_seas=dt.datetime(1900, 2, 1),
+        end_seas=dt.datetime(1900, 10, 31)),
+    'ecapac_mrr'          : create_instr_metadata(dt.datetime(2022, 9, 1), institution='ENEA'),
+    'ecapac_aws_snow'     : create_instr_metadata(dt.datetime(2022, 9, 1), institution='ENEA'),
+    'ecapac_disdro_precip': create_instr_metadata(dt.datetime(2022, 9, 1), institution='ENEA'),
+    'ftir'                : create_instr_metadata(
+        dt.datetime(1999, 10, 1), institution='NCAR/NASA',
+        start_seas=dt.datetime(1900, 3, 1),
+        end_seas=dt.datetime(1900, 10, 31)),
+    'gbms'                : create_instr_metadata(
+            dt.datetime(1992, 1, 1), dt.datetime(2012, 12, 31),
+            institution='U.Alaska,Florence,StonyBrook/USSF'),
+    'hatpro'              : create_instr_metadata(
+            dt.datetime(2017, 1, 1), dt.datetime(2024, 9, 30),
+            institution='ENEA'),
+    'lidar_temp'          : create_instr_metadata(
+        dt.datetime(1993, 11, 1), institution='U.Sap+ENEA',
+        start_seas=dt.datetime(1900, 11, 1),
+        end_seas=dt.datetime(1900, 3, 31)),
+    'lidar_ae'            : create_instr_metadata(
+            dt.datetime(1991, 9, 1), dt.datetime(1996, 3, 31),
+            institution='U.Sap+ENEA',
+            start_seas=dt.datetime(1900, 9, 1), end_seas=dt.datetime(1900, 3, 31)),
+    'macmap_seismometer_1': create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
+    'macmap_seismometer_2': create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
+    'macmap_seismometer_3': create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
+    'macmap_seismometer_4': create_instr_metadata(dt.datetime(2022, 9, 1), institution='INGV'),
+    'macmap_tide_gauge'   : create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
+    'metar'               : create_instr_metadata(
         dt.datetime(1951, 10, 1), institution='U.Alaska,Florence,StonyBrook/USSF'),
-    'mms_trios'                                                                            : create_instr_metadata(
-        dt.datetime(2021, 9, 1), institution='INGV'),
-    'o3_sondes'                                                                            : create_instr_metadata(
-        dt.datetime(1991, 12, 1), dt.datetime(2016, 12, 31), institution='DMI'),
-    'pm10'                                                                                 : create_instr_metadata(
+    'mms_trios'           : create_instr_metadata(dt.datetime(2021, 9, 1), institution='INGV'),
+    'o3_sondes'           : create_instr_metadata(
+            dt.datetime(1991, 12, 1), dt.datetime(2016, 12, 31),
+            institution='DMI'),
+    'pm10'                : create_instr_metadata(
         dt.datetime(2010, 1, 1), institution='U.Alaska,Florence,StonyBrook/USSF'),
-    'rad_dli'                                                                              : create_instr_metadata(
-        dt.datetime(2009, 1, 1), institution='ENEA'),
-    'rad_dsi'                                                                              : create_instr_metadata(
-        dt.datetime(2003, 2, 1), institution='DMI+ENEA'),
-    'rad_par_down'                                                                         : create_instr_metadata(
-        dt.datetime(2016, 7, 1), institution='ENEA'),
-    'rad_par_up'                                                                           : create_instr_metadata(
-        dt.datetime(2016, 7, 1), institution='ENEA'),
-    'rad_tb'                                                                               : create_instr_metadata(
-        dt.datetime(2017, 1, 1), institution='ENEA'),
-    'rad_uli'                                                                              : create_instr_metadata(
-        dt.datetime(2016, 7, 1), institution='ENEA'),
-    'rad_usi'                                                                              : create_instr_metadata(
-        dt.datetime(2016, 7, 1), institution='ENEA'),
-    'rs_sondes'                                                                            : create_instr_metadata(
-        dt.datetime(1973, 1, 1), institution='DMI+INGV'),
-    'skycam'                                                                               : create_instr_metadata(
-        dt.datetime(2016, 7, 1), institution='ENEA'),
-    'gnss'                                                                                 : create_instr_metadata(
-        dt.datetime(2021, 5, 1), institution='INGV'),
-    'uv-vis_spec'                                                                          : create_instr_metadata(
-        dt.datetime(1991, 2, 1), dt.datetime(2016, 11, 30), institution='DMI'),
-    'vespa'                                                                                : create_instr_metadata(
-        dt.datetime(2016, 7, 1), institution='INGV'), 'wv_isotopes'                        : create_instr_metadata(
-            dt.datetime(2011, 6, 1), dt.datetime(2019, 12, 31), institution='U.Alaska,Florence,StonyBrook/USSF')}
+    'rad_dli'             : create_instr_metadata(dt.datetime(2009, 1, 1), institution='ENEA'),
+    'rad_dsi'             : create_instr_metadata(dt.datetime(2003, 2, 1), institution='DMI+ENEA'),
+    'rad_par_down'        : create_instr_metadata(dt.datetime(2016, 7, 1), institution='ENEA'),
+    'rad_par_up'          : create_instr_metadata(dt.datetime(2016, 7, 1), institution='ENEA'),
+    'rad_tb'              : create_instr_metadata(dt.datetime(2017, 1, 1), institution='ENEA'),
+    'rad_uli'             : create_instr_metadata(dt.datetime(2016, 7, 1), institution='ENEA'),
+    'rad_usi'             : create_instr_metadata(dt.datetime(2016, 7, 1), institution='ENEA'),
+    'rs_sondes'           : create_instr_metadata(dt.datetime(1973, 1, 1), institution='DMI+INGV'),
+    'skycam'              : create_instr_metadata(dt.datetime(2016, 7, 1), institution='ENEA'),
+    'gnss'                : create_instr_metadata(dt.datetime(2021, 5, 1), institution='INGV'),
+    'uv-vis_spec'         : create_instr_metadata(
+            dt.datetime(1991, 2, 1), dt.datetime(2016, 11, 30),
+            institution='DMI'),
+    'vespa'               : create_instr_metadata(dt.datetime(2016, 7, 1), institution='INGV'),
+    'wv_isotopes'         : create_instr_metadata(
+            dt.datetime(2011, 6, 1), dt.datetime(2019, 12, 31),
+            institution='U.Alaska,Florence,StonyBrook/USSF')}
 
 # Define institution colors
 institution_colors = {'DMI'       : 'green', 'INGV': 'blue', 'ENEA': 'red', 'NCAR/NASA': 'purple',
@@ -211,7 +213,6 @@ campaigns_dict = {1 : {'start': dt.datetime(1991, 1, 1), 'end': dt.datetime(1991
                   33: {'start': dt.datetime(2024, 5, 25), 'end': dt.datetime(2024, 6, 17)},
                   34: {'start': dt.datetime(2024, 7, 22), 'end': dt.datetime(2024, 8, 7)},
                   35: {'start': dt.datetime(2024, 9, 26), 'end': dt.datetime(2024, 10, 5)}}
-
 
 # #!/usr/local/bin/python3
 # # -*- coding: utf-8 -*-
