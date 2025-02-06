@@ -47,10 +47,10 @@ def set_date_params(start_prompt, end_prompt, date_type):
     """ Generic date input handling """
     root = create_root()
 
-    start_year = simpledialog.askinteger("Input", start_prompt, minvalue=1900, maxvalue=2100)
+    start_year = simpledialog.askinteger("Input", start_prompt, minvalue=1920, maxvalue=dt.datetime.today().year)
     start_date = dt.datetime(start_year, 1, 1)
 
-    end_year = simpledialog.askinteger("Input", end_prompt, minvalue=1900, maxvalue=2100)
+    end_year = simpledialog.askinteger("Input", end_prompt, minvalue=1920, maxvalue=dt.datetime.today().year)
     end_date = dt.datetime(end_year, 12, 31)
 
     if date_type == 'rolling':
