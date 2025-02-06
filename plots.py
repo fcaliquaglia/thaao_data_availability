@@ -359,7 +359,7 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
     # Update missing data based on instrument availability (seasons, start/end dates)
     data_na['mask'] = np.where(
             (data_na.index.month < start_seas) | (data_na.index.month > end_seas) | (data_na.index < start_instr) | (
-                        data_na.index > end_instr), True, False)
+                    data_na.index > end_instr), True, False)
 
     # Plotting missing data (grey color)
     ax.errorbar(
@@ -458,8 +458,9 @@ def draw_data_avail(a1, a2):
 
     ii_labs = []
     instrument_data = [input_file_selection(ii_labs, instr_name) for instr_idx, instr_name in enumerate(ts.instr_list)]
-
-    print(f'period:{a1}-{a2}')
+    start=a1.strptime('%j %Y')
+    end=a2.strptime('%j %Y')
+    print(f'period:{start}-{end}')
     for instr_idx, (inp_file, _) in enumerate(instrument_data):
         print(f'{instr_idx:02}:{ts.instr_list[instr_idx]}')
         plot_data_avail(ax, inp_file, a1, a2, instr_idx)
