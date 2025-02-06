@@ -172,7 +172,9 @@ institution_colors = {
     'DMI+INGV'                         : 'orange',
     'DMI+ENEA'                         : 'pink',
     'U.Alaska,Florence,StonyBrook/USSF': 'black',
-    'not active'                       : 'grey'
+    'not active'                       : 'grey',
+    'Field Campaign'                   : 'cyan',
+    'N/A'                              : 'black'
 }
 
 # =============================================================

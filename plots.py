@@ -481,8 +481,8 @@ def draw_data_avail(a1, a2):
     legend_elements = [Line2D([0], [0], marker='', lw=0, color=ts.institution_colors[elem], label=elem) for elem in
                        ts.institution_colors]
     legend_elements.extend(
-            [patches.Rectangle((0, 0), 1, 1, facecolor='cyan', fontcolor='cyan', label='Field Campaign'),
-             patches.Rectangle((0, 0), 1, 1, facecolor='black', fontcolor='black', label='N/A')])
+            [patches.Rectangle((0, 0), 1, 1, facecolor='cyan', label='Field Campaign'),
+             patches.Rectangle((0, 0), 1, 1, facecolor='black', label='N/A')])
 
     ax.legend(
             handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.05), fancybox=True, shadow=True,
