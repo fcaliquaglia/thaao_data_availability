@@ -28,7 +28,7 @@ import zipfile
 import pandas as pd
 
 import settings as ts
-import tools as tls
+from single_instr_data_avail import tools as tls
 
 instr = 'dir_rad_trkr'
 

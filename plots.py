@@ -1,3 +1,25 @@
+#!/usr/local/bin/python3
+# -*- coding: utf-8 -*-
+# -------------------------------------------------------------------------------
+#
+"""
+Brief description
+"""
+
+# =============================================================
+# CREATED:
+# AFFILIATION: INGV
+# AUTHORS: Filippo Cali' Quaglia
+# =============================================================
+#
+# -------------------------------------------------------------------------------
+__author__ = "Filippo Cali' Quaglia"
+__credits__ = ["??????"]
+__license__ = "GPL"
+__version__ = "0.1"
+__email__ = "filippo.caliquaglia@gmail.com"
+__status__ = "Research"
+__lastupdate__ = ""
 
 import datetime as dt
 import os
@@ -42,7 +64,7 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
     # Initialize 'data_na' for missing data mask
     data_na = pd.DataFrame(index=pd.date_range(yy1, yy2, freq='720min'), columns=['mask'], data=False)
 
-    # Excluding seasonal unavailability using vectorized operations
+    # Excluding seasonal unavailability
     instr_metadata = ts.instr_metadata.get(ts.instr_list[idx])
     start_seas = pd.Timestamp(instr_metadata['start_seas']).month
     end_seas = pd.Timestamp(instr_metadata['end_seas']).month
@@ -53,7 +75,7 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
             (data_na.index.month < start_seas) | (data_na.index.month > end_seas) | (data_na.index < start_instr) | (
                     data_na.index > end_instr), True, False)
 
-    # Plotting: Error bars for missing data
+    # Plotting missing data
     ys_1 = np.repeat(idx, len(data_na.index[data_na['mask']]))
     ax.errorbar(
             data_na.index[data_na['mask']], ys_1, xerr=None, yerr=0.3, fmt='.', color='lightgrey', capsize=0,
@@ -87,7 +109,7 @@ def ax_style(axx, yy1, yy2, i_labs, i_length):
     :param i_length: The length of the y-axis.
     :return: None
     """
-    # Set the x and y axis limits
+    # Set the x and y-axis limits
     axx.set_xlim(yy1, yy2)
     axx.set_ylim(-1, i_length)
 
@@ -173,7 +195,6 @@ def draw_campaigns(ax, a1, a2):
     return
 
 
-
 def input_file_selection(i_list, i_name):
     """
 
@@ -211,8 +232,7 @@ def draw_data_avail(a1, a2):
     ii_labs = []
 
     # Precompute instrument inputs
-    instrument_data = [input_file_selection(ii_labs, instr_name) for instr_idx, instr_name in
-                       enumerate(ts.instr_list)]
+    instrument_data = [input_file_selection(ii_labs, instr_name) for instr_idx, instr_name in enumerate(ts.instr_list)]
 
     for instr_idx, (inp_file, _) in enumerate(instrument_data):
         print(f'{instr_idx:02}:{ts.instr_list[instr_idx]}')

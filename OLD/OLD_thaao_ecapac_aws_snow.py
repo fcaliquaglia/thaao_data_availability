@@ -7,7 +7,7 @@ OK
 """
 
 # =============================================================
-# CREATED: 
+# CREATED:
 # AFFILIATION: INGV
 # AUTHORS: Filippo Cali' Quaglia
 # =============================================================
@@ -26,7 +26,7 @@ import os
 import pandas as pd
 
 import settings as ts
-import tools as tls
+from single_instr_data_avail import tools as tls
 
 instr = 'ecapac_aws_snow'
 date_list = pd.date_range(

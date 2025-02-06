@@ -27,7 +27,7 @@ import zipfile
 import pandas as pd
 
 import settings as ts
-import tools as tls
+from single_instr_data_avail import tools as tls
 
 instr = 'skycam'
 date_list = pd.date_range(
