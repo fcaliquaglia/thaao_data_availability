@@ -28,10 +28,8 @@ def create_root():
 
 
 # Function to update the instrument list with pop-up window input
-def update_instr_list(switch_instr_list):
-    ts.instr_list = []
-
-    for category in switch_instr_list.split():
+def update_instr_list():
+    for category in sw.switch_instr_list.split():
         if category in ts.instr_sets:
             ts.instr_list += ts.instr_sets[category]
 
@@ -72,12 +70,12 @@ def main():
     root = create_root()
 
     # Instrument list selection
-    switch_instr_list = simpledialog.askstring(
+    sw.switch_instr_list = simpledialog.askstring(
             "Instrument Category",
             'Which category of instruments (Default to: all. Otherwise choose one or more among: current, legacy, macmap, separated by space)?')
-    if not switch_instr_list:
-        switch_instr_list = 'all'  # Default to 'all' if the user doesn't provide input
-    update_instr_list(switch_instr_list)
+    if not sw.switch_instr_list:
+        sw.switch_instr_list = 'all'  # Default to 'all' if the user doesn't provide input
+    update_instr_list()
 
     # Panel selections with boolean logic and defaulting to 'n' (False)
     sw.switch_rolling_panels = get_switch_input('Plot rolling panels? (y/n)')
