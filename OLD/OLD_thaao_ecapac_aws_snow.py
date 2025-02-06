@@ -22,33 +22,28 @@ __status__ = "Research"
 __lastupdate__ = "October 2024"
 
 import os
+
 import pandas as pd
+
 import settings as ts
 import tools as tls
 
-instr = 'ecapac_mrr'
+instr = 'ecapac_aws_snow'
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
 
-    ecapac_mrr = pd.DataFrame(columns=['dt', 'mask'])
+    ecapac_aws_snow = pd.DataFrame(columns=['dt', 'mask'])
+    # # currently no real date, only estimates
+    # for i in date_list:
+    #     ecapac_aws_snow.loc[i] = [i, True]
 
-    # Iterate over the dates and check for corresponding file existence
     for i in date_list:
         fn = os.path.join(
-                folder, 'RawSpectra', i.strftime('%Y%m'), i.strftime('%m%d') + ".raw")
+                folder, "AWS_ECAPAC", i.strftime('%Y'), "AWS_THAAO_" + i.strftime('%Y_%m_%d') + '_00_00' + ".dat")
+        if os.path.exists(fn):
+            ecapac_aws_snow.loc[i] = [i, True]
 
-        try:
-            if os.path.exists(fn):
-                ecapac_mrr.loc[i] = [i, True]
-            else:
-                ecapac_mrr.loc[i] = [i, False]  # Log missing files
-        except Exception as e:
-            print(f"Error checking file {fn}: {e}")
-            # Optionally, log the error in a separate file or handle it in another way.
-            continue
-
-    # Save the DataFrame to text file
-    tls.save_txt(instr, ecapac_mrr)
+    tls.save_txt(instr, ecapac_aws_snow)
