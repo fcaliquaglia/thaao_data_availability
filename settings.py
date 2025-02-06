@@ -52,7 +52,7 @@ instr_list_macmap = [
 
 # Combine all instrument sets
 instr_sets = {
-    "all"    : instr_list_current + instr_list_legacy + instr_list_macmap,
+    "all"    : instr_list_legacy + instr_list_macmap + instr_list_current,
     "macmap" : instr_list_macmap,
     "legacy" : instr_list_legacy,
     "current": instr_list_current
@@ -172,9 +172,7 @@ institution_colors = {
     'DMI+INGV'                         : 'orange',
     'DMI+ENEA'                         : 'pink',
     'U.Alaska,Florence,StonyBrook/USSF': 'black',
-    'not active'                       : 'grey',
-    'Field Campaign'                   : 'cyan',
-    'N/A'                              : 'black'
+    'not active'                       : 'grey'
 }
 
 # =============================================================

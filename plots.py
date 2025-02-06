@@ -317,7 +317,7 @@ import settings as ts
 import switches as sw
 
 dpi_fac = 2
-dpi = 300 * dpi_fac
+dpi = 100 * dpi_fac
 
 
 def load_data_file(inp):
@@ -363,8 +363,8 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
 
     # Plotting missing data (grey color)
     ax.errorbar(
-            data_na.index[data_na['mask']], np.repeat(idx, len(data_na.index[data_na['mask']])), xerr=None,
-            yerr=len(ts.instr_sets['all']) / 0.5, fmt='.', color='lightgrey', capsize=0, markersize=0)
+            data_na.index[data_na['mask']], np.repeat(idx, len(data_na.index[data_na['mask']])), xerr=None, yerr=0.3,
+            fmt='.', color='lightgrey', capsize=0, markersize=0)
 
     # Plotting actual data availability
     color = cm.rainbow(np.linspace(0, 1, 40))[idx] if not data_val.empty else 'black'
@@ -373,8 +373,8 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
     try:
         data_val = data_val['mask'].astype(int)
         ax.errorbar(
-                data_val.index[data_val == 1], np.repeat(idx, len(data_val.index[data_val == 1])), xerr=None,
-                yerr=len(ts.instr_sets['all']) / 0.5, fmt='.', color=color, capsize=0, markersize=0)
+                data_val.index[data_val == 1], np.repeat(idx, len(data_val.index[data_val == 1])), xerr=None, yerr=0.3,
+                fmt='.', color=color, capsize=0, markersize=0)
     except pd.errors.IntCastingNaNError:
         print(f'{ts.instr_list[idx]} - all data are NAN')
     return
@@ -455,7 +455,7 @@ def input_file_selection(i_list, i_name):
 
 def draw_data_avail(a1, a2):
     """Draws data availability with legends for instruments and campaigns."""
-    fig, ax = plt.subplots(figsize=(len(ts.instr_sets['all']), 10))
+    fig, ax = plt.subplots(figsize=(len(ts.instr_list)/2*1.5, len(ts.instr_list)/2))
     ax2 = ax.twinx()
 
     ii_labs = []
@@ -503,7 +503,9 @@ def plot_panels(plot_type):
             yyyy1, yyyy2 = j - sw.time_window_c, j
             range_lab = f'{yyyy1.strftime("%Y%m")}_{yyyy2.strftime("%Y%m")}'
             fig = draw_data_avail(yyyy1, yyyy2)
-            plt.savefig(os.path.join(newdir, f'thaao_data_avail_{range_lab}_{sw.switch_instr_list}.png'), dpi=dpi, transparent=False)
+            plt.savefig(
+                os.path.join(newdir, f'thaao_data_avail_{range_lab}_{sw.switch_instr_list}.png'), dpi=dpi,
+                transparent=False)
             plt.close(fig)
 
     elif plot_type == 'yearly':
@@ -512,7 +514,8 @@ def plot_panels(plot_type):
 
         for year in pd.date_range(sw.start_y, sw.end_y, freq='YS'):
             fig = draw_data_avail(year, year + pd.DateOffset(years=1))
-            plt.savefig(os.path.join(newdir, f'thaao_data_avail_{year.strftime("%Y")}_{sw.switch_instr_list}.png'), dpi=dpi)
+            plt.savefig(
+                os.path.join(newdir, f'thaao_data_avail_{year.strftime("%Y")}_{sw.switch_instr_list}.png'), dpi=dpi)
             plt.close(fig)
 
     elif plot_type == 'cumulative':
@@ -521,5 +524,6 @@ def plot_panels(plot_type):
 
         for date in pd.date_range(sw.start_a, sw.end_a, freq=sw.time_freq_a):
             fig = draw_data_avail(sw.start_a, date + sw.time_freq_a)
-            plt.savefig(os.path.join(newdir, f'thaao_data_avail_{date.strftime("%Y%m")}_{sw.switch_instr_list}.png'), dpi=dpi)
+            plt.savefig(
+                os.path.join(newdir, f'thaao_data_avail_{date.strftime("%Y%m")}_{sw.switch_instr_list}.png'), dpi=dpi)
             plt.close(fig)
