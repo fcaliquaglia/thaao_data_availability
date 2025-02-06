@@ -49,7 +49,7 @@ def input_file_selection(i_list, i_name):
         inp_file = None
         print('file for ' + i_name + ' was not found')
 
-    return inp_file
+    return inp_file, i_name
 
 
 def save_mask_txt(data_val, fol_out, instr_nm):
