@@ -21,8 +21,8 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
+import glob
 import os
-from glob import glob
 
 import pandas as pd
 
@@ -35,17 +35,23 @@ date_list = pd.date_range(
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
-
-    lidar_temp = pd.DataFrame(columns=['dt', 'mask'])
+    # Initialize an empty list to hold the rows before concatenating
+    rows = []
 
     for i in date_list:
-        if i.year <= 2020:
-            fn = os.path.join(folder, 'WWW-AIR_1685207569988', 'thte' + i.strftime('%y%m') + '.*')
-            if os.path.exists(fn):
-                lidar_temp.loc[i] = [i, True]
-        else:
-            fn = os.path.join(folder, i.strftime('%y%m%d') + '.zip')
-            if os.path.exists(fn):
-                lidar_temp.loc[i] = [i, True]
+        try:
+            # Create the pattern for file matching
+            fn_pattern = os.path.join(folder, i.strftime('%y%m%d') + '.zip')
+            files = glob.glob(fn_pattern)  # Use glob to find files that match the pattern
+            if os.path.exists(fn_pattern):
+                rows.append({'dt': i, 'mask': True})
+        except:
+            fn_pattern = os.path.join(folder, 'LIDAR_' + i.strftime('%Y%m%d') + '.zip')
+            if os.path.exists(fn_pattern):
+                rows.append({'dt': i, 'mask': True})
 
+    # Convert the list of dictionaries into a DataFrame
+    lidar_temp = pd.DataFrame(rows)
+
+    # Ensure tls.save_txt is implemented correctly to save the DataFrame
     tls.save_txt(instr, lidar_temp)

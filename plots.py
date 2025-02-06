@@ -55,6 +55,7 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
         data_val = data_val.drop(columns=['date', 'time'])
         missing_switch = 0
     except FileNotFoundError:
+        print(f'{inp} not found or corrupted!')
         missing_switch = 1
         data_val = pd.DataFrame(data=np.empty((0, 2)))
         data_val.columns = ['datetime', 'mask']
@@ -502,7 +503,8 @@ def plot_rolling_panels():
         plt.suptitle(f'{yyyy1.strftime("%b %Y")} to {yyyy2.strftime("%b %Y")}', fontsize=20)
 
         # Save the figure as PNG
-        plt.savefig(os.path.join(newdir, f'thaao_data_avail_{range_lab}_{sw.switch_instr_list}.png'), dpi=dpi, transparent=True)
+        plt.savefig(
+            os.path.join(newdir, f'thaao_data_avail_{range_lab}_{sw.switch_instr_list}.png'), dpi=dpi, transparent=True)
         plt.close(ffig)  # Close the figure to free resources
 
         # Optional progress bar update
@@ -554,11 +556,13 @@ def plot_yearly_panels():
 
     # Loop over years from start to end, inclusive
     for current_year in pd.date_range(sw.start_y, sw.end_y, freq='YS'):
-        print(current_year)
+        print(current_year.strftime('%Y'))
         range_lab = current_year.strftime('%Y')
 
         # Draw the figure and save it
-        ffig = draw_data_avail(current_year, current_year + pd.DateOffset(years=1))
+        yyyy1 = current_year
+        yyyy2 = current_year + pd.DateOffset(years=1)
+        ffig = draw_data_avail(yyyy1, yyyy2)
         plt.suptitle(current_year.strftime('%Y'))
 
         # Save the figure as PNG
@@ -617,7 +621,9 @@ def plot_cumulative_panels():
         print(range_lab)
 
         # Draw the figure and save it
-        ffig = draw_data_avail(sw.start_a, current_date + sw.time_freq_a)
+        yyyy1 = sw.start_a
+        yyyy2 = current_date + sw.time_freq_a
+        ffig = draw_data_avail(yyyy1, yyyy2)
         plt.suptitle(f'{sw.start_a.strftime("%b-%Y")} to {current_date.strftime("%b-%Y")}')
 
         # Save the figure as PNG

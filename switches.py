@@ -23,15 +23,16 @@ __lastupdate__ = ""
 
 # switches
 switch_instr_list = ''
-switch_campaigns = ''  # Draw field campaigns?
-switch_cumulative_panels = ''  # Plot cumulative panels?
-switch_history = ''  # Draw historical events?
-switch_yearly_panels = ''  # Plot single-year panels?
+
+switch_campaigns = 'True'  # Draw field campaigns?
+switch_history = 'False'  # Draw historical events?
 switch_prog_bar = ''  # Draw progress bar?
-switch_rolling_panels = ''  # Plot panels for gif?
+
+switch_cumulative_panels = 'False'  # Plot cumulative panels?
+switch_yearly_panels = 'False'  # Plot single-year panels?
+switch_rolling_panels = 'False'  # Plot panels for gif?
 
 # inputs
-instr_list = []
 
 start_a = ''
 end_a = ''
