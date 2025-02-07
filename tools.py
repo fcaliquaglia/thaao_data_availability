@@ -25,6 +25,7 @@ import datetime as dt
 import os
 import tkinter as tk
 
+import numpy as np
 import pandas as pd
 
 import settings as ts
@@ -85,8 +86,9 @@ def load_data_file(inp):
     except FileNotFoundError:
         print(f'{inp} not found or corrupted!')
         # Return an empty DataFrame for missing data
+        index_values = pd.date_range(sw.start, dt.datetime.today(), freq='12h')
         return pd.DataFrame(
-                {'mask': []}, index=pd.date_range(dt.datetime(1900, 1, 1), dt.datetime.today(), freq='720min'))
+                {'mask': [np.nan] * len(index_values)}, index=index_values)
 
 
 def input_file_selection(i_list, i_name):

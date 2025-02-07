@@ -50,7 +50,7 @@ def plot_data_na(ax, yy1, yy2, idx):
     """Plot NA data"""
 
     # Generate date index directly as a Pandas Series with a boolean mask
-    date_index = pd.date_range(yy1, yy2, freq='720min')
+    date_index = pd.date_range(yy1, yy2, freq='12h')
 
     # Fetch instrument metadata once
     instr_metadata = ts.instr_metadata.get(ts.instr_list[idx])

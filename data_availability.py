@@ -40,8 +40,9 @@ def main():
     sw.switch_rolling_panels = tls.get_switch_input(
             'Plot rolling panels? (y/n) \n [Yearly panels: set=12, window=12] ')
     if sw.switch_rolling_panels:
-        lag_r = simpledialog.askinteger("Rolling", "Lag (in months):", minvalue=1, maxvalue=120)
-        window_size = simpledialog.askinteger("Rolling", "Window size (in months):", minvalue=1, maxvalue=120)
+        lag_r = simpledialog.askinteger("Rolling", "Lag (in months):\n [12 for yearly plots]", minvalue=1, maxvalue=120)
+        window_size = simpledialog.askinteger(
+            "Rolling", "Window size (in months):\n [12 for yearly plots]", minvalue=1, maxvalue=120)
         sw.time_freq_r = pd.DateOffset(months=lag_r)
         sw.time_window_r = pd.DateOffset(months=window_size)
 
