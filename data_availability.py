@@ -40,14 +40,14 @@ def main():
     sw.switch_rolling_panels = tls.get_switch_input(
             'Plot rolling panels? (y/n) \n [Yearly panels: set=12, window=12] ')
     if sw.switch_rolling_panels:
-        lag_r = simpledialog.askinteger("Input", "Lag (in months):", minvalue=1, maxvalue=120)
-        window_size = simpledialog.askinteger("Input", "Window size (in months):", minvalue=1, maxvalue=120)
+        lag_r = simpledialog.askinteger("Rolling", "Lag (in months):", minvalue=1, maxvalue=120)
+        window_size = simpledialog.askinteger("Rolling", "Window size (in months):", minvalue=1, maxvalue=120)
         sw.time_freq_r = pd.DateOffset(months=lag_r)
         sw.time_window_r = pd.DateOffset(months=window_size)
 
     sw.switch_cumulative_panels = tls.get_switch_input('Plot cumulative panels? (y/n)')
     if sw.switch_cumulative_panels:
-        lag_c = simpledialog.askinteger("Input", "Lag (in months):", minvalue=1, maxvalue=120)
+        lag_c = simpledialog.askinteger("Cumulative", "Lag (in months):", minvalue=1, maxvalue=120)
         sw.time_freq_c = pd.DateOffset(months=lag_c)
 
     # Field Campaigns and Historical events (y/n)
