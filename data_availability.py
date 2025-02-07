@@ -33,22 +33,21 @@ def main():
     sw.switch_instr_list = simpledialog.askstring(
             "Instrument Category", 'Which category of instruments?  \n [current, legacy, macmap, all]')
     tls.update_instr_list()
+    tls.set_date_params('Start year: ', 'End year: ')
 
     # Panel selections with boolean logic and defaulting to 'n' (False)
     sw.switch_rolling_panels = tls.get_switch_input(
             'Plot rolling panels? (y/n) \n [Yearly panels: set=12, window=12] ')
     if sw.switch_rolling_panels:
-        window_size = simpledialog.askinteger("Input", "Window size (in months):", minvalue=1, maxvalue=120)
         lag_r = simpledialog.askinteger("Input", "Lag (in months):", minvalue=1, maxvalue=120)
-        sw.time_window_r = pd.DateOffset(months=window_size)
+        window_size = simpledialog.askinteger("Input", "Window size (in months):", minvalue=1, maxvalue=120)
         sw.time_freq_r = pd.DateOffset(months=lag_r)
-        tls.set_date_params('Start year: ', 'End year: ', 'rolling')
+        sw.time_window_r = pd.DateOffset(months=window_size)
 
     sw.switch_cumulative_panels = tls.get_switch_input('Plot cumulative panels? (y/n)')
     if sw.switch_cumulative_panels:
         lag_c = simpledialog.askinteger("Input", "Lag (in months):", minvalue=1, maxvalue=120)
         sw.time_freq_c = pd.DateOffset(months=lag_c)
-        tls.set_date_params('Start year: ', 'End year: ', 'cumulative')
 
     # Field Campaigns and Historical events (y/n)
     sw.switch_campaigns = tls.get_switch_input('Draw field campaigns? (y/n)', True)

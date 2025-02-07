@@ -64,12 +64,10 @@ def set_date_params(start_prompt, end_prompt, date_type):
     end_year = tk.simpledialog.askinteger("Input", end_prompt, minvalue=1920, maxvalue=dt.datetime.today().year)
     end_date = dt.datetime(end_year, 12, 31)
 
-    if date_type == 'rolling':
-        sw.start_r = start_date
-        sw.end_r = end_date
-    elif date_type == 'cumulative':
-        sw.start_c = start_date
-        sw.end_c = end_date
+    sw.start = start_date
+    sw.end = end_date
+
+    return
 
 
 def load_data_file(inp):

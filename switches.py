@@ -32,13 +32,12 @@ switch_cumulative_panels = 'False'  # Plot cumulative panels?
 switch_rolling_panels = 'False'  # Plot panels for gif?
 
 # inputs
+start = '2020'
+end = '2024'
+
 # cumulative
-start_c = '2020'
-end_c = '2024'
 time_freq_c = '6'
 
 # rolling
-start_r = '2022'
-end_r = '2024'
 time_freq_r = '12'
 time_window_r = '12'
