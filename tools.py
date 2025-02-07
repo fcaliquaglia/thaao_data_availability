@@ -54,7 +54,7 @@ def get_switch_input(prompt, default=False):
 
 
 # Function for getting date range input through pop-up window (start and end years)
-def set_date_params(start_prompt, end_prompt, date_type):
+def set_date_params(start_prompt, end_prompt):
     """ Generic date input handling """
     root = create_root()
 

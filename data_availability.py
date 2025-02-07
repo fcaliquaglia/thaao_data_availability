@@ -33,6 +33,7 @@ def main():
     sw.switch_instr_list = simpledialog.askstring(
             "Instrument Category", 'Which category of instruments?  \n [current, legacy, hyso, all]')
     tls.update_instr_list()
+
     tls.set_date_params('Start year: ', 'End year: ')
 
     # Panel selections with boolean logic and defaulting to 'n' (False)
