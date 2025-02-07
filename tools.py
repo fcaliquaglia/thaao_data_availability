@@ -65,14 +65,11 @@ def set_date_params(start_prompt, end_prompt, date_type):
     end_date = dt.datetime(end_year, 12, 31)
 
     if date_type == 'rolling':
-        sw.start_c = start_date + sw.time_window_c
-        sw.end_c = dt.datetime.today() + dt.timedelta(minutes=500000)
-    elif date_type == 'yearly':
-        sw.start_y = start_date
-        sw.end_y = end_date
+        sw.start_r = start_date + sw.time_window_r
+        sw.end_r = dt.datetime.today()
     elif date_type == 'cumulative':
-        sw.start_a = start_date
-        sw.end_a = end_date
+        sw.start_c = start_date
+        sw.end_c = end_date
 
 
 def load_data_file(inp):

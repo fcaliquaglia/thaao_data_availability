@@ -57,14 +57,14 @@ boolean (`True` or `False`).
 ### `set_date_params(start_prompt, end_prompt, date_type)`
 
 This function prompts the user for start and end year values for a given date range. Based on the type of date range (
-`rolling`, `yearly`, or `cumulative`), it updates the corresponding `sw` global variables to reflect the start and end
+`rolling` or `cumulative`), it updates the corresponding `sw` global variables to reflect the start and end
 dates.
 
 **Parameters:**
 
 - `start_prompt`: The prompt text for asking the user for the start year.
 - `end_prompt`: The prompt text for asking the user for the end year.
-- `date_type`: A string indicating the type of date range (`rolling`, `yearly`, or `cumulative`).
+- `date_type`: A string indicating the type of date range (`rolling` or `cumulative`).
 
 **Returns:**
 
@@ -87,7 +87,7 @@ functions based on the user's selections.
 **Execution Flow:**
 
 1. Prompts the user to select instrument categories.
-2. Prompts the user for inputs related to plotting options (rolling, yearly, and cumulative panels).
+2. Prompts the user for inputs related to plotting options (rolling and cumulative panels).
 3. Prompts for field campaigns and historical events display.
 4. Displays the selected instruments.
 5. Generates the plots based on the user's selections.
@@ -109,10 +109,9 @@ functions based on the user's selections.
       accordingly.
 
 3. **Panel Type Selection:**  
-   The user is asked if they would like to plot rolling, yearly, and cumulative panels:
+   The user is asked if they would like to plot rolling and cumulative panels:
     - **Rolling Panels**: If selected, the user provides window size (in months) and lag (in months), which are used to
-      set the `sw.time_window_c` and `sw.time_freq_c` values, respectively.
-    - **Yearly Panels**: If selected, the user provides a start and end year for plotting yearly panels.
+      set the `sw.time_window_r` and `sw.time_freq_r` values, respectively.
     - **Cumulative Panels**: If selected, the user provides a lag (in months) and a date range for cumulative panels.
 
 4. **Campaigns and Historical Events:**  
@@ -125,7 +124,6 @@ functions based on the user's selections.
 6. **Generate Plots:**  
    Based on the selected options, the corresponding plotting functions are called to generate and save the plots:
     - `plot_panels('rolling')`
-    - `plot_panels('yearly')`
     - `plot_panels('cumulative')`
 
 7. **Completion:**  

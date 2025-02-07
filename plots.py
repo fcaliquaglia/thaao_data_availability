@@ -166,7 +166,7 @@ def draw_data_avail(a1, a2, instr_data, iii_labs):
 
 
 def plot_panels(plot_type):
-    """Generates panels for different types (rolling, yearly, cumulative)."""
+    """Generates panels for different types (rolling, cumulative)."""
     print(plot_type)
 
     ii_labs = []
