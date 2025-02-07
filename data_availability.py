@@ -31,13 +31,12 @@ def main():
 
     # Instrument list selection
     sw.switch_instr_list = simpledialog.askstring(
-            "Instrument Category",
-            'Which category of instruments?  \n [current, legacy, macmap, all]')
+            "Instrument Category", 'Which category of instruments?  \n [current, legacy, macmap, all]')
     tls.update_instr_list()
 
     # Panel selections with boolean logic and defaulting to 'n' (False)
     sw.switch_rolling_panels = tls.get_switch_input(
-        'Plot rolling panels? (y/n) \n [Yearly panels: set=12, window=12] ')
+            'Plot rolling panels? (y/n) \n [Yearly panels: set=12, window=12] ')
     if sw.switch_rolling_panels:
         window_size = simpledialog.askinteger("Input", "Window size (in months):", minvalue=1, maxvalue=120)
         lag_r = simpledialog.askinteger("Input", "Lag (in months):", minvalue=1, maxvalue=120)
