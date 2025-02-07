@@ -33,7 +33,7 @@ da_folder = os.path.join(basefolder, 'thaao_data_availability')
 
 instr_list = []
 
-instr_list_current = [
+instr_list_thaao = [
     'rs_sondes', 'rad_uli', 'rad_dli', 'rad_usi', 'rad_dsi', 'rad_par_up',
     'rad_par_down', 'rad_tb', 'skycam', 'mms_trios', 'metar', 'vespa',
     'ceilometer', 'hatpro', 'dir_rad_trkr', 'pm10', 'ftir', 'aeronet',
@@ -52,10 +52,10 @@ instr_list_hyso = [
 
 # Combine all instrument sets
 instr_sets = {
-    "all"    : instr_list_legacy + instr_list_hyso + instr_list_current,
-    "hyso" : instr_list_hyso,
+    "all"    : instr_list_legacy + instr_list_hyso + instr_list_thaao,
+    "hyso"   : instr_list_hyso,
     "legacy" : instr_list_legacy,
-    "current": instr_list_current
+    "thaao": instr_list_thaao
 }
 
 # =============================================================
@@ -127,11 +127,21 @@ instr_metadata = {
     'lidar_ae'            : create_instr_metadata(
             dt.datetime(1991, 9, 1), dt.datetime(1996, 3, 31),
             institution='U.Sap+ENEA'),
-    'hyso_seismo_1': create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
-    'hyso_seismo_2': create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
-    'hyso_seismo_3': create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
-    'hyso_seismo_4': create_instr_metadata(dt.datetime(2022, 9, 1), institution='INGV'),
-    'hyso_tide_1'   : create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
+    'hyso_seismo_1'       : create_instr_metadata(
+        dt.datetime(2021, 8, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
+        end_seas=dt.datetime(1900, 10, 31)),
+    'hyso_seismo_2'       : create_instr_metadata(
+        dt.datetime(2021, 8, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
+        end_seas=dt.datetime(1900, 10, 31)),
+    'hyso_seismo_3'       : create_instr_metadata(
+        dt.datetime(2021, 8, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
+        end_seas=dt.datetime(1900, 10, 31)),
+    'hyso_seismo_4'       : create_instr_metadata(
+        dt.datetime(2022, 9, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
+        end_seas=dt.datetime(1900, 10, 31)),
+    'hyso_tide_1'         : create_instr_metadata(
+        dt.datetime(2021, 8, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
+        end_seas=dt.datetime(1900, 10, 31)),
     'metar'               : create_instr_metadata(
             dt.datetime(1951, 10, 1), institution='U.Alaska,Florence,StonyBrook/USSF'),
     'mms_trios'           : create_instr_metadata(dt.datetime(2021, 9, 1), institution='INGV'),

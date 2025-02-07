@@ -22,7 +22,7 @@ __status__ = "Research"
 __lastupdate__ = ""
 
 # switches
-switch_instr_list = 'current'
+switch_instr_list = 'thaao'
 
 switch_campaigns = 'True'  # Draw field campaigns?
 switch_history = 'False'  # Draw historical events?

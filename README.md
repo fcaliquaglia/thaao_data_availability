@@ -102,7 +102,7 @@ functions based on the user's selections.
 
 2. **Instrument Selection:**  
    The user is prompted to input a category of instruments they would like to plot. This could include:
-    - `current`
+    - `thaao`
     - `legacy`
     - `hyso`  
       If the user chooses a category, the `update_instr_list` function updates the instrument list (`ts.instr_list`)
