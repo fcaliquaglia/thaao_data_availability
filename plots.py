@@ -38,8 +38,9 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
     valid_indices = data_val.index[data_val == 1]
 
     if not valid_indices.empty:
-        ax.errorbar(valid_indices, np.full(len(valid_indices), idx), xerr=None, yerr=0.3,
-                    fmt='.', color=color, capsize=0, markersize=0)
+        ax.errorbar(
+            valid_indices, np.full(len(valid_indices), idx), xerr=None, yerr=0.3, fmt='.', color=color, capsize=0,
+            markersize=0)
 
     del data_val
     return
@@ -177,12 +178,13 @@ def plot_panels(plot_type):
         newdir = os.path.join(ts.da_folder, 'rolling', f'{sw.start_r.year}-{sw.end_r.year}')
         os.makedirs(newdir, exist_ok=True)
 
-        for j in pd.date_range(sw.start_r, sw.end_r, freq=sw.time_freq_r):
-            yyyy1, yyyy2 = j - sw.time_window_r, j
-            range_lab = f'{yyyy1.strftime("%Y%m")}_{yyyy2.strftime("%Y%m")}'
+        for j in pd.date_range(sw.start_r, sw.end_r + sw.time_window_r, freq=sw.time_freq_r):
+            yyyy1, yyyy2 = j, j + sw.time_window_r
             fig = draw_data_avail(yyyy1, yyyy2, instrument_data, ii_labs)
-            plt.savefig(
-                    os.path.join(newdir, f'thaao_data_avail_{range_lab}_{sw.switch_instr_list}.png'), transparent=False)
+            figname = os.path.join(
+                newdir,
+                f'thaao_data_avail_{yyyy1.strftime("%Y%m")}_{yyyy2.strftime("%Y%m")}_{sw.switch_instr_list}.png')
+            plt.savefig(figname, transparent=False)
             plt.clf()
             plt.close(fig)
 
@@ -192,8 +194,8 @@ def plot_panels(plot_type):
 
         for date in pd.date_range(sw.start_c, sw.end_c, freq=sw.time_freq_c):
             fig = draw_data_avail(sw.start_c, date + sw.time_freq_c, instrument_data, ii_labs)
-            plt.savefig(
-                    os.path.join(newdir, f'thaao_data_avail_{date.strftime("%Y%m")}_{sw.switch_instr_list}.png'))
+            figname = os.path.join(newdir, f'thaao_data_avail_{date.strftime("%Y%m")}_{sw.switch_instr_list}.png')
+            plt.savefig(figname)
             plt.clf()
             plt.close(fig)
     return

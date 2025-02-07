@@ -107,9 +107,9 @@ instr_metadata = {
             dt.datetime(2002, 10, 1), institution='DMI+ENEA',
             start_seas=dt.datetime(1900, 2, 1),
             end_seas=dt.datetime(1900, 10, 31)),
-    'ecapac_mrr'          : create_instr_metadata(dt.datetime(2022, 9, 1), institution='ENEA'),
-    'ecapac_aws_snow'     : create_instr_metadata(dt.datetime(2022, 9, 1), institution='ENEA'),
-    'ecapac_disdro_precip': create_instr_metadata(dt.datetime(2022, 9, 1), institution='ENEA'),
+    'ecapac_mrr'          : create_instr_metadata(dt.datetime(2023, 3, 1), institution='ENEA'),
+    'ecapac_aws_snow'     : create_instr_metadata(dt.datetime(2023, 3, 1), institution='ENEA'),
+    'ecapac_disdro_precip': create_instr_metadata(dt.datetime(2023, 3, 1), institution='ENEA'),
     'ftir'                : create_instr_metadata(
             dt.datetime(1999, 10, 1), institution='NCAR/NASA',
             start_seas=dt.datetime(1900, 3, 1),
@@ -163,15 +163,15 @@ instr_metadata = {
 # =============================================================
 
 institution_colors = {
-    'DMI'                              : 'green',
-    'INGV'                             : 'blue',
+    'DMI'                              : 'cyan',
+    'INGV'                             : 'black',
     'ENEA'                             : 'red',
     'NCAR/NASA'                        : 'purple',
-    'ENEA+INGV'                        : 'olive',
+    'ENEA+INGV'                        : 'green',
     'U.Sap+ENEA'                       : 'brown',
     'DMI+INGV'                         : 'orange',
     'DMI+ENEA'                         : 'pink',
-    'U.Alaska,Florence,StonyBrook/USSF': 'black',
+    'U.Alaska,Florence,StonyBrook/USSF': 'blue',
     'not active'                       : 'grey'
 }
 
