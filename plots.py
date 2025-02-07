@@ -175,7 +175,7 @@ def plot_panels(plot_type):
                        enumerate(ts.instr_list)]
 
     if plot_type == 'rolling':
-        newdir = os.path.join(ts.da_folder, 'rolling', f'{sw.start.year}-{sw.end.year}')
+        newdir = os.path.join(ts.da_folder, 'rolling', sw.switch_instr_list, f'{sw.start.year}-{sw.end.year}')
         os.makedirs(newdir, exist_ok=True)
 
         for j in pd.date_range(sw.start, sw.end + sw.time_window_r, freq=sw.time_freq_r):
@@ -189,13 +189,13 @@ def plot_panels(plot_type):
             plt.close(fig)
 
     elif plot_type == 'cumulative':
-        newdir = os.path.join(ts.da_folder, 'cumulative', f'{sw.start.year}-{sw.end.year}')
+        newdir = os.path.join(ts.da_folder, 'cumulative', sw.switch_instr_list, f'{sw.start.year}-{sw.end.year}')
         os.makedirs(newdir, exist_ok=True)
 
         for date in pd.date_range(sw.start, sw.end, freq=sw.time_freq_c):
             fig = draw_data_avail(sw.start, date + sw.time_freq_c, instrument_data, ii_labs)
             figname = os.path.join(newdir, f'thaao_data_avail_{date.strftime("%Y%m")}_{sw.switch_instr_list}.png')
-            plt.savefig(figname)
+            plt.savefig(figname, transparent=False)
             plt.clf()
             plt.close(fig)
     return
