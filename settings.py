@@ -46,8 +46,8 @@ instr_list_legacy = [
 ]
 
 instr_list_macmap = [
-    'macmap_seismometer_1', 'macmap_seismometer_2', 'macmap_seismometer_3',
-    'macmap_seismometer_4', 'macmap_tide_gauge'
+    'macmap_seismo_1', 'macmap_seismo_2', 'macmap_seismo_3',
+    'macmap_seismo_4', 'macmap_tide'
 ]
 
 # Combine all instrument sets
@@ -127,11 +127,11 @@ instr_metadata = {
     'lidar_ae'            : create_instr_metadata(
             dt.datetime(1991, 9, 1), dt.datetime(1996, 3, 31),
             institution='U.Sap+ENEA'),
-    'macmap_seismometer_1': create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
-    'macmap_seismometer_2': create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
-    'macmap_seismometer_3': create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
-    'macmap_seismometer_4': create_instr_metadata(dt.datetime(2022, 9, 1), institution='INGV'),
-    'macmap_tide_gauge'   : create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
+    'macmap_seismo_1': create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
+    'macmap_seismo_2': create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
+    'macmap_seismo_3': create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
+    'macmap_seismo_4': create_instr_metadata(dt.datetime(2022, 9, 1), institution='INGV'),
+    'macmap_tide'   : create_instr_metadata(dt.datetime(2021, 8, 1), institution='INGV'),
     'metar'               : create_instr_metadata(
             dt.datetime(1951, 10, 1), institution='U.Alaska,Florence,StonyBrook/USSF'),
     'mms_trios'           : create_instr_metadata(dt.datetime(2021, 9, 1), institution='INGV'),

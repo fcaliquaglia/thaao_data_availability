@@ -28,7 +28,7 @@ import pandas as pd
 import settings as ts
 import tools as tls
 
-instr = 'macmap_tide_gauge'
+instr = 'macmap_tide'
 date_list = pd.date_range(
         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
 folder = os.path.join(ts.basefolder, "thaao_" + instr)
