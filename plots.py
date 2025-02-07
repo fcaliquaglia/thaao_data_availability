@@ -186,17 +186,6 @@ def plot_panels(plot_type):
             plt.clf()
             plt.close(fig)
 
-    elif plot_type == 'yearly':
-        newdir = os.path.join(ts.da_folder, 'yearly')
-        os.makedirs(newdir, exist_ok=True)
-
-        for year in pd.date_range(sw.start_y, sw.end_y, freq='YS'):
-            fig = draw_data_avail(year, year + pd.DateOffset(years=1), instrument_data, ii_labs)
-            plt.savefig(
-                    os.path.join(newdir, f'thaao_data_avail_{year.strftime("%Y")}_{sw.switch_instr_list}.png'))
-            plt.clf()
-            plt.close(fig)
-
     elif plot_type == 'cumulative':
         newdir = os.path.join(ts.da_folder, 'cumulative', f'{sw.start_a.year}-{sw.end_a.year}')
         os.makedirs(newdir, exist_ok=True)
