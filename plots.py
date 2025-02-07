@@ -178,7 +178,7 @@ def plot_panels(plot_type):
         newdir = os.path.join(ts.da_folder, 'rolling', sw.switch_instr_list, f'{sw.start.year}-{sw.end.year}')
         os.makedirs(newdir, exist_ok=True)
 
-        for j in pd.date_range(sw.start, sw.end + sw.time_window_r, freq=sw.time_freq_r):
+        for j in pd.date_range(sw.start, sw.end, freq=sw.time_freq_r):
             yyyy1, yyyy2 = j, j + sw.time_window_r
             fig = draw_data_avail(yyyy1, yyyy2, instrument_data, ii_labs)
             figname = os.path.join(
