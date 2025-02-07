@@ -12,48 +12,63 @@ import settings as ts
 import switches as sw
 import tools as tls
 
-dpi_fac = 2
-dpi = 200 * dpi_fac
+scale_factor = 1.5
+dpi = 300
+plt.rcParams.update({'font.size': 6 * scale_factor})
 
 
 def plot_data_avail(ax, inp, yy1, yy2, idx):
-    """Optimized function to plot data availability"""
+    """Plot data availability"""
     data_val = tls.load_data_file(inp)
 
-    # Filter data within the specified range (yy1, yy2)
-    data_val = data_val[(data_val.index >= yy1) & (data_val.index <= yy2)]
+    # Filter data within the specified range (yy1, yy2) using .loc[]
+    data_val = data_val.loc[(data_val.index >= yy1) & (data_val.index <= yy2), 'mask']
 
-    # Initialize 'data_na' for missing data mask
-    data_na = pd.DataFrame(index=pd.date_range(yy1, yy2, freq='720min'), columns=['mask'], data=False)
-
-    # Excluding seasonal unavailability
-    instr_metadata = ts.instr_metadata.get(ts.instr_list[idx])
-    start_seas = pd.Timestamp(instr_metadata['start_seas']).month
-    end_seas = pd.Timestamp(instr_metadata['end_seas']).month
-    start_instr = pd.Timestamp(instr_metadata['start_instr'])
-    end_instr = pd.Timestamp(instr_metadata['end_instr'])
-
-    # Update missing data based on instrument availability (seasons, start/end dates)
-    data_na['mask'] = np.where(
-            (data_na.index.month < start_seas) | (data_na.index.month > end_seas) | (data_na.index < start_instr) | (
-                    data_na.index > end_instr), True, False)
-
-    # Plotting missing data (grey color)
-    ax.errorbar(
-            data_na.index[data_na['mask']], np.repeat(idx, len(data_na.index[data_na['mask']])), xerr=None, yerr=0.3,
-            fmt='.', color='lightgrey', capsize=0, markersize=0)
-
-    # Plotting actual data availability
-    color = cm.rainbow(np.linspace(0, 1, 40))[idx] if not data_val.empty else 'black'
-
-    # Plot the available data
-    try:
-        data_val = data_val['mask'].astype(int)
-        ax.errorbar(
-                data_val.index[data_val == 1], np.repeat(idx, len(data_val.index[data_val == 1])), xerr=None, yerr=0.3,
-                fmt='.', color=color, capsize=0, markersize=0)
-    except pd.errors.IntCastingNaNError:
+    if data_val.empty:
         print(f'{ts.instr_list[idx]} - all data are NAN')
+        return  # Exit early if no data
+
+    # Convert mask values to integer (0 or 1) while handling NaNs
+    data_val = data_val.fillna(0).astype(int)
+
+    # Determine color for plotting
+    color = cm.rainbow(np.linspace(0, 1, 40))[idx]
+
+    # Get valid indices where data is available (mask == 1)
+    valid_indices = data_val.index[data_val == 1]
+
+    if not valid_indices.empty:
+        ax.errorbar(valid_indices, np.full(len(valid_indices), idx), xerr=None, yerr=0.3,
+                    fmt='.', color=color, capsize=0, markersize=0)
+
+    del data_val
+    return
+
+
+def plot_data_na(ax, yy1, yy2, idx):
+    """Plot NA data"""
+
+    # Generate date index directly as a Pandas Series with a boolean mask
+    date_index = pd.date_range(yy1, yy2, freq='720min')
+
+    # Fetch instrument metadata once
+    instr_metadata = ts.instr_metadata.get(ts.instr_list[idx])
+    start_seas, end_seas = pd.Timestamp(instr_metadata['start_seas']).month, pd.Timestamp(
+            instr_metadata['end_seas']).month
+    start_instr, end_instr = pd.Timestamp(instr_metadata['start_instr']), pd.Timestamp(instr_metadata['end_instr'])
+
+    # Compute mask directly on Series (avoids extra DataFrame)
+    mask = (date_index.month < start_seas) | (date_index.month > end_seas) | (date_index < start_instr) | (
+            date_index > end_instr)
+
+    # Plot missing data (grey color) only for masked values
+    ax.errorbar(
+            date_index[mask], np.full(mask.sum(), idx), xerr=None, yerr=0.3, fmt='.', color='lightgrey', capsize=0,
+            markersize=0)
+
+    # Explicitly free memory (optional but useful in large loops)
+    del date_index, mask
+
     return
 
 
@@ -113,20 +128,18 @@ def draw_campaigns(ax, a1, a2):
             ax.axvspan(campaign['start'], campaign['end'], alpha=0.25, color='cyan', zorder=10)
 
 
-def draw_data_avail(a1, a2):
+def draw_data_avail(a1, a2, instr_data, iii_labs):
     """Draws data availability with legends for instruments and campaigns."""
-    fig, ax = plt.subplots(figsize=(len(ts.instr_list) / 2 * 1.5, len(ts.instr_list) / 2))
+    fig, ax = plt.subplots(figsize=(15, 10), dpi=dpi)
     ax2 = ax.twinx()
 
-    ii_labs = []
-    instrument_data = [tls.input_file_selection(ii_labs, instr_name) for instr_idx, instr_name in
-                       enumerate(ts.instr_list)]
     start = a1.strftime('%b %Y')
     end = a2.strftime('%b %Y')
     print(f'period:{start}-{end}')
-    for instr_idx, (inp_file, _) in enumerate(instrument_data):
+    for instr_idx, (inp_file, _) in enumerate(instr_data):
         print(f'{instr_idx:02}:{ts.instr_list[instr_idx]}')
         plot_data_avail(ax, inp_file, a1, a2, instr_idx)
+        plot_data_na(ax, a1, a2, instr_idx)
 
     # Draw events and campaigns based on switches
     if sw.switch_history:
@@ -135,10 +148,10 @@ def draw_data_avail(a1, a2):
         draw_campaigns(ax, a1, a2)
 
     # Style the axis
-    ax_style(ax, a1, a2, ii_labs)
-    ax_style(ax2, a1, a2, ii_labs)
+    ax_style(ax, a1, a2, iii_labs)
+    ax_style(ax2, a1, a2, iii_labs)
 
-    # Generate the legend efficiently
+    # Generate the legend
     legend_elements = [Line2D([0], [0], marker='', lw=0, color=ts.institution_colors[elem], label=elem) for elem in
                        ts.institution_colors]
     legend_elements.extend(
@@ -156,6 +169,10 @@ def plot_panels(plot_type):
     """Generates panels for different types (rolling, yearly, cumulative)."""
     print(plot_type)
 
+    ii_labs = []
+    instrument_data = [tls.input_file_selection(ii_labs, instr_name) for instr_idx, instr_name in
+                       enumerate(ts.instr_list)]
+
     if plot_type == 'rolling':
         newdir = os.path.join(ts.da_folder, 'rolling', f'{sw.start_c.year}-{sw.end_c.year}')
         os.makedirs(newdir, exist_ok=True)
@@ -163,10 +180,10 @@ def plot_panels(plot_type):
         for j in pd.date_range(sw.start_c, sw.end_c, freq=sw.time_freq_c):
             yyyy1, yyyy2 = j - sw.time_window_c, j
             range_lab = f'{yyyy1.strftime("%Y%m")}_{yyyy2.strftime("%Y%m")}'
-            fig = draw_data_avail(yyyy1, yyyy2)
+            fig = draw_data_avail(yyyy1, yyyy2, instrument_data, ii_labs)
             plt.savefig(
-                    os.path.join(newdir, f'thaao_data_avail_{range_lab}_{sw.switch_instr_list}.png'), dpi=dpi,
-                    transparent=False)
+                    os.path.join(newdir, f'thaao_data_avail_{range_lab}_{sw.switch_instr_list}.png'), transparent=False)
+            plt.clf()
             plt.close(fig)
 
     elif plot_type == 'yearly':
@@ -174,9 +191,10 @@ def plot_panels(plot_type):
         os.makedirs(newdir, exist_ok=True)
 
         for year in pd.date_range(sw.start_y, sw.end_y, freq='YS'):
-            fig = draw_data_avail(year, year + pd.DateOffset(years=1))
+            fig = draw_data_avail(year, year + pd.DateOffset(years=1), instrument_data, ii_labs)
             plt.savefig(
-                    os.path.join(newdir, f'thaao_data_avail_{year.strftime("%Y")}_{sw.switch_instr_list}.png'), dpi=dpi)
+                    os.path.join(newdir, f'thaao_data_avail_{year.strftime("%Y")}_{sw.switch_instr_list}.png'))
+            plt.clf()
             plt.close(fig)
 
     elif plot_type == 'cumulative':
@@ -184,8 +202,9 @@ def plot_panels(plot_type):
         os.makedirs(newdir, exist_ok=True)
 
         for date in pd.date_range(sw.start_a, sw.end_a, freq=sw.time_freq_a):
-            fig = draw_data_avail(sw.start_a, date + sw.time_freq_a)
+            fig = draw_data_avail(sw.start_a, date + sw.time_freq_a, instrument_data, ii_labs)
             plt.savefig(
-                    os.path.join(newdir, f'thaao_data_avail_{date.strftime("%Y%m")}_{sw.switch_instr_list}.png'),
-                    dpi=dpi)
+                    os.path.join(newdir, f'thaao_data_avail_{date.strftime("%Y%m")}_{sw.switch_instr_list}.png'))
+            plt.clf()
             plt.close(fig)
+    return
