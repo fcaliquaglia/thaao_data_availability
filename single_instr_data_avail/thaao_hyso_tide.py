@@ -35,15 +35,16 @@ folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
 if __name__ == "__main__":
 
-    hyso_tide = pd.DataFrame(columns=['dt', 'mask'])
-    hyso_tide_missing = pd.DataFrame(columns=['dt', 'mask'])
+    hyso_tide_1 = pd.DataFrame(columns=['dt', 'mask'])
+    hyso_tide_1_missing = pd.DataFrame(columns=['dt', 'mask'])
     for i in date_list:
         fn = os.path.join(folder, i.strftime('%Y'), "Thule_1_2_" + i.strftime('%y%m%d') + "_corr.dat")
         if os.path.exists(fn):
-            hyso_tide.loc[i] = [i, True]
+            hyso_tide_1.loc[i] = [i, True]
+            print('file ' + str(fn) + ' FOUND')
         else:
-            hyso_tide_missing.loc[i] = [i, True]
+            hyso_tide_1_missing.loc[i] = [i, True]
             print('file ' + str(fn) + ' not found')
 
-    tls.save_txt(instr, hyso_tide)
-    tls.save_txt(instr, hyso_tide_missing, missing=True)
+    tls.save_txt(instr, hyso_tide_1)
+    tls.save_txt(instr, hyso_tide_1_missing, missing=True)
