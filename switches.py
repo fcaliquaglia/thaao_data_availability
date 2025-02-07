@@ -29,19 +29,16 @@ switch_history = 'False'  # Draw historical events?
 switch_prog_bar = 'False'  # Draw progress bar?
 
 switch_cumulative_panels = 'False'  # Plot cumulative panels?
-switch_yearly_panels = 'False'  # Plot single-year panels?
 switch_rolling_panels = 'False'  # Plot panels for gif?
 
 # inputs
-
-start_a = '2020'
-end_a = '2024'
-time_freq_a = '6'
-
-start_y = '2020'
-end_y = '2022'
-
+# cumulative
 start_c = '2020'
-end_c = '2022'
+end_c = '2024'
 time_freq_c = '6'
-time_window_c = '6'
+
+# rolling
+start_r = '2022'
+end_r = '2024'
+time_freq_r = '12'
+time_window_r = '12'

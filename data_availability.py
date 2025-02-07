@@ -40,15 +40,15 @@ def main():
         'Plot rolling panels? (y/n) \n [For yearly panels, set lag and window to 12 months] ')
     if sw.switch_rolling_panels:
         window_size = simpledialog.askinteger("Input", "Window size (in months):", minvalue=1, maxvalue=120)
-        lag_c = simpledialog.askinteger("Input", "Lag (in months):", minvalue=1, maxvalue=120)
-        sw.time_window_c = pd.DateOffset(months=window_size)
-        sw.time_freq_c = pd.DateOffset(months=lag_c)
+        lag_r = simpledialog.askinteger("Input", "Lag (in months):", minvalue=1, maxvalue=120)
+        sw.time_window_r = pd.DateOffset(months=window_size)
+        sw.time_freq_r = pd.DateOffset(months=lag_r)
         tls.set_date_params('Start year: ', 'End year: ', 'rolling')
 
     sw.switch_cumulative_panels = tls.get_switch_input('Plot cumulative panels? (y/n)')
     if sw.switch_cumulative_panels:
-        lag_a = simpledialog.askinteger("Input", "Lag (in months):", minvalue=1, maxvalue=120)
-        sw.time_freq_a = pd.DateOffset(months=lag_a)
+        lag_c = simpledialog.askinteger("Input", "Lag (in months):", minvalue=1, maxvalue=120)
+        sw.time_freq_c = pd.DateOffset(months=lag_c)
         tls.set_date_params('Start year: ', 'End year: ', 'cumulative')
 
     # Field Campaigns and Historical events (y/n)
