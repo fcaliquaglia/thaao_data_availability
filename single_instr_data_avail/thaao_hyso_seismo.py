@@ -33,7 +33,7 @@ import tools as tls
 if __name__ == "__main__":
 
     for station in [1, 2, 3, 4]:
-        instr = f'macmap_seismo_{station}'
+        instr = f'hyso_seismo_{station}'
         date_list = pd.date_range(
                 ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
         folder = os.path.join(ts.basefolder, "thaao_" + instr)
@@ -61,13 +61,13 @@ if __name__ == "__main__":
         #     for man_dat in np.arange(113, 155):
         #         date_converted.append('2023.' + str(man_dat))
 
-        macmap_seismo = pd.DataFrame(columns=['dt', 'mask'])
-        macmap_seismo_missing = pd.DataFrame(columns=['dt', 'mask'])
+        hyso_seismo = pd.DataFrame(columns=['dt', 'mask'])
+        hyso_seismo_missing = pd.DataFrame(columns=['dt', 'mask'])
         for i in date_list:
             if i.strftime('%Y.%j') in date_converted:
-                macmap_seismo.loc[i] = [i, True]
+                hyso_seismo.loc[i] = [i, True]
             else:
-                macmap_seismo_missing.loc[i] = [i, True]
+                hyso_seismo_missing.loc[i] = [i, True]
 
-        tls.save_txt(instr, macmap_seismo)
-        tls.save_txt(instr, macmap_seismo_missing, missing=True)
+        tls.save_txt(instr, hyso_seismo)
+        tls.save_txt(instr, hyso_seismo_missing, missing=True)

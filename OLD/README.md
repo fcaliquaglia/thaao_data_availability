@@ -40,7 +40,7 @@ There are three types of plot:
 
 Additionally, you can specify if you want the historical events, the Italian field campaigns and the progress bar to be
 plotted.
-The instruments considered are selected in batches: current, legacy, macmap or all.
+The instruments considered are selected in batches: current, legacy, hyso or all.
 
 ## `settings.py`
 
