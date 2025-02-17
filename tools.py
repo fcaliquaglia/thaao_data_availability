@@ -24,10 +24,13 @@ __lastupdate__ = ""
 import datetime as dt
 import os
 import subprocess
+import sys
+import time
 import tkinter as tk
 
 import numpy as np
 import pandas as pd
+from tqdm import tqdm  # Importing the tqdm progress bar library
 
 import settings as ts
 import switches as sw
@@ -45,25 +48,61 @@ def check_txt_file_age(instr):
         if (current_date - last_modified).days > 180:
             print(f"{txt_file_path} is older than 6 months. Generating new file...")
             # Call the function to regenerate the .txt file
-            update_txt_file(instr)
+            update_txt_file_with_progress(instr)  # update_txt_file(instr)
         else:
             print(f"{txt_file_path} is up-to-date.")
     else:
         print(f"{txt_file_path} does not exist. Generating new file...")
         # Call the function to generate the .txt file if it doesn't exist
-        update_txt_file(instr)
+        update_txt_file_with_progress(instr)  # update_txt_file(instr)
 
 
-# Function to invoke the external script to update the .txt file
-def update_txt_file(instr):
-    # Path to the external Python script that updates the .txt file
-    specific_script_path = os.getcwd() + ts.instr_metadata[instr]['data_avail_fn']
-    try:
-        print("Running the external Python script to update the .txt file...")
-        subprocess.run(['python', specific_script_path], check=True)
-        print("External script executed successfully.")
-    except subprocess.CalledProcessError as e:
-        print(f"Error occurred while running the external script: {e}")
+# # Function to invoke the external script to update the .txt file
+# def update_txt_file(instr):
+#     # Path to the external Python script that updates the .txt file
+#     specific_script_path = os.getcwd() + ts.instr_metadata[instr]['data_avail_fn']
+#     try:
+#         print("Running the external Python script to update the .txt file...")
+#         subprocess.run(['python', specific_script_path], check=True)
+#         print("External script executed successfully.")
+#     except subprocess.CalledProcessError as e:
+#         print(f"Error occurred while running the external script: {e}")
+
+
+def update_txt_file_with_progress(instr):
+    """
+    Runs an external script with a progress bar, updating based on actual script output.
+    """
+    specific_script_path = os.path.join(os.getcwd(), 'single_instr_data_avail', ts.instr_metadata[instr]['data_avail_fn'])
+
+    process = subprocess.Popen(
+        ['python', specific_script_path, instr],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True  # Ensures output is treated as text, not bytes
+    )
+
+    with tqdm(total=100, desc="Updating .txt file", ncols=100, bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}") as pbar:
+        for line in iter(process.stdout.readline, ''):  # Read script output line by line
+            sys.stdout.flush()
+            if "Progress:" in line:
+                try:
+                    progress = int(line.strip().split("Progress:")[1].strip().replace('%', ''))
+                    pbar.n = progress  # Update progress bar to reported progress
+                    pbar.refresh()
+                except ValueError:
+                    continue  # Ignore malformed progress lines
+
+            time.sleep(0.1)  # Prevent excessive CPU usage
+
+        process.stdout.close()
+        process.wait()  # Wait for the process to complete
+
+    if process.returncode != 0:
+        stderr_output = process.stderr.read()
+        print(f"Error occurred during execution:\n{stderr_output}")
+    else:
+        print("Subprocess completed successfully.")
 
 
 # Function to create a Tkinter root window
