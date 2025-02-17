@@ -23,6 +23,7 @@ __lastupdate__ = ""
 
 import datetime as dt
 import os
+import subprocess
 import tkinter as tk
 
 import numpy as np
@@ -30,6 +31,39 @@ import pandas as pd
 
 import settings as ts
 import switches as sw
+
+
+# Function to check if the .txt file is older than 6 months
+def check_txt_file_age(instr):
+    txt_file_path = os.path.join(ts.basefolder, f'thaao_{instr}', f'{instr}_data_avail_list.txt')
+    if os.path.exists(txt_file_path):
+        # Get the last modified date of the file
+        last_modified = dt.datetime.fromtimestamp(os.path.getmtime(txt_file_path))
+        current_date = dt.datetime.now()
+
+        # Check if the file is older than 6 months (180 days)
+        if (current_date - last_modified).days > 180:
+            print(f"{txt_file_path} is older than 6 months. Generating new file...")
+            # Call the function to regenerate the .txt file
+            update_txt_file(instr)
+        else:
+            print(f"{txt_file_path} is up-to-date.")
+    else:
+        print(f"{txt_file_path} does not exist. Generating new file...")
+        # Call the function to generate the .txt file if it doesn't exist
+        update_txt_file(instr)
+
+
+# Function to invoke the external script to update the .txt file
+def update_txt_file(instr):
+    # Path to the external Python script that updates the .txt file
+    specific_script_path = os.getcwd() + ts.instr_metadata[instr]['data_avail_fn']
+    try:
+        print("Running the external Python script to update the .txt file...")
+        subprocess.run(['python', specific_script_path], check=True)
+        print("External script executed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error occurred while running the external script: {e}")
 
 
 # Function to create a Tkinter root window
@@ -41,6 +75,7 @@ def create_root():
 
 # Function to update the instrument list with pop-up window input
 def update_instr_list():
+    ts.instr_list = []
     for category in sw.switch_instr_list.split():
         if category in ts.instr_sets:
             ts.instr_list += ts.instr_sets[category]

@@ -28,37 +28,6 @@ basefolder_skycam = os.path.join("H:\\Shared drives", "Dati_THAAO_skycam")
 da_folder = os.path.join(basefolder, 'thaao_data_availability')
 
 # =============================================================
-# DEFINE INSTRUMENT LISTS
-# =============================================================
-
-instr_list = []
-
-instr_list_thaao = [
-    'rs_sondes', 'rad_uli', 'rad_dli', 'rad_usi', 'rad_dsi', 'rad_par_up',
-    'rad_par_down', 'rad_tb', 'skycam', 'mms_trios', 'metar', 'vespa',
-    'ceilometer', 'hatpro', 'dir_rad_trkr', 'pm10', 'ftir', 'aeronet',
-    'gnss', 'ecapac_mrr', 'ecapac_aws_snow', 'ecapac_disdro_precip', 'aws_vespa'
-]
-
-instr_list_legacy = [
-    'uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'gbms',
-    'wv_isotopes', 'lidar_temp'
-]
-
-instr_list_hyso = [
-    'hyso_seismo_1', 'hyso_seismo_2', 'hyso_seismo_3',
-    'hyso_seismo_4', 'hyso_tide_1'
-]
-
-# Combine all instrument sets
-instr_sets = {
-    "all"    : instr_list_legacy + instr_list_hyso + instr_list_thaao,
-    "hyso"   : instr_list_hyso,
-    "legacy" : instr_list_legacy,
-    "thaao": instr_list_thaao
-}
-
-# =============================================================
 # DEFINE COMMON DATES
 # =============================================================
 
@@ -66,131 +35,168 @@ today = dt.datetime.today()
 start_season = dt.datetime(1900, 1, 1)
 end_season = dt.datetime(1900, 12, 31)
 
+# =============================================================
+# DEFINE INSTRUMENT LISTS
+# =============================================================
+
+instr_sets = {
+    "thaao": [
+        'rs_sondes', 'rad_uli', 'rad_dli', 'rad_usi', 'rad_dsi', 'rad_par_up',
+        'rad_par_down', 'rad_tb', 'skycam', 'mms_trios', 'metar', 'vespa',
+        'ceilometer', 'hatpro', 'dir_rad_trkr', 'pm10', 'ftir', 'aeronet',
+        'gnss', 'ecapac_mrr', 'ecapac_aws_snow', 'ecapac_disdro_precip', 'aws_vespa'
+    ],
+    "legacy": [
+        'uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'gbms',
+        'wv_isotopes', 'lidar_temp'
+    ],
+    "hyso": [
+        'hyso_seismo_1', 'hyso_seismo_2', 'hyso_seismo_3',
+        'hyso_seismo_4', 'hyso_tide_1'
+    ],
+}
+
+instr_sets["all"] = instr_sets["legacy"] + instr_sets["hyso"] + instr_sets["thaao"]
+
 
 # =============================================================
 # FUNCTION: CREATE INSTRUMENT METADATA
 # =============================================================
 
 def create_instr_metadata(start_instr, end_instr=today, start_seas=start_season,
-                          end_seas=end_season, institution=None):
+                          end_seas=end_season, data_avail_fn=None, institution=None):
     """
     Creates a dictionary with instrument metadata.
-
-    :param start_instr: Start date of the instrument
-    :param end_instr: End date of the instrument (default: today)
-    :param start_seas: Seasonal start date (default: 1900-01-01)
-    :param end_seas: Seasonal end date (default: 1900-12-31)
-    :param institution: Institution associated with the instrument
-    :return: Dictionary containing instrument metadata
     """
     return {
         'institution': institution,
         'start_instr': start_instr,
-        'end_instr'  : end_instr,
-        'start_seas' : start_seas,
-        'end_seas'   : end_seas
+        'end_instr': end_instr,
+        'start_seas': start_seas,
+        'end_seas': end_seas,
+        'data_avail_fn': data_avail_fn
     }
 
-
-instr_metadata = {
+metadata_entries  = {
     'aeronet'             : create_instr_metadata(
             dt.datetime(2007, 3, 1),
             institution='NCAR/NASA',
             start_seas=dt.datetime(1900, 3, 1),
-            end_seas=dt.datetime(1900, 10, 31)),
+            end_seas=dt.datetime(1900, 10, 31), data_avail_fn='thaao_aeronet.py'),
     'aero_sondes'         : create_instr_metadata(
             dt.datetime(1992, 1, 1), dt.datetime(1998, 12, 31),
-            institution='DMI'),
-    'aws_vespa'           : create_instr_metadata(dt.datetime(2016, 1, 1), institution='INGV'),
-    'ceilometer'          : create_instr_metadata(dt.datetime(2019, 11, 1), institution='ENEA'),
+            institution='DMI', data_avail_fn='thaao_aero_sondes.py'),
+    'aws_vespa'           : create_instr_metadata(
+        dt.datetime(2016, 1, 1), institution='INGV', data_avail_fn='thaao_aws_vespa.py'),
+    'ceilometer'          : create_instr_metadata(
+        dt.datetime(2019, 11, 1), institution='ENEA', data_avail_fn='thaao_ceilometer.py'),
     'dir_rad_trkr'        : create_instr_metadata(
             dt.datetime(2002, 10, 1), institution='DMI+ENEA',
             start_seas=dt.datetime(1900, 2, 1),
-            end_seas=dt.datetime(1900, 10, 31)),
-    'ecapac_mrr'          : create_instr_metadata(dt.datetime(2023, 3, 1), institution='ENEA'),
-    'ecapac_aws_snow'     : create_instr_metadata(dt.datetime(2023, 3, 1), institution='ENEA'),
-    'ecapac_disdro_precip': create_instr_metadata(dt.datetime(2023, 3, 1), institution='ENEA'),
+            end_seas=dt.datetime(1900, 10, 31), data_avail_fn='thaao_dir_rad_trkr.py'),
+    'ecapac_mrr'          : create_instr_metadata(
+        dt.datetime(2023, 3, 1), institution='ENEA', data_avail_fn='thaao_ecapac_mrr.py'),
+    'ecapac_aws_snow'     : create_instr_metadata(
+        dt.datetime(2023, 3, 1), institution='ENEA', data_avail_fn='thaao_ecapac_aws_snow.py'),
+    'ecapac_disdro_precip': create_instr_metadata(
+        dt.datetime(2023, 3, 1), institution='ENEA', data_avail_fn='thaao_ecapac_disdro_precip.py'),
     'ftir'                : create_instr_metadata(
             dt.datetime(1999, 10, 1), institution='NCAR/NASA',
             start_seas=dt.datetime(1900, 3, 1),
-            end_seas=dt.datetime(1900, 10, 31)),
+            end_seas=dt.datetime(1900, 10, 31), data_avail_fn='thaao_ftir.py'),
     'gbms'                : create_instr_metadata(
             dt.datetime(1992, 1, 1), dt.datetime(2012, 12, 31),
-            institution='U.Alaska,Florence,StonyBrook/USSF'),
+            institution='U.Alaska,Florence,StonyBrook/USSF', data_avail_fn='thaao_gbms.py'),
     'hatpro'              : create_instr_metadata(
             dt.datetime(2017, 1, 1), dt.datetime(2024, 9, 30),
-            institution='ENEA'),
+            institution='ENEA', data_avail_fn='thaao_hatpro.py'),
     'lidar_temp'          : create_instr_metadata(
             dt.datetime(1993, 11, 1), institution='U.Sap+ENEA',
             start_seas=dt.datetime(1900, 11, 1),
-            end_seas=dt.datetime(1900, 3, 31)),
+            end_seas=dt.datetime(1900, 3, 31), data_avail_fn='thaao_lidar_temp.py'),
     'lidar_ae'            : create_instr_metadata(
             dt.datetime(1991, 9, 1), dt.datetime(1996, 3, 31),
-            institution='U.Sap+ENEA'),
+            institution='U.Sap+ENEA', data_avail_fn='thaao_lidar_ae.py'),
     'hyso_seismo_1'       : create_instr_metadata(
-        dt.datetime(2021, 8, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
-        end_seas=dt.datetime(1900, 10, 31)),
+            dt.datetime(2021, 8, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
+            end_seas=dt.datetime(1900, 10, 31), data_avail_fn='thaao_hyso_seismo_1.py'),
     'hyso_seismo_2'       : create_instr_metadata(
-        dt.datetime(2021, 8, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
-        end_seas=dt.datetime(1900, 10, 31)),
+            dt.datetime(2021, 8, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
+            end_seas=dt.datetime(1900, 10, 31), data_avail_fn='thaao_hyso_seismo_2.py'),
     'hyso_seismo_3'       : create_instr_metadata(
-        dt.datetime(2021, 8, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
-        end_seas=dt.datetime(1900, 10, 31)),
+            dt.datetime(2021, 8, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
+            end_seas=dt.datetime(1900, 10, 31), data_avail_fn='thaao_hyso_seismo_3.py'),
     'hyso_seismo_4'       : create_instr_metadata(
-        dt.datetime(2022, 9, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
-        end_seas=dt.datetime(1900, 10, 31)),
+            dt.datetime(2022, 9, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
+            end_seas=dt.datetime(1900, 10, 31), data_avail_fn='thaao_hyso_seismo_4.py'),
     'hyso_tide_1'         : create_instr_metadata(
-        dt.datetime(2021, 8, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
-        end_seas=dt.datetime(1900, 10, 31)),
+            dt.datetime(2021, 8, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
+            end_seas=dt.datetime(1900, 10, 31), data_avail_fn='thaao_hyso_tide_1.py'),
     'metar'               : create_instr_metadata(
-            dt.datetime(1951, 10, 1), institution='U.Alaska,Florence,StonyBrook/USSF'),
-    'mms_trios'           : create_instr_metadata(dt.datetime(2021, 9, 1), institution='INGV'),
+            dt.datetime(1951, 10, 1), institution='U.Alaska,Florence,StonyBrook/USSF', data_avail_fn='metar.py'),
+    'mms_trios'           : create_instr_metadata(
+        dt.datetime(2021, 9, 1), institution='INGV', data_avail_fn='thaao_mms_trios.py'),
     'o3_sondes'           : create_instr_metadata(
             dt.datetime(1991, 12, 1), dt.datetime(2016, 12, 31),
-            institution='DMI'),
+            institution='DMI', data_avail_fn='thaao_o3_sondes.py'),
     'pm10'                : create_instr_metadata(
-            dt.datetime(2010, 1, 1), institution='U.Alaska,Florence,StonyBrook/USSF'),
-    'rad_dli'             : create_instr_metadata(dt.datetime(2009, 1, 1), institution='ENEA'),
-    'rad_dsi'             : create_instr_metadata(dt.datetime(2003, 2, 1), institution='DMI+ENEA'),
-    'rad_par_down'        : create_instr_metadata(dt.datetime(2016, 7, 1), institution='ENEA'),
-    'rad_par_up'          : create_instr_metadata(dt.datetime(2016, 7, 1), institution='ENEA'),
-    'rad_tb'              : create_instr_metadata(dt.datetime(2017, 1, 1), institution='ENEA'),
-    'rad_uli'             : create_instr_metadata(dt.datetime(2016, 7, 1), institution='ENEA'),
-    'rad_usi'             : create_instr_metadata(dt.datetime(2016, 7, 1), institution='ENEA'),
-    'rs_sondes'           : create_instr_metadata(dt.datetime(1973, 1, 1), institution='DMI+INGV'),
-    'skycam'              : create_instr_metadata(dt.datetime(2016, 7, 1), institution='ENEA'),
-    'gnss'                : create_instr_metadata(dt.datetime(2021, 5, 1), institution='INGV'),
+            dt.datetime(2010, 1, 1), institution='U.Alaska,Florence,StonyBrook/USSF', data_avail_fn='thaao_pm10.py'),
+    'rad_dli'             : create_instr_metadata(
+        dt.datetime(2009, 1, 1), institution='ENEA', data_avail_fn='thaao_rad_dli.py'),
+    'rad_dsi'             : create_instr_metadata(
+        dt.datetime(2003, 2, 1), institution='DMI+ENEA', data_avail_fn='thaao_rad_dsi.py'),
+    'rad_par_down'        : create_instr_metadata(
+        dt.datetime(2016, 7, 1), institution='ENEA', data_avail_fn='thaao_rad_par_down.py'),
+    'rad_par_up'          : create_instr_metadata(
+        dt.datetime(2016, 7, 1), institution='ENEA', data_avail_fn='thaao_rad_par_up.py'),
+    'rad_tb'              : create_instr_metadata(
+        dt.datetime(2017, 1, 1), institution='ENEA', data_avail_fn='thaao_rad_tb.py'),
+    'rad_uli'             : create_instr_metadata(
+        dt.datetime(2016, 7, 1), institution='ENEA', data_avail_fn='thaao_rad_uli.py'),
+    'rad_usi'             : create_instr_metadata(
+        dt.datetime(2016, 7, 1), institution='ENEA', data_avail_fn='thaao_rad_usi.py'),
+    'rs_sondes'           : create_instr_metadata(
+        dt.datetime(1973, 1, 1), institution='DMI+INGV', data_avail_fn='thaao_rs_sondes.py'),
+    'skycam'              : create_instr_metadata(
+        dt.datetime(2016, 7, 1), institution='ENEA', data_avail_fn='thaao_skycam.py'),
+    'gnss'                : create_instr_metadata(
+        dt.datetime(2021, 5, 1), institution='INGV', data_avail_fn='thaao_gnss.py'),
     'uv-vis_spec'         : create_instr_metadata(
             dt.datetime(1991, 2, 1), dt.datetime(2016, 11, 30),
-            institution='DMI'),
-    'vespa'               : create_instr_metadata(dt.datetime(2016, 7, 1), institution='INGV'),
+            institution='DMI', data_avail_fn='thaao_uv-vis_spec.py'),
+    'vespa'               : create_instr_metadata(
+        dt.datetime(2016, 7, 1), institution='INGV', data_avail_fn='thaao_vespa.py'),
     'wv_isotopes'         : create_instr_metadata(
             dt.datetime(2011, 6, 1), dt.datetime(2019, 12, 31),
-            institution='U.Alaska,Florence,StonyBrook/USSF')}
+            institution='U.Alaska,Florence,StonyBrook/USSF', data_avail_fn='thaao_wv_isotopes.py')}
 
+instr_metadata = {
+    name: {
+        **meta,
+        'end_instr': meta.get('end_instr', today),
+        'start_seas': meta.get('start_seas', start_season),
+        'end_seas': meta.get('end_seas', end_season),
+    }
+    for name, meta in metadata_entries.items()
+}
 # =============================================================
 # INSTITUTION COLORS
 # =============================================================
 
 institution_colors = {
-    'DMI'                              : 'cyan',
-    'INGV'                             : 'black',
-    'ENEA'                             : 'red',
-    'NCAR/NASA'                        : 'purple',
-    'ENEA+INGV'                        : 'green',
-    'U.Sap+ENEA'                       : 'brown',
-    'DMI+INGV'                         : 'orange',
-    'DMI+ENEA'                         : 'pink',
-    'U.Alaska,Florence,StonyBrook/USSF': 'blue',
-    'not active'                       : 'grey'
+    'DMI': 'cyan', 'INGV': 'black', 'ENEA': 'red', 'NCAR/NASA': 'purple',
+    'ENEA+INGV': 'green', 'U.Sap+ENEA': 'brown', 'DMI+INGV': 'orange',
+    'DMI+ENEA': 'pink', 'U.Alaska,Florence,StonyBrook/USSF': 'blue',
+    'not active': 'grey'
 }
+
 
 # =============================================================
 # IMPORTANT EVENTS DICTIONARY
 # =============================================================
 
 events_dict = {1 : {'date': dt.datetime(2012, 6, 30), 'label': 'bldg. #1985 --> \n bldg. #1971'},
-               2 : {'date': dt.datetime.today(), 'label': 'today'},
+               2 : {'date': today, 'label': 'today'},
                3 : {'date': dt.datetime(1951, 6, 6), 'label': 'TAB installation \n starts'},
                4 : {'date': dt.datetime(1951, 10, 1), 'label': 'TAB installation \n ends'},
                5 : {'date': dt.datetime(1945, 9, 2), 'label': 'WW II ends'},
@@ -243,6 +249,7 @@ events_dict = {1 : {'date': dt.datetime(2012, 6, 30), 'label': 'bldg. #1985 --> 
                53: {'date': dt.datetime(1941, 6, 30), 'label': 'Bluie West Program \n starts'},
                54: {'date': dt.datetime(2024, 7, 1), 'label': 'NASA ARCSIX'},
                55: {'date': dt.datetime(2024, 6, 1), 'label': 'THAAO funded as \n INGV infrastructure'}, }
+
 
 # =============================================================
 # CAMPAIGNS DICTIONARY

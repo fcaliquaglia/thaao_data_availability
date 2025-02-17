@@ -32,6 +32,7 @@ def main():
     # Instrument list selection
     sw.switch_instr_list = simpledialog.askstring(
             "Instrument Category", 'Which category of instruments?  \n [thaao, legacy, hyso, all]')
+
     tls.update_instr_list()
 
     tls.set_date_params('Start year: ', 'End year: ')
@@ -58,6 +59,10 @@ def main():
 
     # Displaying the selected instruments
     messagebox.showinfo("Selected Instruments", f'These instruments are plotted: {ts.instr_list}')
+
+    # Check and update the availability .txt files for each instrument
+    for instr in ts.instr_list:
+        tls.check_txt_file_age(instr)
 
     # Plot the panels based on the switches
     if sw.switch_rolling_panels:

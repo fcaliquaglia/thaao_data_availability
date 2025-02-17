@@ -149,5 +149,4 @@ lists).
 - The Tkinter window created by `create_root()` is kept hidden (`root.withdraw()`) since only pop-up windows are used
   for input.
 - The use of message boxes (`messagebox.showinfo`) provides interactive feedback to the user.
-- The `plot_panels()` function (imported from `plots`) is invoked based on user selections to generate the plots, but
-  the implementation of this function is not included in this script (assumed to be in the `plots` module).
+- The `plot_panels()` function (imported from `plots`) is invoked based on user selections to generate the plots.
