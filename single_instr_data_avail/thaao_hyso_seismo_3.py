@@ -21,17 +21,10 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
-import os
-
-import pandas as pd
-
-import settings as ts
-import tools as tls
-
 instr = 'hyso_seismo_3'
 
 
-def update_data(instr):
+def update_data_avail(instr):
     import os
 
     import pandas as pd

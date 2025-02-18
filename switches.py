@@ -22,6 +22,8 @@ __status__ = "Research"
 __lastupdate__ = ""
 
 # switches
+data_avail_update = 'False'
+
 switch_instr_list = 'thaao'
 
 switch_campaigns = 'True'  # Draw field campaigns?

@@ -31,7 +31,7 @@ import tools as tls
 instr = 'hyso_seismo_2'
 
 
-def update_data(instr):
+def update_data_avail(instr):
     import os
 
     import pandas as pd
