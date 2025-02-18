@@ -46,13 +46,13 @@ def check_txt_file_age(instr):
         if (current_date - last_modified).days > 180:
             print(f"{txt_file_path} is older than 6 months. Generating new file...")
             # Call the function to regenerate the .txt file
-            update_txt_file_with_progress(instr)  # update_txt_file(instr)
+            update_txt_file(instr)  # update_txt_file(instr)
         else:
             print(f"{txt_file_path} is up-to-date.")
     else:
         print(f"{txt_file_path} does not exist. Generating new file...")
         # Call the function to generate the .txt file if it doesn't exist
-        update_txt_file_with_progress(instr)  # update_txt_file(instr)
+        update_txt_file(instr)  # update_txt_file(instr)
 
 
 # # Function to invoke the external script to update the .txt file
@@ -67,7 +67,7 @@ def check_txt_file_age(instr):
 #         print(f"Error occurred while running the external script: {e}")
 
 
-def update_txt_file_with_progress(instr):
+def update_txt_file(instr):
     """
     Runs an external script function directly, updating a progress bar.
     """
@@ -106,6 +106,8 @@ def update_instr_list():
     for category in sw.switch_instr_list.split():
         if category in ts.instr_sets:
             ts.instr_list += ts.instr_sets[category]
+        elif category in ts.metadata_entries:
+            ts.instr_list = ts.instr_sets[category]
 
 
 # Function for getting boolean input through a pop-up window (yes/no)

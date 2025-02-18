@@ -21,20 +21,21 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
-import os
-from urllib.request import urlopen
-
-import numpy as np
-import pandas as pd
-
-import settings as ts
-from single_instr_data_avail import tools as tls
-
 instr = 'metar'
 
-folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
-if __name__ == "__main__":
+def update_data_avail(instr):
+    import os
+
+    import pandas as pd
+    import single_instr_data_avail.tools as sida_tls
+    from urllib.request import urlopen
+
+    import numpy as np
+    import settings as ts
+
+    folder = os.path.join(ts.basefolder, "thaao_" + instr)
+
     url = (
             'https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=BGTL&data=all&year1=1928&month1=1&day1=1&year2=' + str(
             ts.instr_metadata['hyso_tide']['end_instr'].year) + '&month2=' + str(
@@ -52,7 +53,6 @@ if __name__ == "__main__":
     historical_data_metar = historical_data_all['metar']
     del historical_data_all
 
-    # TODO: modificare usando ts.save_mask_txt
     vals = np.repeat(True, len(historical_data_metar))
     metar = pd.concat([pd.Series(historical_data_metar.index), pd.Series(vals)], axis=1)
-    tls.save_txt(instr, metar)
+    sida_tls.save_txt(instr, metar)

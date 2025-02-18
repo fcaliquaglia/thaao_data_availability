@@ -21,23 +21,24 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
-import os
-
-import pandas as pd
-
-import settings as ts
-import tools as tls
-
 instr = 'gnss'
-date_list = pd.date_range(
-        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
-folder = os.path.join(ts.basefolder, 'thaao_' + instr)
 
-if __name__ == "__main__":
+
+def update_data_avail(instr):
+    import os
+
+    import pandas as pd
+
+    import settings as ts
+    import single_instr_data_avail.tools as sida_tls
+
+    date_list = pd.date_range(
+            ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
+    folder = os.path.join(ts.basefolder, 'thaao_' + instr)
 
     gnss = pd.DataFrame(columns=['dt', 'mask'])
 
     for i in date_list:
         gnss.loc[i] = [i, True]
 
-    tls.save_txt(instr, gnss)
+    sida_tls.save_txt(instr, gnss)

@@ -21,17 +21,19 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
-import os
-import pandas as pd
-import settings as ts
-import tools as tls
-
 instr = 'ecapac_mrr'
-date_list = pd.date_range(
-        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
-folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
-if __name__ == "__main__":
+
+def update_data_avail(instr):
+    import os
+
+    import pandas as pd
+
+    import settings as ts
+    import single_instr_data_avail.tools as sida_tls
+    date_list = pd.date_range(
+            ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
+    folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
     ecapac_mrr = pd.DataFrame(columns=['dt', 'mask'])
 
@@ -51,4 +53,4 @@ if __name__ == "__main__":
             continue
 
     # Save the DataFrame to text file
-    tls.save_txt(instr, ecapac_mrr)
+    sida_tls.save_txt(instr, ecapac_mrr)

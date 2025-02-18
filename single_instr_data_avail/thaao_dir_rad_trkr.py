@@ -13,18 +13,21 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
-import os
-import shutil
-import zipfile
-import pandas as pd
-import settings as ts
-import tools as tls
-
 instr = 'dir_rad_trkr'
-date_list = pd.date_range(ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
-folder = os.path.join(ts.basefolder, "thaao_" + instr, 'solcom')
 
-def main():
+
+def update_data_avail(instr):
+    import os
+    import zipfile
+
+    import pandas as pd
+
+    import settings as ts
+    import single_instr_data_avail.tools as sida_tls
+
+    date_list = pd.date_range(
+            ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
+    folder = os.path.join(ts.basefolder, "thaao_" + instr, 'solcom')
     dir_rad_trkr = []
     dir_rad_trkr_missing = []
 
@@ -46,9 +49,5 @@ def main():
     dir_rad_trkr_missing_df = pd.DataFrame(dir_rad_trkr_missing, columns=['dt', 'mask'])
 
     # Save the results
-    tls.save_txt(instr, dir_rad_trkr_df)
-    tls.save_txt(instr, dir_rad_trkr_missing_df, missing=True)
-
-
-if __name__ == "__main__":
-    main()
+    sida_tls.save_txt(instr, dir_rad_trkr_df)
+    sida_tls.save_txt(instr, dir_rad_trkr_missing_df, missing=True)

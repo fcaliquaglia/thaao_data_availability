@@ -21,19 +21,21 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
-import os
-
-import pandas as pd
-
-import settings as ts
-import tools as tls
-
 instr = 'vespa'
-date_list = pd.date_range(
-        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='h').tolist()
-folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
-if __name__ == "__main__":
+
+def update_data_avail(instr):
+    import single_instr_data_avail.tools as sida_tls
+    import os
+
+    import pandas as pd
+
+    import settings as ts
+
+    date_list = pd.date_range(
+            ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='h').tolist()
+    folder = os.path.join(ts.basefolder, "thaao_" + instr)
+
     vespa = pd.DataFrame(columns=['dt', 'mask'])
     vespa_missing = pd.DataFrame(columns=['dt', 'mask'])
 
@@ -48,5 +50,5 @@ if __name__ == "__main__":
         else:
             vespa_missing.loc[i] = [i, True]
 
-    tls.save_txt(instr, vespa)
-    tls.save_txt(instr, vespa_missing, missing=True)
+    sida_tls.save_txt(instr, vespa)
+    sida_tls.save_txt(instr, vespa_missing, missing=True)

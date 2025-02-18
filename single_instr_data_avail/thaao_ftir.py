@@ -21,21 +21,23 @@ __email__ = 'filippo.caliquaglia@ingv.it'
 __status__ = 'Research'
 __lastupdate__ = 'October 2024'
 
-import datetime as dt
-import os
-
-import pandas as pd
-
-import settings as ts
-import tools as tls
-
 instr = 'ftir'
-# date_list = pd.date_range(
-#         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
-folder = os.path.join(ts.basefolder, 'thaao_' + instr)
-gas_species = 'c2h6'
 
-if __name__ == "__main__":
+
+def update_data_avail(instr):
+    import os
+
+    import pandas as pd
+
+    import settings as ts
+    import single_instr_data_avail.tools as sida_tls
+    import datetime as dt
+
+    # date_list = pd.date_range(
+    #         ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
+    folder = os.path.join(ts.basefolder, 'thaao_' + instr)
+    gas_species = 'c2h6'
+
     ftir = pd.DataFrame(columns=['dt', 'mask'])
 
     files = [j for j in os.listdir(folder) if j.startswith('groundbased_ftir.' + gas_species + '_ncar001_thule_')]
@@ -54,4 +56,4 @@ if __name__ == "__main__":
             pass
         ftir = pd.concat([ftir_tmp, ftir])
 
-    tls.save_txt(instr, ftir)
+    sida_tls.save_txt(instr, ftir)

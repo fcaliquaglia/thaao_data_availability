@@ -21,24 +21,22 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
-import os
-
-
-import pandas as pd
-
-import settings as ts
-import tools as tls
-
-import os
-import pandas as pd
-import glob
-
 instr = 'lidar_ae'
-date_list = pd.date_range(
-        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='ME').tolist()
-folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
-if __name__ == "__main__":
+
+def update_data_avail(instr):
+    import single_instr_data_avail.tools as sida_tls
+
+    import settings as ts
+
+    import os
+    import pandas as pd
+    import glob
+
+    date_list = pd.date_range(
+            ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='ME').tolist()
+    folder = os.path.join(ts.basefolder, "thaao_" + instr)
+
     # Initialize an empty list to hold the rows before concatenating
     rows = []
 
@@ -55,6 +53,4 @@ if __name__ == "__main__":
     lidar_ae = pd.DataFrame(rows)
 
     # Ensure tls.save_txt is implemented correctly to save the DataFrame
-    tls.save_txt(instr, lidar_ae)
-
-
+    sida_tls.save_txt(instr, lidar_ae)

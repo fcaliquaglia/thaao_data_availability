@@ -21,37 +21,19 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
-import os
-import zipfile
-import pandas as pd
-import settings as ts
-import tools as tls
-
 instr = 'skycam'
-date_list = pd.date_range(
-        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
-folder = os.path.join(ts.basefolder_skycam, "thaao_" + instr)
 
 
-def process_zip_file(zip_file_path, date_list_int):
-    try:
-        with zipfile.ZipFile(zip_file_path, 'r') as myzip:
-            file_list = set(x.split('/')[1] for x in myzip.namelist())  # Use a set for faster lookups
-            found_dates = []
-            missing_dates = []
-            for j in date_list_int:
-                filename = j.strftime('%Y%m%d_%H%M_raw.jpg')
-                if filename in file_list:
-                    found_dates.append(j)
-                else:
-                    missing_dates.append(j)
-        return found_dates, missing_dates
-    except (FileNotFoundError, zipfile.BadZipFile) as e:
-        print(f"Error with file {zip_file_path}: {e}")
-        return [], []
+def update_data_avail(instr):
+    import single_instr_data_avail.tools as sida_tls
+    import os
+    import pandas as pd
+    import settings as ts
 
+    date_list = pd.date_range(
+            ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
+    folder = os.path.join(ts.basefolder_skycam, "thaao_" + instr)
 
-def main():
     skycam = pd.DataFrame(columns=['dt', 'mask'])
     skycam_missing = pd.DataFrame(columns=['dt', 'mask'])
 
@@ -77,9 +59,25 @@ def main():
         print(fn)
 
     # Save data to txt files using optimized saving
-    tls.save_txt(instr, skycam)
-    tls.save_txt(instr, skycam_missing, missing=True)
+    sida_tls.save_txt(instr, skycam)
+    sida_tls.save_txt(instr, skycam_missing, missing=True)
 
 
-if __name__ == "__main__":
-    main()
+def process_zip_file(zip_file_path, date_list_int):
+    import zipfile
+
+    try:
+        with zipfile.ZipFile(zip_file_path, 'r') as myzip:
+            file_list = set(x.split('/')[1] for x in myzip.namelist())  # Use a set for faster lookups
+            found_dates = []
+            missing_dates = []
+            for j in date_list_int:
+                filename = j.strftime('%Y%m%d_%H%M_raw.jpg')
+                if filename in file_list:
+                    found_dates.append(j)
+                else:
+                    missing_dates.append(j)
+        return found_dates, missing_dates
+    except (FileNotFoundError, zipfile.BadZipFile) as e:
+        print(f"Error with file {zip_file_path}: {e}")
+        return [], []

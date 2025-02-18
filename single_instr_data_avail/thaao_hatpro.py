@@ -20,20 +20,21 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
-import os
-
-import pandas as pd
-
-import settings as ts
-import tools as tls
-
 instr = 'hatpro'
-base_folder = ts.basefolder  # Base folder for efficiency
 
-# Build the file path upfront to avoid repeated path joining
-file_path = os.path.join(base_folder, "thaao_hatpro", 'LWP_15_min_all', 'LWP_15_min_all.dat')
 
-if __name__ == "__main__":
+def update_data_avail(instr):
+    import os
+
+    import pandas as pd
+
+    import settings as ts
+    import single_instr_data_avail.tools as sida_tls
+    base_folder = ts.basefolder  # Base folder for efficiency
+
+    # Build the file path upfront to avoid repeated path joining
+    file_path = os.path.join(base_folder, "thaao_hatpro", 'LWP_15_min_all', 'LWP_15_min_all.dat')
+
     # Read the data with more specific optimizations for file reading
     data_avail_hat = pd.read_csv(
             file_path, skiprows=9, header=0, sep='\s+',  # Using space as delimiter
@@ -42,4 +43,4 @@ if __name__ == "__main__":
     )
 
     # Saving the specific 'LWP_g/m2' column with the 'save_mask_txt' method
-    tls.save_mask_txt(data_avail_hat['LWP_g/m2'], os.path.join(base_folder, "thaao_" + instr), instr)
+    sida_tls.save_mask_txt(data_avail_hat['LWP_g/m2'], os.path.join(base_folder, "thaao_" + instr), instr)

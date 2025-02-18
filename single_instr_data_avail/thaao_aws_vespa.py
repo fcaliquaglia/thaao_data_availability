@@ -23,16 +23,29 @@ __lastupdate__ = "October 2024"
 
 import glob
 import os
+
 import pandas as pd
 import xarray as xr
 
-import settings as ts
-import tools as tls
-
 instr = 'aws_vespa'
-date_list = pd.date_range(
-        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='h').tolist()
-folder = os.path.join(ts.basefolder, "thaao_" + instr)
+
+
+def update_data_avail(instr):
+    import os
+    import pandas as pd
+    import single_instr_data_avail.tools as sida_tls
+
+    import settings as ts
+    # Create NetCDF file from all weekly files
+    date_list = pd.date_range(
+            ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='h').tolist()
+    folder = os.path.join(ts.basefolder, "thaao_" + instr)
+
+    create_netcdf_file(folder)
+
+    # Load the NetCDF dataset and save the data to text file
+    all_weekly = xr.open_dataset(os.path.join(folder, 'Meteo_weekly_all.nc'))
+    sida_tls.save_mask_txt(all_weekly['Air_K'].to_dataframe(), folder, instr)
 
 
 def read_and_process_file(f):
@@ -52,9 +65,9 @@ def read_and_process_file(f):
     return file
 
 
-def create_netcdf_file():
+def create_netcdf_file(fol):
     """Merge all weekly files and save them as a single NetCDF file."""
-    ls_f = glob.glob(os.path.join(folder, 'weekly', 'DatiMeteoThule*'))
+    ls_f = glob.glob(os.path.join(fol, 'weekly', 'DatiMeteoThule*'))
 
     # Initialize a list to hold all processed DataFrames
     all_files = []
@@ -72,17 +85,4 @@ def create_netcdf_file():
 
     # Convert to xarray and save as NetCDF
     all_weekly_xr = all_weekly.to_xarray()
-    all_weekly_xr.to_netcdf(os.path.join(folder, 'Meteo_weekly_all.nc'))
-
-
-def main():
-    # Create NetCDF file from all weekly files
-    create_netcdf_file()
-
-    # Load the NetCDF dataset and save the data to text file
-    all_weekly = xr.open_dataset(os.path.join(folder, 'Meteo_weekly_all.nc'))
-    tls.save_mask_txt(all_weekly['Air_K'].to_dataframe(), folder, instr)
-
-
-if __name__ == "__main__":
-    main()
+    all_weekly_xr.to_netcdf(os.path.join(fol, 'Meteo_weekly_all.nc'))

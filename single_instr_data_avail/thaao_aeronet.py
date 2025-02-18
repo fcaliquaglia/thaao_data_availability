@@ -44,33 +44,36 @@ Original file is located at
 **Required packages installation and importing**
 """
 
-import datetime  # for time data manipulation
-import os
-
-import numpy as np  # for array manipulation
-import pandas as pd  # for data querying and processing
-import requests  # useful for sending HTTP requests
-from bs4 import BeautifulSoup  # reads data from website (web scraping)
-
-import settings as ts
-import tools as tls
-
 """**Setup input parameters such as date, data level, averaging type, AOD range for mapping, AOD/Angstrom exponent, and geographical limits**"""
 
 instr = 'aeronet'
-date_list = pd.date_range(
-        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
-folder = os.path.join(ts.basefolder, "thaao_" + instr)
-site = 'Thule'  # Please make sure site name is spelled properly
-dt_initial = ts.instr_metadata[instr]['start_instr'].strftime('%Y%m%d')  # starting date YYYYMMDD format
-dt_final = ts.instr_metadata[instr]['end_instr'].strftime('%Y%m%d')  # final date YYYYMMDD format
-level = 1.5  # AERONET data level
-average_type = 1  # daily (1), monthly (2)
-feature_choice = 1  # Enter '1' if you are specifying an AOD wavelength or '2' if you are specifying an Angstrom exponent
-wavelength = 500  # Available choices: 1640, 1020, 870, 865, 779, 675, 667, 620, 560, 555, 551, 532, 531, 510, 500, 490, 443, 440, 412, 400, 380, 340
-Angstrom_exp = '440-675'  # Available choices: '440-870','380-500','440-675','500-870','340-440','440-675(Polar)'
 
-if __name__ == "__main__":
+
+def update_data_avail(instr):
+    import datetime  # for time data manipulation
+    import os
+
+    import numpy as np  # for array manipulation
+    import requests  # useful for sending HTTP requests
+    from bs4 import BeautifulSoup  # reads data from website (web scraping)
+
+    import pandas as pd
+    import single_instr_data_avail.tools as sida_tls
+
+    import settings as ts
+
+    date_list = pd.date_range(
+            ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
+    folder = os.path.join(ts.basefolder, "thaao_" + instr)
+    site = 'Thule'  # Please make sure site name is spelled properly
+    dt_initial = ts.instr_metadata[instr]['start_instr'].strftime('%Y%m%d')  # starting date YYYYMMDD format
+    dt_final = ts.instr_metadata[instr]['end_instr'].strftime('%Y%m%d')  # final date YYYYMMDD format
+    level = 1.5  # AERONET data level
+    average_type = 1  # daily (1), monthly (2)
+    feature_choice = 1  # Enter '1' if you are specifying an AOD wavelength or '2' if you are specifying an Angstrom exponent
+    wavelength = 500  # Available choices: 1640, 1020, 870, 865, 779, 675, 667, 620, 560, 555, 551, 532, 531, 510, 500, 490, 443, 440, 412, 400, 380, 340
+    Angstrom_exp = '440-675'  # Available choices: '440-870','380-500','440-675','500-870','340-440','440-675(Polar)'
+
     """**Get desired AERONET data using web services, then scraping data from website**"""
 
     yr_initial = dt_initial[:4]  # initial year
@@ -126,4 +129,4 @@ if __name__ == "__main__":
     for i in date_list:
         if i in df['Date'].values:
             aeronet.loc[i] = [i, True]
-    tls.save_txt(instr, aeronet)
+    sida_tls.save_txt(instr, aeronet)

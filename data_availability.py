@@ -31,9 +31,16 @@ def main():
 
     # Instrument list selection
     sw.switch_instr_list = simpledialog.askstring(
-            "Instrument Category", 'Which category of instruments?  \n [thaao, legacy, hyso, all]')
+            "Instrument Category",
+            'Which category of instruments (or single instrument)?  \n [thaao, legacy, hyso, all, "single_instr"]')
 
     tls.update_instr_list()
+
+    # Force update of the availability .txt files for each instrument
+    if ts.instr_list in list(ts.metadata_entries.keys()):
+        for instr in ts.instr_list:
+            tls.update_txt_file(instr)
+            return
 
     tls.set_date_params('Start year: ', 'End year: ')
 
@@ -43,7 +50,7 @@ def main():
     if sw.switch_rolling_panels:
         lag_r = simpledialog.askinteger("Rolling", "Lag (in months):\n [12 for yearly plots]", minvalue=1, maxvalue=120)
         window_size = simpledialog.askinteger(
-            "Rolling", "Window size (in months):\n [12 for yearly plots]", minvalue=1, maxvalue=120)
+                "Rolling", "Window size (in months):\n [12 for yearly plots]", minvalue=1, maxvalue=120)
         sw.time_freq_r = pd.DateOffset(months=lag_r)
         sw.time_window_r = pd.DateOffset(months=window_size)
 

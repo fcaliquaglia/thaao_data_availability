@@ -21,20 +21,21 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
-import os
-from glob import glob
-
-import pandas as pd
-
-import settings as ts
-import tools as tls
-
 instr = 'uv-vis_spec'
-date_list = pd.date_range(
-        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
-folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
-if __name__ == "__main__":
+
+def update_data_avail(instr):
+    import single_instr_data_avail.tools as sida_tls
+    import os
+
+    import pandas as pd
+
+    import settings as ts
+
+    date_list = pd.date_range(
+            ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
+    folder = os.path.join(ts.basefolder, "thaao_" + instr)
+
     uv_vis_spec = pd.DataFrame(columns=['dt', 'mask'])
     uv_vis_spec_missing = pd.DataFrame(columns=['dt', 'mask'])
 
@@ -45,5 +46,5 @@ if __name__ == "__main__":
         else:
             uv_vis_spec_missing.loc[i] = [i, True]
 
-    tls.save_txt(instr, uv_vis_spec)
-    tls.save_txt(instr, uv_vis_spec_missing, missing=True)
+    sida_tls.save_txt(instr, uv_vis_spec)
+    sida_tls.save_txt(instr, uv_vis_spec_missing, missing=True)
