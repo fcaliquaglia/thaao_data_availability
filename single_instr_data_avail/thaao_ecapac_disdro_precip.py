@@ -16,10 +16,10 @@ OK
 __author__ = "Filippo Cali' Quaglia"
 __credits__ = ["??????"]
 __license__ = "GPL"
-__version__ = "0.1"
+__version__ = "1.1"
 __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
-__lastupdate__ = "October 2024"
+__lastupdate__ = "February 2025"
 
 instr = 'ecapac_disdro_precip'
 

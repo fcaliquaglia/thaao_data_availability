@@ -16,10 +16,10 @@ Brief description
 __author__ = "Filippo Cali' Quaglia"
 __credits__ = ["??????"]
 __license__ = "GPL"
-__version__ = "0.1"
+__version__ = "1.1"
 __email__ = "filippo.caliquaglia@gmail.com"
 __status__ = "Research"
-__lastupdate__ = ""
+__lastupdate__ = "February 2025"
 
 import os
 
