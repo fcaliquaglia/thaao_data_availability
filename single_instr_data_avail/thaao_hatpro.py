@@ -25,22 +25,44 @@ instr = 'hatpro'
 
 def update_data_avail(instr):
     import os
-
+    import numpy as np
     import pandas as pd
+    import julian
+    import datetime as dt
 
     import settings as ts
     import single_instr_data_avail.tools as sida_tls
     base_folder = ts.basefolder  # Base folder for efficiency
 
-    # Build the file path upfront to avoid repeated path joining
-    file_path = os.path.join(base_folder, "thaao_hatpro", 'LWP_15_min_all', 'LWP_15_min_all.dat')
+    year_ls = np.arange(2017, 2025)
 
-    # Read the data with more specific optimizations for file reading
-    data_avail_hat = pd.read_csv(
-            file_path, skiprows=9, header=0, sep='\s+',  # Using space as delimiter
-            parse_dates={'datetime': [0, 1]}, date_parser=lambda x: pd.to_datetime(x, format='%Y-%m-%d %H:%M:%S'),
-            index_col='datetime', low_memory=False  # For better performance with large files
-    )
+    data_avail_hat = pd.DataFrame()
+    for year in year_ls:
+        file_path1 = os.path.join(
+                base_folder, "thaao_hatpro", 'LWP_2019_20_21', f'LWP_QUAD_Ka_allKa_OFFS_1_min_{year}.dat')
 
-    # Saving the specific 'LWP_g/m2' column with the 'save_mask_txt' method
-    sida_tls.save_mask_txt(data_avail_hat['LWP_g/m2'], os.path.join(base_folder, "thaao_" + instr), instr)
+        try:
+            hatpro_tmp = pd.read_table(file_path1, sep='\s+', low_memory=False)
+            tmp = np.empty(hatpro_tmp['JD_rif'].shape, dtype=dt.datetime)
+            for ii, el in enumerate(hatpro_tmp['JD_rif']):
+                new_jd_ass = el + julian.to_jd(dt.datetime(year - 1, 12, 31, 0, 0), fmt='jd')
+                tmp[ii] = julian.from_jd(new_jd_ass, fmt='jd')
+                tmp[ii] = tmp[ii].replace(microsecond=0)
+            hatpro_tmp['datetime'] = tmp
+            data_avail_hat = pd.concat([data_avail_hat, hatpro_tmp[['datetime', 'LWP_gm-2']]])
+        except FileNotFoundError as e:
+            print(e)
+
+    file_path2 = os.path.join(base_folder, "thaao_hatpro", 'LWP_ARCSIX_1_min_2024.dat')
+    hatpro_tmp = pd.read_table(file_path2, sep='\s+', low_memory=False)
+    tmp = np.empty(hatpro_tmp['JD_rif'].shape, dtype=dt.datetime)
+    for ii, el in enumerate(hatpro_tmp['JD_rif']):
+        new_jd_ass = el + julian.to_jd(dt.datetime(year - 1, 12, 31, 0, 0), fmt='jd')
+        tmp[ii] = julian.from_jd(new_jd_ass, fmt='jd')
+        tmp[ii] = tmp[ii].replace(microsecond=0)
+    hatpro_tmp['datetime'] = tmp
+    data_avail_hat = pd.concat([data_avail_hat, hatpro_tmp[['datetime', 'LWP_gm-2']]])
+
+    data_avail_hat = data_avail_hat.set_index('datetime').sort_index()
+    # Saving the specific 'LWP_gm-2' column with the 'save_mask_txt' method
+    sida_tls.save_mask_txt(data_avail_hat, os.path.join(base_folder, "thaao_" + instr), instr)
