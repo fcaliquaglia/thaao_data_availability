@@ -43,3 +43,5 @@ time_freq_c = '6'
 # rolling
 time_freq_r = '12'
 time_window_r = '12'
+
+days_of_an_old_file = 14

@@ -1,18 +1,7 @@
 #!/usr/local/bin/python3
 # -*- coding: utf-8 -*-
-# -------------------------------------------------------------------------------
-#
-"""
-# TODO:
-"""
 
-# =============================================================
-# CREATED: 
-# AFFILIATION: INGV
-# AUTHORS: Filippo Cali' Quaglia
-# =============================================================
-#
-# -------------------------------------------------------------------------------
+
 __author__ = "Filippo Cali' Quaglia"
 __credits__ = ["??????"]
 __license__ = "GPL"
@@ -25,35 +14,41 @@ instr = 'lidar_temp'
 
 
 def update_data_avail(instr):
+    """
+    Updates the availability of LIDAR temperature data by checking for existing
+    zip files and matching file patterns in the specified directory.
+    """
+    import glob
+    import pandas as pd
+    from pathlib import Path
+    import settings as ts
     import single_instr_data_avail.tools as sida_tls
 
-    import settings as ts
-
-    import os
-    import pandas as pd
-    import glob
-
+    # Generate a list of dates based on instrument metadata
     date_list = pd.date_range(
-            ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
-    folder = os.path.join(ts.basefolder, "thaao_" + instr)
+            ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D')
 
-    # Initialize an empty list to hold the rows before concatenating
+    folder = Path(ts.basefolder) / f"thaao_{instr}"
     rows = []
 
     for i in date_list:
         try:
-            # Create the pattern for file matching
-            fn_pattern = os.path.join(folder, i.strftime('%y%m%d') + '.zip')
-            files = glob.glob(fn_pattern)  # Use glob to find files that match the pattern
-            if os.path.exists(fn_pattern):
-                rows.append({'dt': i, 'mask': True})
-        except:
-            fn_pattern = os.path.join(folder, 'LIDAR_' + i.strftime('%Y%m%d') + '.zip')
-            if os.path.exists(fn_pattern):
+            # Check for ZIP file
+            if (folder / f"LIDAR_{i.strftime('%Y%m%d')}.zip").exists():
                 rows.append({'dt': i, 'mask': True})
 
-    # Convert the list of dictionaries into a DataFrame
-    lidar_temp = pd.DataFrame(rows)
+            # Check for other matching files using glob
+            if glob.glob(str(folder / f"thte{i.strftime('%y%m')}.*")):
+                rows.append({'dt': i, 'mask': True})
 
-    # Ensure tls.save_txt is implemented correctly to save the DataFrame
-    sida_tls.save_txt(instr, lidar_temp)
+        except Exception as e:
+            print(f"Error processing {i.strftime('%Y-%m-%d')}: {e}")
+
+    # Create DataFrame efficiently
+    if rows:
+        lidar_temp = pd.DataFrame(rows)
+        lidar_temp.index = lidar_temp['dt']
+        lidar_temp.sort_index(inplace=True)
+
+        # Save the DataFrame using sida_tls module
+        sida_tls.save_txt(instr, lidar_temp)
