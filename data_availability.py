@@ -18,6 +18,7 @@ import sys
 from tkinter import messagebox, simpledialog
 
 import pandas as pd
+from tqdm import tqdm
 
 import plots as plts
 import settings as ts
@@ -90,8 +91,12 @@ def main():
     messagebox.showinfo("Selected Instruments", f'These instruments are plotted: {ts.instr_list}')
 
     # Check and update availability .txt files if needed
-    for instr in ts.instr_list:
-        tls.check_txt_file_age(instr)
+    total_steps = len(ts.instr_list)
+    with tqdm(total=total_steps, desc=f"\nPlotting instr data", colour='blue') as tbar:
+        for instr in ts.instr_list:
+            print(instr)
+            tls.check_txt_file_age(instr)
+            tbar.update(1)
 
     # Execute plotting based on user selections
     if sw.switch_rolling_panels:
