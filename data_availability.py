@@ -14,6 +14,7 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "February 2025"
 
+import sys
 from tkinter import messagebox, simpledialog
 
 import pandas as pd
@@ -38,9 +39,9 @@ def main():
 
     # Force update of the availability .txt files for each instrument
     if ts.instr_list in list(ts.metadata_entries.keys()):
-        for instr in ts.instr_list:
-            tls.update_txt_file(instr)
-            return
+        tls.update_txt_file(ts.instr_list)
+        print(f'Data availability file for {ts.instr_list} updated! Thanks and bye!')
+        sys.exit()
 
     tls.set_date_params('Start year: ', 'End year: ')
 

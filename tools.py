@@ -106,8 +106,8 @@ def update_instr_list():
     for category in sw.switch_instr_list.split():
         if category in ts.instr_sets:
             ts.instr_list += ts.instr_sets[category]
-        elif category in ts.metadata_entries:
-            ts.instr_list = ts.instr_sets[category]
+        elif category in list(ts.metadata_entries.keys()):
+            ts.instr_list = category
 
 
 # Function for getting boolean input through a pop-up window (yes/no)
