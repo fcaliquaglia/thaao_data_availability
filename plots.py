@@ -145,12 +145,12 @@ def draw_data_avail(a1, a2, instr_data, iii_labs):
     print(f'period:{start}-{end}')
 
     total_steps = len(instr_data)
-    with tqdm(total=total_steps, desc=f"\nPlotting instr data") as pbar:
+    with tqdm(total=total_steps, desc=f"\nPlotting instr data", position=1, colour='green') as sbar:
         for instr_idx, (inp_file, _) in enumerate(instr_data):
             print(f'\n{instr_idx:02}:{ts.instr_list[instr_idx]}')
             plot_data_avail(ax, inp_file, a1, a2, instr_idx)
             plot_data_na(ax, a1, a2, instr_idx)
-            pbar.update(1)
+            sbar.update(1)
 
     # Draw events and campaigns based on switches
     if sw.switch_history:
