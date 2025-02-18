@@ -30,7 +30,7 @@ def configure_update_data_availability():
     Prompts the user to update a data availability .txt file for a specific instrument.
     If the user opts for an update, the function will process it and then exit the script.
     """
-    sw.data_avail_update = tls.get_switch_input('Do you want to update a data availability .txt file? (y/n)')
+    sw.data_avail_update = tls.get_switch_input('Do you want to update a data availability .txt file?')
 
     if sw.data_avail_update:
         sw.switch_instr_list = simpledialog.askstring(
@@ -47,7 +47,7 @@ def configure_plot_settings():
     Configures user-selected parameters for plotting, including rolling and cumulative panels.
     """
     sw.switch_rolling_panels = tls.get_switch_input(
-            'Plot rolling panels? (y/n) \n [Yearly panels: set=12, window=12] ')
+            'Plot rolling panels? \n [Yearly panels: set=12, window=12] ')
     if sw.switch_rolling_panels:
         lag_r = simpledialog.askinteger("Rolling", "Lag (in months):\n [12 for yearly plots]", minvalue=1, maxvalue=120)
         window_size = simpledialog.askinteger(
@@ -55,15 +55,15 @@ def configure_plot_settings():
         sw.time_freq_r = pd.DateOffset(months=lag_r)
         sw.time_window_r = pd.DateOffset(months=window_size)
 
-    sw.switch_cumulative_panels = tls.get_switch_input('Plot cumulative panels? (y/n)')
+    sw.switch_cumulative_panels = tls.get_switch_input('Plot cumulative panels?')
     if sw.switch_cumulative_panels:
         lag_c = simpledialog.askinteger("Cumulative", "Lag (in months):", minvalue=1, maxvalue=120)
         sw.time_freq_c = pd.DateOffset(months=lag_c)
 
     # Additional plot options
-    sw.switch_campaigns = tls.get_switch_input('Draw field campaigns? (y/n)', True)
-    sw.switch_history = tls.get_switch_input('Draw historical events? (y/n)', False)
-    sw.switch_prog_bar = tls.get_switch_input('Draw progress bar? (y/n)', False)
+    sw.switch_campaigns = tls.get_switch_input('Draw field campaigns?', True)
+    sw.switch_history = tls.get_switch_input('Draw historical events?', False)
+    sw.switch_prog_bar = tls.get_switch_input('Draw progress bar?', False)
 
 
 def main():
