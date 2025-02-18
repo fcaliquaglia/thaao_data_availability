@@ -56,10 +56,15 @@ def plot_data_na(ax, yy1, yy2, idx):
     instr_metadata = ts.instr_metadata.get(ts.instr_list[idx])
     start_seas, end_seas = pd.Timestamp(instr_metadata['start_seas']).month, pd.Timestamp(
             instr_metadata['end_seas']).month
+
     start_instr, end_instr = pd.Timestamp(instr_metadata['start_instr']), pd.Timestamp(instr_metadata['end_instr'])
 
-    # Compute mask directly on Series (avoids extra DataFrame)
-    mask = (date_index.month < start_seas) | (date_index.month > end_seas) | (date_index < start_instr) | (
+    # Compute mask directly on Series
+    if instr_metadata['start_seas'] < instr_metadata['end_seas']:
+        mask = (date_index.month < start_seas) | (date_index.month > end_seas) | (date_index < start_instr) | (
+            date_index > end_instr)
+    if instr_metadata['start_seas'] > instr_metadata['end_seas']:
+        mask = (date_index.month > start_seas) | (date_index.month < end_seas) | (date_index < start_instr) | (
             date_index > end_instr)
 
     # Plot missing data (grey color) only for masked values

@@ -42,8 +42,8 @@ def check_txt_file_age(instr):
         last_modified = dt.datetime.fromtimestamp(os.path.getmtime(txt_file_path))
         current_date = dt.datetime.now()
 
-        # Check if the file is older than 6 months (180 days)
-        if (current_date - last_modified).days > 180:
+        # Check if the file is older than n days
+        if (current_date - last_modified).days > ts.days_of_an_old_file:
             print(f"{txt_file_path} is older than 6 months. Generating new file...")
             # Call the function to regenerate the .txt file
             update_txt_file(instr)  # update_txt_file(instr)
