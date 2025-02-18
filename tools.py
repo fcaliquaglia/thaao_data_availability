@@ -34,7 +34,6 @@ import settings as ts
 import switches as sw
 
 
-# Function to check if the .txt file is older than 6 months
 def check_txt_file_age(instr):
     txt_file_path = os.path.join(ts.basefolder, f'thaao_{instr}', f'{instr}_data_avail_list.txt')
     if os.path.exists(txt_file_path):
@@ -46,30 +45,18 @@ def check_txt_file_age(instr):
         if (current_date - last_modified).days > ts.days_of_an_old_file:
             print(f"{txt_file_path} is older than 6 months. Generating new file...")
             # Call the function to regenerate the .txt file
-            update_txt_file(instr)  # update_txt_file(instr)
+            update_txt_file(instr)
         else:
             print(f"{txt_file_path} is up-to-date.")
     else:
         print(f"{txt_file_path} does not exist. Generating new file...")
         # Call the function to generate the .txt file if it doesn't exist
-        update_txt_file(instr)  # update_txt_file(instr)
-
-
-# # Function to invoke the external script to update the .txt file
-# def update_txt_file(instr):
-#     # Path to the external Python script that updates the .txt file
-#     specific_script_path = os.getcwd() + ts.instr_metadata[instr]['data_avail_fn']
-#     try:
-#         print("Running the external Python script to update the .txt file...")
-#         subprocess.run(['python', specific_script_path], check=True)
-#         print("External script executed successfully.")
-#     except subprocess.CalledProcessError as e:
-#         print(f"Error occurred while running the external script: {e}")
+        update_txt_file(instr)
 
 
 def update_txt_file(instr):
     """
-    Runs an external script function directly, updating a progress bar.
+    Runs an external script function directly.
     """
     script_path = os.path.join(os.getcwd(), 'single_instr_data_avail', ts.instr_metadata[instr]['data_avail_fn'])
 

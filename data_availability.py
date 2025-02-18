@@ -16,7 +16,9 @@ __lastupdate__ = "February 2025"
 
 import sys
 from tkinter import messagebox, simpledialog
+
 import pandas as pd
+
 import plots as plts
 import settings as ts
 import switches as sw
@@ -32,9 +34,8 @@ def configure_update_data_availability():
 
     if sw.data_avail_update:
         sw.switch_instr_list = simpledialog.askstring(
-            "Instrument Selection for .txt update",
-            'For which instrument do you want to update \n the .txt data availability file?'
-        )
+                "Instrument Selection for .txt update",
+                'For which instrument do you want to update \n the .txt data availability file?')
         tls.update_instr_list()
         tls.update_txt_file(ts.instr_list)
         print(f'Data availability file for {ts.instr_list} updated! Thanks and bye!')
@@ -46,13 +47,11 @@ def configure_plot_settings():
     Configures user-selected parameters for plotting, including rolling and cumulative panels.
     """
     sw.switch_rolling_panels = tls.get_switch_input(
-        'Plot rolling panels? (y/n) \n [Yearly panels: set=12, window=12] '
-    )
+            'Plot rolling panels? (y/n) \n [Yearly panels: set=12, window=12] ')
     if sw.switch_rolling_panels:
         lag_r = simpledialog.askinteger("Rolling", "Lag (in months):\n [12 for yearly plots]", minvalue=1, maxvalue=120)
         window_size = simpledialog.askinteger(
-            "Rolling", "Window size (in months):\n [12 for yearly plots]", minvalue=1, maxvalue=120
-        )
+                "Rolling", "Window size (in months):\n [12 for yearly plots]", minvalue=1, maxvalue=120)
         sw.time_freq_r = pd.DateOffset(months=lag_r)
         sw.time_window_r = pd.DateOffset(months=window_size)
 
@@ -78,9 +77,8 @@ def main():
 
     # Instrument list selection
     sw.switch_instr_list = simpledialog.askstring(
-        "Instrument Selection for plotting",
-        'Which category of instruments (or single instrument)?  \n [thaao, legacy, hyso, all, "single_instr"]'
-    )
+            "Instrument Selection for plotting",
+            'Which category of instruments (or single instrument)?  \n [thaao, legacy, hyso, all, "single_instr"]')
 
     tls.update_instr_list()
     tls.set_date_params('Start year: ', 'End year: ')
