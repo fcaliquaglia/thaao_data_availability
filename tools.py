@@ -22,15 +22,13 @@ __status__ = "Research"
 __lastupdate__ = ""
 
 import datetime as dt
+import importlib.util
 import os
-import subprocess
 import sys
-import time
 import tkinter as tk
 
 import numpy as np
 import pandas as pd
-from tqdm import tqdm  # Importing the tqdm progress bar library
 
 import settings as ts
 import switches as sw
@@ -71,38 +69,28 @@ def check_txt_file_age(instr):
 
 def update_txt_file_with_progress(instr):
     """
-    Runs an external script with a progress bar, updating based on actual script output.
+    Runs an external script function directly, updating a progress bar.
     """
-    specific_script_path = os.path.join(os.getcwd(), 'single_instr_data_avail', ts.instr_metadata[instr]['data_avail_fn'])
+    script_path = os.path.join(os.getcwd(), 'single_instr_data_avail', ts.instr_metadata[instr]['data_avail_fn'])
 
-    process = subprocess.Popen(
-        ['python', specific_script_path, instr],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True  # Ensures output is treated as text, not bytes
-    )
+    if not os.path.isfile(script_path):
+        print(f"Error: Script not found at {script_path}")
+        return
 
-    with tqdm(total=100, desc="Updating .txt file", ncols=100, bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}") as pbar:
-        for line in iter(process.stdout.readline, ''):  # Read script output line by line
-            sys.stdout.flush()
-            if "Progress:" in line:
-                try:
-                    progress = int(line.strip().split("Progress:")[1].strip().replace('%', ''))
-                    pbar.n = progress  # Update progress bar to reported progress
-                    pbar.refresh()
-                except ValueError:
-                    continue  # Ignore malformed progress lines
+    # Load the script dynamically
+    spec = importlib.util.spec_from_file_location("module_name", script_path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["module_name"] = module
+    spec.loader.exec_module(module)  # Execute the script
 
-            time.sleep(0.1)  # Prevent excessive CPU usage
-
-        process.stdout.close()
-        process.wait()  # Wait for the process to complete
-
-    if process.returncode != 0:
-        stderr_output = process.stderr.read()
-        print(f"Error occurred during execution:\n{stderr_output}")
+    # Ensure the script has a function to call
+    if not hasattr(module, "update_data_avail"):
+        print(f"Error: The script {script_path} does not contain 'update_data_avail(instr)' function.")
+        return
     else:
-        print("Subprocess completed successfully.")
+        print("Updating .txt file")
+        module.update_data_avail(instr)
+        print("Update completed successfully.")
 
 
 # Function to create a Tkinter root window

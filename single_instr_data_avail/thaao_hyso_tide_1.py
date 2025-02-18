@@ -21,19 +21,19 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "October 2024"
 
-import os
 
-import pandas as pd
+def update_data_avail(instr):
+    import os
 
-import settings as ts
-import tools as tls
+    import pandas as pd
 
-instr = 'hyso_tide_1'
-date_list = pd.date_range(
-        ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
-folder = os.path.join(ts.basefolder, "thaao_" + instr)
+    import settings as ts
 
-if __name__ == "__main__":
+    import single_instr_data_avail.tools as sida_tls
+
+    date_list = pd.date_range(
+            ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
+    folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
     hyso_tide_1 = pd.DataFrame(columns=['dt', 'mask'])
     hyso_tide_1_missing = pd.DataFrame(columns=['dt', 'mask'])
@@ -46,5 +46,5 @@ if __name__ == "__main__":
             hyso_tide_1_missing.loc[i] = [i, True]
             print('file ' + str(fn) + ' not found')
 
-    tls.save_txt(instr, hyso_tide_1)
-    tls.save_txt(instr, hyso_tide_1_missing, missing=True)
+    sida_tls.save_txt(instr, hyso_tide_1)
+    sida_tls.save_txt(instr, hyso_tide_1_missing, missing=True)
