@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import patches
 from matplotlib.lines import Line2D
+from tqdm import tqdm
 
 import settings as ts
 import switches as sw
@@ -39,8 +40,8 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
 
     if not valid_indices.empty:
         ax.errorbar(
-            valid_indices, np.full(len(valid_indices), idx), xerr=None, yerr=0.3, fmt='.', color=color, capsize=0,
-            markersize=0)
+                valid_indices, np.full(len(valid_indices), idx), xerr=None, yerr=0.3, fmt='.', color=color, capsize=0,
+                markersize=0)
 
     del data_val
     return
@@ -62,10 +63,10 @@ def plot_data_na(ax, yy1, yy2, idx):
     # Compute mask directly on Series
     if instr_metadata['start_seas'] < instr_metadata['end_seas']:
         mask = (date_index.month < start_seas) | (date_index.month > end_seas) | (date_index < start_instr) | (
-            date_index > end_instr)
+                date_index > end_instr)
     if instr_metadata['start_seas'] > instr_metadata['end_seas']:
         mask = (date_index.month > start_seas) | (date_index.month < end_seas) | (date_index < start_instr) | (
-            date_index > end_instr)
+                date_index > end_instr)
 
     # Plot missing data (grey color) only for masked values
     ax.errorbar(
@@ -142,10 +143,14 @@ def draw_data_avail(a1, a2, instr_data, iii_labs):
     start = a1.strftime('%b %Y')
     end = a2.strftime('%b %Y')
     print(f'period:{start}-{end}')
-    for instr_idx, (inp_file, _) in enumerate(instr_data):
-        print(f'{instr_idx:02}:{ts.instr_list[instr_idx]}')
-        plot_data_avail(ax, inp_file, a1, a2, instr_idx)
-        plot_data_na(ax, a1, a2, instr_idx)
+
+    total_steps = len(instr_data)
+    with tqdm(total=total_steps, desc=f"\nPlotting instr data") as pbar:
+        for instr_idx, (inp_file, _) in enumerate(instr_data):
+            print(f'\n{instr_idx:02}:{ts.instr_list[instr_idx]}')
+            plot_data_avail(ax, inp_file, a1, a2, instr_idx)
+            plot_data_na(ax, a1, a2, instr_idx)
+            pbar.update(1)
 
     # Draw events and campaigns based on switches
     if sw.switch_history:
@@ -173,7 +178,6 @@ def draw_data_avail(a1, a2, instr_data, iii_labs):
 
 def plot_panels(plot_type):
     """Generates panels for different types (rolling, cumulative)."""
-    print(plot_type)
 
     ii_labs = []
     instrument_data = [tls.input_file_selection(ii_labs, instr_name) for instr_idx, instr_name in
@@ -183,24 +187,32 @@ def plot_panels(plot_type):
         newdir = os.path.join(ts.da_folder, 'rolling', sw.switch_instr_list, f'{sw.start.year}-{sw.end.year}')
         os.makedirs(newdir, exist_ok=True)
 
-        for j in pd.date_range(sw.start, sw.end, freq=sw.time_freq_r):
-            yyyy1, yyyy2 = j, j + sw.time_window_r
-            fig = draw_data_avail(yyyy1, yyyy2, instrument_data, ii_labs)
-            figname = os.path.join(
-                newdir,
-                f'thaao_data_avail_{yyyy1.strftime("%Y%m")}_{yyyy2.strftime("%Y%m")}_{sw.switch_instr_list}.png')
-            plt.savefig(figname, transparent=False)
-            plt.clf()
-            plt.close(fig)
+        loop_data = pd.date_range(sw.start, sw.end, freq=sw.time_freq_r)
+        total_steps = len(loop_data)
+        with tqdm(total=total_steps, desc=f"\nPlotting {plot_type} data") as pbar:
+            for ibar, j in enumerate(loop_data):
+                yyyy1, yyyy2 = j, j + sw.time_window_r
+                fig = draw_data_avail(yyyy1, yyyy2, instrument_data, ii_labs)
+                figname = os.path.join(
+                        newdir,
+                        f'thaao_data_avail_{yyyy1.strftime("%Y%m")}_{yyyy2.strftime("%Y%m")}_{sw.switch_instr_list}.png')
+                plt.savefig(figname, transparent=False)
+                plt.clf()
+                plt.close(fig)
+                pbar.update(1)
 
     elif plot_type == 'cumulative':
         newdir = os.path.join(ts.da_folder, 'cumulative', sw.switch_instr_list, f'{sw.start.year}-{sw.end.year}')
         os.makedirs(newdir, exist_ok=True)
 
-        for date in pd.date_range(sw.start, sw.end, freq=sw.time_freq_c):
-            fig = draw_data_avail(sw.start, date + sw.time_freq_c, instrument_data, ii_labs)
-            figname = os.path.join(newdir, f'thaao_data_avail_{date.strftime("%Y%m")}_{sw.switch_instr_list}.png')
-            plt.savefig(figname, transparent=False)
-            plt.clf()
-            plt.close(fig)
+        loop_data = pd.date_range(sw.start, sw.end, freq=sw.time_freq_c)
+        total_steps = len(loop_data)
+        with tqdm(total=total_steps, desc=f"\nPlotting {plot_type} data") as pbar:
+            for ibar, date in enumerate(loop_data):
+                fig = draw_data_avail(sw.start, date + sw.time_freq_c, instrument_data, ii_labs)
+                figname = os.path.join(newdir, f'thaao_data_avail_{date.strftime("%Y%m")}_{sw.switch_instr_list}.png')
+                plt.savefig(figname, transparent=False)
+                plt.clf()
+                plt.close(fig)
+                pbar.update(1)
     return

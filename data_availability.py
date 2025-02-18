@@ -95,9 +95,15 @@ def main():
 
     # Execute plotting based on user selections
     if sw.switch_rolling_panels:
-        plts.plot_panels('rolling')
+        plot_type = 'rolling'
+        print(f"Generating {plot_type} plots...")
+        plts.plot_panels(plot_type)
+        print(f"{plot_type.capitalize()} plots completed!")
     if sw.switch_cumulative_panels:
-        plts.plot_panels('cumulative')
+        plot_type = 'cumulative'
+        print(f"Generating {plot_type} plots...")
+        plts.plot_panels(plot_type)
+        print(f"{plot_type.capitalize()} plots completed!")
 
     print('END')
 
