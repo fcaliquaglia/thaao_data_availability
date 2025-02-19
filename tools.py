@@ -35,7 +35,15 @@ import switches as sw
 
 
 def check_txt_file_age(instr):
-    txt_file_path = os.path.join(ts.basefolder, f'thaao_{instr}', f'{instr}_data_avail_list.txt')
+    if instr in ['rad_par_up', 'rad_par_down', 'rad_tb', 'rad_dsi', 'rad_dli', 'rad_usi', 'rad_uli']:
+        instr1 = 'rad'
+    else:
+        instr1 = instr
+    if instr == 'skycam':
+        basefol=ts.basefolder_skycam
+    else:
+        basefol=ts.basefolder
+    txt_file_path = os.path.join(basefol, f'thaao_{instr1}', f'{instr}_data_avail_list.txt')
     if os.path.exists(txt_file_path):
         # Get the last modified date of the file
         last_modified = dt.datetime.fromtimestamp(os.path.getmtime(txt_file_path))
