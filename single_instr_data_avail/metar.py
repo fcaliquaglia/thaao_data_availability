@@ -38,9 +38,9 @@ def update_data_avail(instr):
 
     url = (
             'https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=BGTL&data=all&year1=1928&month1=1&day1=1&year2=' + str(
-            ts.instr_metadata['hyso_tide']['end_instr'].year) + '&month2=' + str(
-            ts.instr_metadata['hyso_tide']['end_instr'].month) + '&day2=' + str(
-            ts.instr_metadata['hyso_tide'][
+            ts.instr_metadata['start_instr']['end_instr'].year) + '&month2=' + str(
+            ts.instr_metadata['start_instr']['end_instr'].month) + '&day2=' + str(
+            ts.instr_metadata['start_instr'][
                 'end_instr'].day) + '&tz=Etc%2FUTC&format=onlycomma&latlon=no&elev=no&missing=M&trace=T&direct=no&report_type=3&report_type=4')
 
     print(url)
