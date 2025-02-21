@@ -209,7 +209,7 @@ def plot_panels(plot_type):
         with tqdm(total=total_steps, desc=f"\nPlotting {plot_type} data") as pbar:
             for ibar, date in enumerate(loop_data):
                 fig = draw_data_avail(sw.start, date + sw.time_freq_c, instrument_data, ii_labs)
-                figname = os.path.join(newdir, f'thaao_data_avail_{date.strftime("%Y%m")}_{sw.switch_instr_list}.png')
+                figname = os.path.join(newdir, f'thaao_data_avail_{sw.start.strftime("%Y%m")}_{date.strftime("%Y%m")}_{sw.switch_instr_list}.png')
                 plt.savefig(figname, transparent=False)
                 plt.clf()
                 plt.close(fig)
