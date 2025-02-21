@@ -22,6 +22,7 @@ __status__ = "Research"
 __lastupdate__ = ""
 
 import datetime as dt
+import gc
 import importlib.util
 import os
 import sys
@@ -86,6 +87,7 @@ def update_txt_file(instr):
         print("Updating .txt file")
         module.update_data_avail(instr)
         print("Update completed successfully.")
+        gc.collect()
 
 
 # Function to create a Tkinter root window

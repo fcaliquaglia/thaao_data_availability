@@ -1,3 +1,4 @@
+import gc
 import os
 
 import matplotlib.cm as cm
@@ -14,8 +15,9 @@ import switches as sw
 import tools as tls
 
 scale_factor = 1.5
-dpi = 300
 plt.rcParams.update({'font.size': 6 * scale_factor})
+plt.rcParams.update({'figure.dpi': 300})
+plt.rcParams.update({'figure.figsize': (15, 10)})
 
 
 def plot_data_avail(ax, inp, yy1, yy2, idx):
@@ -137,18 +139,21 @@ def draw_campaigns(ax, a1, a2):
 
 def draw_data_avail(a1, a2, instr_data, iii_labs):
     """Draws data availability with legends for instruments and campaigns."""
-    fig, ax = plt.subplots(figsize=(15, 10), dpi=dpi)
+    fig, ax = plt.subplots()
     ax2 = ax.twinx()
 
     start = a1.strftime('%b %Y')
     end = a2.strftime('%b %Y')
 
     total_steps = len(instr_data)
-    with tqdm(total=total_steps, desc=f"\nPlotting instr data", position=1, colour='green', bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]") as sbar:
+    with tqdm(
+            total=total_steps, desc=f"\nPlotting instr data", position=1, colour='green',
+            bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]") as sbar:
         for instr_idx, (inp_file, _) in enumerate(instr_data):
             print(f'period:{start}-{end} --> {instr_idx:02}:{ts.instr_list[instr_idx]}')
             plot_data_avail(ax, inp_file, a1, a2, instr_idx)
             plot_data_na(ax, a1, a2, instr_idx)
+            gc.collect()
             sbar.update(1)
 
     # Draw events and campaigns based on switches
@@ -188,7 +193,9 @@ def plot_panels(plot_type):
 
         loop_data = pd.date_range(sw.start, sw.end, freq=sw.time_freq_r)
         total_steps = len(loop_data)
-        with tqdm(total=total_steps, desc=f"\nPlotting {plot_type} data", bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]") as pbar:
+        with tqdm(
+                total=total_steps, desc=f"\nPlotting {plot_type} data",
+                bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]") as pbar:
             for ibar, j in enumerate(loop_data):
                 yyyy1, yyyy2 = j, j + sw.time_window_r
                 fig = draw_data_avail(yyyy1, yyyy2, instrument_data, ii_labs)
@@ -198,6 +205,7 @@ def plot_panels(plot_type):
                 plt.savefig(figname, transparent=False)
                 plt.clf()
                 plt.close(fig)
+                gc.collect()
                 pbar.update(1)
 
     elif plot_type == 'cumulative':
@@ -209,9 +217,12 @@ def plot_panels(plot_type):
         with tqdm(total=total_steps, desc=f"\nPlotting {plot_type} data") as pbar:
             for ibar, date in enumerate(loop_data):
                 fig = draw_data_avail(sw.start, date + sw.time_freq_c, instrument_data, ii_labs)
-                figname = os.path.join(newdir, f'thaao_data_avail_{sw.start.strftime("%Y%m")}_{date.strftime("%Y%m")}_{sw.switch_instr_list}.png')
+                figname = os.path.join(
+                    newdir,
+                    f'thaao_data_avail_{sw.start.strftime("%Y%m")}_{date.strftime("%Y%m")}_{sw.switch_instr_list}.png')
                 plt.savefig(figname, transparent=False)
                 plt.clf()
                 plt.close(fig)
+                gc.collect()
                 pbar.update(1)
     return
