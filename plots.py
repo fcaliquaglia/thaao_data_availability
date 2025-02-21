@@ -144,9 +144,9 @@ def draw_data_avail(a1, a2, instr_data, iii_labs):
     end = a2.strftime('%b %Y')
 
     total_steps = len(instr_data)
-    with tqdm(total=total_steps, desc=f"\nPlotting instr data", position=1, colour='green') as sbar:
+    with tqdm(total=total_steps, desc=f"\nPlotting instr data", position=1, colour='green', bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]") as sbar:
         for instr_idx, (inp_file, _) in enumerate(instr_data):
-            print(f'\nperiod:{start}-{end} --> {instr_idx:02}:{ts.instr_list[instr_idx]}')
+            print(f'period:{start}-{end} --> {instr_idx:02}:{ts.instr_list[instr_idx]}')
             plot_data_avail(ax, inp_file, a1, a2, instr_idx)
             plot_data_na(ax, a1, a2, instr_idx)
             sbar.update(1)
@@ -188,7 +188,7 @@ def plot_panels(plot_type):
 
         loop_data = pd.date_range(sw.start, sw.end, freq=sw.time_freq_r)
         total_steps = len(loop_data)
-        with tqdm(total=total_steps, desc=f"\nPlotting {plot_type} data") as pbar:
+        with tqdm(total=total_steps, desc=f"\nPlotting {plot_type} data", bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]") as pbar:
             for ibar, j in enumerate(loop_data):
                 yyyy1, yyyy2 = j, j + sw.time_window_r
                 fig = draw_data_avail(yyyy1, yyyy2, instrument_data, ii_labs)
