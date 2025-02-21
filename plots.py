@@ -214,12 +214,15 @@ def plot_panels(plot_type):
 
         loop_data = pd.date_range(sw.start, sw.end, freq=sw.time_freq_c)
         total_steps = len(loop_data)
-        with tqdm(total=total_steps, desc=f"\nPlotting {plot_type} data",bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as pbar:
+        with tqdm(
+                total=total_steps, desc=f"\nPlotting {plot_type} data",
+                bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as pbar:
             for ibar, date in enumerate(loop_data):
-                fig = draw_data_avail(sw.start, date + sw.time_freq_c, instrument_data, ii_labs)
+                end = date + sw.time_freq_c
+                fig = draw_data_avail(sw.start, end, instrument_data, ii_labs)
                 figname = os.path.join(
-                    newdir,
-                    f'thaao_data_avail_{sw.start.strftime("%Y%m")}_{date.strftime("%Y%m")}_{sw.switch_instr_list}.png')
+                        newdir,
+                        f'thaao_data_avail_{sw.start.strftime("%Y%m")}_{end.strftime("%Y%m")}_{sw.switch_instr_list}.png')
                 plt.savefig(figname, transparent=False)
                 plt.clf()
                 plt.close(fig)
