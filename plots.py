@@ -28,7 +28,7 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
     data_val = data_val.loc[(data_val.index >= yy1) & (data_val.index <= yy2), 'mask']
 
     if data_val.empty:
-        print(f'{ts.instr_list[idx]} - all data are NAN')
+        print(f'all data are NAN')
         return  # Exit early if no data
 
     # Convert mask values to integer (0 or 1) while handling NaNs
@@ -147,8 +147,8 @@ def draw_data_avail(a1, a2, instr_data, iii_labs):
 
     total_steps = len(instr_data)
     with tqdm(
-            total=total_steps, desc=f"\nPlotting instr data", position=1, colour='green',
-            bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]") as sbar:
+            total=total_steps, desc=f"Plotting instr data", position=1, colour='green',
+            bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as sbar:
         for instr_idx, (inp_file, _) in enumerate(instr_data):
             print(f'period:{start}-{end} --> {instr_idx:02}:{ts.instr_list[instr_idx]}')
             plot_data_avail(ax, inp_file, a1, a2, instr_idx)
@@ -195,7 +195,7 @@ def plot_panels(plot_type):
         total_steps = len(loop_data)
         with tqdm(
                 total=total_steps, desc=f"\nPlotting {plot_type} data",
-                bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]") as pbar:
+                bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as pbar:
             for ibar, j in enumerate(loop_data):
                 yyyy1, yyyy2 = j, j + sw.time_window_r
                 fig = draw_data_avail(yyyy1, yyyy2, instrument_data, ii_labs)
@@ -214,7 +214,7 @@ def plot_panels(plot_type):
 
         loop_data = pd.date_range(sw.start, sw.end, freq=sw.time_freq_c)
         total_steps = len(loop_data)
-        with tqdm(total=total_steps, desc=f"\nPlotting {plot_type} data") as pbar:
+        with tqdm(total=total_steps, desc=f"\nPlotting {plot_type} data",bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as pbar:
             for ibar, date in enumerate(loop_data):
                 fig = draw_data_avail(sw.start, date + sw.time_freq_c, instrument_data, ii_labs)
                 figname = os.path.join(

@@ -92,7 +92,9 @@ def main():
 
     # Check and update availability .txt files if needed
     total_steps = len(ts.instr_list)
-    with tqdm(total=total_steps, desc=f"\nPlotting instr data", colour='blue') as tbar:
+    with tqdm(
+            total=total_steps, desc=f"Check and update availability .txt file", colour='blue',
+            bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as tbar:
         for instr in ts.instr_list:
             print(instr)
             tls.check_txt_file_age(instr)
