@@ -25,26 +25,89 @@ instr = 'uv-vis_spec'
 
 
 def update_data_avail(instr):
-    import single_instr_data_avail.tools as sida_tls
     import os
-
     import pandas as pd
+    import single_instr_data_avail.tools as sida_tls
 
     import settings as ts
 
     date_list = pd.date_range(
-            ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
+            ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='M').tolist()
     folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
-    uv_vis_spec = pd.DataFrame(columns=['dt', 'mask'])
-    uv_vis_spec_missing = pd.DataFrame(columns=['dt', 'mask'])
 
+    uv_vis_spec = pd.DataFrame()
     for i in date_list:
         fn = os.path.join(folder, 'thtc' + i.strftime('%y%m') + '.erv')
-        if os.path.exists(fn):
-            uv_vis_spec.loc[i] = [i, True]
-        else:
-            uv_vis_spec_missing.loc[i] = [i, True]
+        if not os.path.exists(fn):
+            continue
+        with open(fn, 'r') as file:
+            print(fn)
+            lines = file.readlines()
 
-    sida_tls.save_txt(instr, uv_vis_spec)
-    sida_tls.save_txt(instr, uv_vis_spec_missing, missing=True)
+        # Identify number of header lines to skip (first element in line 1)
+        lines_to_skip = int(lines[1].split()[0])
+
+        # Identify where the data begins (after skipping header lines)
+        data_start = lines_to_skip + 1
+
+        # Extract metadata (everything before the data start point)
+        metadata = lines[:data_start]
+
+        column0_names = [lines[9].strip()]
+
+        num_columns1 = int(lines[10].strip())
+        col1_multiplier = lines[11].strip()
+        col1_nan = lines[12].strip()
+
+        column1_names = []
+        column1_uom = []
+        for i in range(13, 13 + num_columns1):
+            column1_names.append(lines[i].split(";")[0].strip())
+            if ";" in lines[i]:
+                column1_uom.append(lines[i].split(";")[1].strip())
+
+        num_columns2 = int(lines[13 + num_columns1].strip())
+        col_multiplier2 = lines[13 + num_columns1 + 1].strip()
+        col_nan1 = lines[13 + num_columns1 + 2].strip()
+        column2_names = []
+        column2_uom = []
+        for i in range(16 + num_columns1, 16 + num_columns1 + num_columns2):
+            column2_names.append(lines[i].split(";")[0].strip())
+            if ";" in lines[i]:
+                column2_uom.append(lines[i].split(";")[1].strip())
+
+        df = pd.DataFrame(columns=column0_names + column2_names + column1_names)
+
+        for i in range(data_start, len(lines) - 1):
+            first_line = lines[i].split()
+            combined_lines = lines[i + 1].split()
+
+            # Ensure combined_lines has the correct number of columns
+            k = 1  # Start at the next line
+            while len(combined_lines) < num_columns1 and i + k + 1 < len(lines):
+                combined_lines.extend(lines[i + k + 1].split())
+                k += 1
+
+            if len(combined_lines) != num_columns1:
+                continue  # Skip if still incorrect
+
+            full_line = first_line + combined_lines
+
+
+            if len(full_line) == len(df.columns):  # Ensure correct shape before adding
+                df.loc[len(df)] = full_line
+            else:
+                print(f"Skipping row due to incorrect column count: {full_line}")
+        df['datetime'] = pd.to_datetime(df['year'].astype(str)) + pd.to_timedelta(df['Fractional julian day of the current year'].astype(float) - 1, unit='D')
+        df.set_index('datetime', inplace=True)
+
+        uv_vis_spec=pd.concat([uv_vis_spec, df])
+
+    df.drop(columns=['Fractional julian day of the current year', 'year', 'month number', 'day of month', 'hour', 'minute', 'datetime'], inplace=True)
+
+
+    # uv_vis_spec = pd.DataFrame(columns=['dt', 'mask'])  # uv_vis_spec_missing = pd.DataFrame(columns=['dt', 'mask'])
+
+    sida_tls.save_mask_txt(uv_vis_spec, os.path.join(folder, "thaao_" + instr), instr)
+

@@ -86,7 +86,6 @@ import settings as ts
 import single_instr_data_avail.tools as sida_tls
 from urllib.request import urlopen
 from tqdm import tqdm  # Progress bar
-import shutil  # To fetch content-length for progress bar
 
 instr = "metar"
 
