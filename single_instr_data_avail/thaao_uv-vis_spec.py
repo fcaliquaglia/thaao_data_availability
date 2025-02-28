@@ -28,7 +28,6 @@ def update_data_avail(instr):
     import os
     import pandas as pd
     import single_instr_data_avail.tools as sida_tls
-    import numpy as np
     import settings as ts
 
     # https://git.nilu.no/ebas/ebas-io/-/wikis/home#downloading-the-software
@@ -36,6 +35,16 @@ def update_data_avail(instr):
     date_list = pd.date_range(
             ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='ME').tolist()
     folder = os.path.join(ts.basefolder, "thaao_" + instr)
+
+    uv_vis_spec = nasa_ames_parser(date_list, folder)
+
+    sida_tls.save_mask_txt(uv_vis_spec, folder, instr)
+
+
+def nasa_ames_parser(date_list, folder):
+    import os
+    import pandas as pd
+    import numpy as np
 
     uv_vis_spec = pd.DataFrame()
     for i in date_list:
@@ -151,7 +160,8 @@ def update_data_avail(instr):
                     except KeyError as e:
                         print(e)  # print(full_line)
 
-        df['datetime'] = pd.to_datetime(df['year'], format='%Y') + pd.to_timedelta(df[col0_names[0]].astype(float) - 1, unit='D')
+        df['datetime'] = pd.to_datetime(df['year'], format='%Y') + pd.to_timedelta(
+                df[col0_names[0]].astype(float) - 1, unit='D')
 
         if 'O3 vertical ednsity (510 nm)' in df.columns:
             df['O3_vertical density (510 nm)'] = df['O3 vertical ednsity (510 nm)']
@@ -164,6 +174,9 @@ def update_data_avail(instr):
         if 'Julian day of the current year' in df.columns:
             df['Fractional julian day of the current year'] = df['Julian day of the current year']
             df.drop(columns=['Fractional julian day of the current year'], inplace=True)
+        if 'solar zenith ang' in df.columns:
+            df['solar zenith angle'] = df['solar zenith ang']
+            df.drop(columns=['solar zenith ang'], inplace=True)
 
         # Strip extra spaces from column names to avoid issues
         df.columns = df.columns.str.strip()
@@ -174,7 +187,6 @@ def update_data_avail(instr):
 
         df.index = df.index + len(uv_vis_spec)
         uv_vis_spec = uv_vis_spec.join(df, how='outer', rsuffix='_duplicate')
-
     uv_vis_spec.columns = uv_vis_spec.columns.str.rstrip('_duplicate')
     uv_vis_spec.columns = uv_vis_spec.columns.str.replace("color", "colour")
     uv_vis_spec.columns = uv_vis_spec.columns.str.replace(" : ", ": ")
@@ -184,7 +196,6 @@ def update_data_avail(instr):
     uv_vis_spec.columns = uv_vis_spec.columns.str.replace("O3_vertical", "O3 vertical")
     uv_vis_spec.columns = uv_vis_spec.columns.str.replace("datetim", "datetime")
     uv_vis_spec.columns = uv_vis_spec.columns.str.replace("air temperatur", "air temperature")
-
     for col in uv_vis_spec.columns:
         col_df2 = col + '_duplicate'
         if col_df2 in uv_vis_spec.columns:
@@ -192,24 +203,16 @@ def update_data_avail(instr):
             uv_vis_spec[col] = uv_vis_spec[col].combine_first(uv_vis_spec[col_df2])
             # Drop the extra column after merging
             uv_vis_spec.drop(columns=[col_df2], inplace=True)
-
-    uv_vis_spec = uv_vis_spec.sort_index()
     uv_vis_spec = uv_vis_spec.T.groupby(level=0).first().T
     uv_vis_spec = uv_vis_spec[uv_vis_spec.columns[~uv_vis_spec.columns.str.startswith('type of observation')]]
     uv_vis_spec.set_index('datetime', inplace=True)
-
     for elem in ['Julian day of the current year', 'Fractional julian day of the current year', 'year', 'day of month',
                  'hour', 'min', 'month number']:
         try:
             uv_vis_spec.drop(columns=[elem], inplace=True)
         except KeyError:
             print(f"Column {elem} not found")
+    uv_vis_spec = uv_vis_spec.sort_index()
+    uv_vis_spec.to_csv(os.path.join(folder, 'uv-vis_spec.csv'), sep=',', index=True, float_format='%.2f')
 
-    import matplotlib.pyplot as plt
-    plt.plot(
-            uv_vis_spec['NO2 vertical column density (430 nm)'] * metadata_dict['NO2 vertical column density (430 nm)'][
-                'mult'])
-    plt.ylabel(metadata_dict['NO2 vertical column density (430 nm)']['uom'])
-    plt.show()
-
-    sida_tls.save_mask_txt(uv_vis_spec, folder, instr)
+    return uv_vis_spec
