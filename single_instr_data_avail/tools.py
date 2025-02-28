@@ -44,7 +44,7 @@ def save_mask_txt(data_val, fol_out, instr_nm):
 
     # Create masks
     try:
-        valid_mask = np.sum(data_val.notnull(), axis=1) == data_val.shape[1]
+        valid_mask = np.sum(data_val.notnull(), axis=1) >=1
     except:
         valid_mask = data_val.notnull()
 

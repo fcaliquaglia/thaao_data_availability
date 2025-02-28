@@ -36,8 +36,11 @@ def update_data_avail(instr):
             ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='ME').tolist()
     folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
-    uv_vis_spec = nasa_ames_parser(date_list, folder)
+    # uv_vis_spec = nasa_ames_parser(date_list, folder)
 
+
+    uv_vis_spec = pd.read_csv(
+            os.path.join(folder, 'uv-vis_spec.csv'), parse_dates=['datetime'], index_col='datetime')
     sida_tls.save_mask_txt(uv_vis_spec, folder, instr)
 
 
@@ -80,11 +83,13 @@ def nasa_ames_parser(date_list, folder):
         # Extract metadata (everything before the data start point)
         metadata = lines[:data_start]
 
+        # COL 0
+        col0_nan = ['np.nan']
+        col0_uom = ['np.nan']
+        col0_mult = [1]
         for i, line in enumerate(metadata):
             if "julian" in line.lower():  # Adjust this condition based on the file content
                 col0_names = [line.strip()]
-
-                break
         next_start = 10
 
         col1_num = int(metadata[9].strip())
@@ -107,6 +112,8 @@ def nasa_ames_parser(date_list, folder):
             col1_names.append(metadata[i].split(";")[0].strip())
             if ";" in metadata[i]:
                 col1_uom.append(metadata[i].split(";")[1].strip())
+            else:
+                col1_uom.append(np.nan)
 
         col2_num = int(metadata[next_start + col1_num].strip())
         col2_mult = metadata[next_start + col1_num + 1].strip()
@@ -120,6 +127,16 @@ def nasa_ames_parser(date_list, folder):
             col2_names.append(metadata[i].split(";")[0].strip())
             if ";" in metadata[i]:
                 col2_uom.append(metadata[i].split(";")[1].strip())
+            else:
+                col2_uom.append(np.nan)
+
+        # check col metadata
+        if not len(col0_uom) == len(col0_names) == len(col0_nan) == len(col0_mult):
+            print('Error in column0 metadata')
+        if not len(col1_uom) == len(col1_names) == len(col1_nan) == len(col1_mult):
+            print('Error in column1 metadata')
+        if not len(col2_uom) == len(col2_names) == len(col2_nan) == len(col2_mult):
+            print('Error in column2 metadata')
 
         metadata_dict0 = {col0_names[0]: {"mult": 1, "nanval": np.nan, "uom": 'fractional julian day'}}
         metadata_dict1 = {key: {"mult": mult, "nanval": nan, "uom": uom} for key, mult, nan, uom, in
@@ -132,14 +149,14 @@ def nasa_ames_parser(date_list, folder):
 
         df = pd.DataFrame(columns=col0_names + col2_names + col1_names)
 
-        for i in range(data_start, len(lines) - 1):
-            first_line = lines[i].split()
-            combined_lines = lines[i + 1].split()
+        for ijk in range(data_start, len(lines) - 1):
+            first_line = lines[ijk].split()
+            combined_lines = lines[ijk + 1].split()
 
             # Ensure combined_lines has the correct number of columns
             k = 1  # Start at the next line
-            while len(combined_lines) < col1_num and i + k + 1 < len(lines):
-                combined_lines.extend(lines[i + k + 1].split())
+            while len(combined_lines) < col1_num and ijk + k + 1 < len(lines):
+                combined_lines.extend(lines[ijk + k + 1].split())
                 k += 1
 
             if len(combined_lines) != col1_num:
@@ -147,24 +164,31 @@ def nasa_ames_parser(date_list, folder):
 
             full_line = first_line + combined_lines
 
-            if len(full_line) == len(df.columns):
-                try:
-                    df.loc[len(df)] = [float(x) for i, x in enumerate(full_line)]
-                except:
-                    pass
+            # cast to float
 
+            full_line = [float(x) for x in full_line]
+
+            # nan check
+            nan_vals = col0_nan + col2_nan + col1_nan
+            for jj_index, jj_val in enumerate(full_line):
+                if jj_val == nan_vals[jj_index]:
+                    full_line[jj_index] = np.nan
+
+                # if not icol.startswith('type'):  #     try:  #         df[icol] = df[icol].replace(metadata_dict[icol]['nanval'], pd.NA)  #     except KeyError as e:  #         print(e)  # print(full_line)
             for icol in df.columns:
-                if not icol.startswith('type'):
-                    try:
-                        df[icol] = df[icol].replace(metadata_dict[icol]['nanval'], pd.NA)
-                    except KeyError as e:
-                        print(e)  # print(full_line)
-            for icol in df.columns:
-                if not icol.startswith('type'):
+                if (icol.startswith('type')) or ('error bar' in icol) or ('index' in icol):
+                    pass
+                else:
                     try:
                         df[icol] *= metadata_dict[icol]['mult']
                     except KeyError as e:
                         print(e)
+
+            if len(full_line) == len(df.columns):
+                try:
+                    df.loc[len(df)] = full_line
+                except:
+                    pass
 
         df['datetime'] = pd.to_datetime(df['year'], format='%Y') + pd.to_timedelta(
                 df[col0_names[0]].astype(float) - 1, unit='D')
@@ -219,6 +243,7 @@ def nasa_ames_parser(date_list, folder):
         except KeyError:
             print(f"Column {elem} not found")
     uv_vis_spec = uv_vis_spec.sort_index()
+    uv_vis_spec = uv_vis_spec.apply(pd.to_numeric, errors='coerce')
     uv_vis_spec.to_csv(os.path.join(folder, 'uv-vis_spec.csv'), sep=',', index=True, float_format='%.2f')
 
     return uv_vis_spec
