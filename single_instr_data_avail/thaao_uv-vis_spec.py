@@ -159,6 +159,12 @@ def nasa_ames_parser(date_list, folder):
                         df[icol] = df[icol].replace(metadata_dict[icol]['nanval'], pd.NA)
                     except KeyError as e:
                         print(e)  # print(full_line)
+            for icol in df.columns:
+                if not icol.startswith('type'):
+                    try:
+                        df[icol] *= metadata_dict[icol]['mult']
+                    except KeyError as e:
+                        print(e)
 
         df['datetime'] = pd.to_datetime(df['year'], format='%Y') + pd.to_timedelta(
                 df[col0_names[0]].astype(float) - 1, unit='D')
