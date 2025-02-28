@@ -139,7 +139,7 @@ metadata_entries = {'aeronet'                                                   
     'gnss'                                                                                                      : create_instr_metadata(
             dt.datetime(2021, 5, 1), institution='INGV', data_avail_fn='thaao_gnss.py'),
     'uv-vis_spec'                                                                                               : create_instr_metadata(
-            dt.datetime(1991, 2, 1), dt.datetime(2016, 11, 30), institution='DMI', # 1991-2016
+            dt.datetime(1997, 2, 1), dt.datetime(2003, 11, 30), institution='DMI', # 1991-2016
             data_avail_fn='thaao_uv-vis_spec.py'),
     'vespa'                                                                                                     : create_instr_metadata(
             dt.datetime(2016, 7, 1), institution='INGV', data_avail_fn='thaao_vespa.py'),

@@ -36,11 +36,9 @@ def update_data_avail(instr):
             ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='ME').tolist()
     folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
-    # uv_vis_spec = nasa_ames_parser(date_list, folder)
-
-
-    uv_vis_spec = pd.read_csv(
-            os.path.join(folder, 'uv-vis_spec.csv'), parse_dates=['datetime'], index_col='datetime')
+    uv_vis_spec = nasa_ames_parser(date_list, folder)
+    # uv_vis_spec = pd.read_csv(
+    #         os.path.join(folder, 'uv-vis_spec.csv'), parse_dates=['datetime'], index_col='datetime')
     sida_tls.save_mask_txt(uv_vis_spec, folder, instr)
 
 
@@ -175,20 +173,21 @@ def nasa_ames_parser(date_list, folder):
                     full_line[jj_index] = np.nan
 
                 # if not icol.startswith('type'):  #     try:  #         df[icol] = df[icol].replace(metadata_dict[icol]['nanval'], pd.NA)  #     except KeyError as e:  #         print(e)  # print(full_line)
-            for icol in df.columns:
-                if (icol.startswith('type')) or ('error bar' in icol) or ('index' in icol):
-                    pass
-                else:
-                    try:
-                        df[icol] *= metadata_dict[icol]['mult']
-                    except KeyError as e:
-                        print(e)
 
             if len(full_line) == len(df.columns):
                 try:
                     df.loc[len(df)] = full_line
                 except:
                     pass
+
+        for icol in df.columns:
+            if (icol.startswith('type')) or ('error bar' in icol) or ('index' in icol):
+                pass
+            else:
+                try:
+                    df[icol] *= metadata_dict[icol]['mult']
+                except KeyError as e:
+                    print(e)
 
         df['datetime'] = pd.to_datetime(df['year'], format='%Y') + pd.to_timedelta(
                 df[col0_names[0]].astype(float) - 1, unit='D')
