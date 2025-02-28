@@ -149,10 +149,9 @@ def update_data_avail(instr):
                     try:
                         df[icol] = df[icol].replace(metadata_dict[icol]['nanval'], pd.NA)
                     except KeyError as e:
-                        print(e)
-                        print(full_line)
+                        print(e)  # print(full_line)
 
-        df['datetime'] = pd.to_datetime(df['year']) + pd.to_timedelta( df[col0_names[0]].astype(float) - 1, unit='D')
+        df['datetime'] = pd.to_datetime(df['year'], format='%Y') + pd.to_timedelta(df[col0_names[0]].astype(float) - 1, unit='D')
 
         if 'O3 vertical ednsity (510 nm)' in df.columns:
             df['O3_vertical density (510 nm)'] = df['O3 vertical ednsity (510 nm)']
@@ -194,6 +193,7 @@ def update_data_avail(instr):
             # Drop the extra column after merging
             uv_vis_spec.drop(columns=[col_df2], inplace=True)
 
+    uv_vis_spec = uv_vis_spec.sort_index()
     uv_vis_spec = uv_vis_spec.T.groupby(level=0).first().T
     uv_vis_spec = uv_vis_spec[uv_vis_spec.columns[~uv_vis_spec.columns.str.startswith('type of observation')]]
     uv_vis_spec.set_index('datetime', inplace=True)
@@ -210,5 +210,6 @@ def update_data_avail(instr):
             uv_vis_spec['NO2 vertical column density (430 nm)'] * metadata_dict['NO2 vertical column density (430 nm)'][
                 'mult'])
     plt.ylabel(metadata_dict['NO2 vertical column density (430 nm)']['uom'])
+    plt.show()
 
     sida_tls.save_mask_txt(uv_vis_spec, folder, instr)
