@@ -140,20 +140,19 @@ def update_data_avail(instr):
 
             if len(full_line) == len(df.columns):
                 try:
-                    df.loc[len(df)] = [int(x) for i, x in enumerate(full_line)]
+                    df.loc[len(df)] = [float(x) for i, x in enumerate(full_line)]
                 except:
                     pass
 
             for icol in df.columns:
                 if not icol.startswith('type'):
                     try:
-                        df[icol].replace(metadata_dict[icol]['nanval'], pd.NA, inplace=True)
+                        df[icol] = df[icol].replace(metadata_dict[icol]['nanval'], pd.NA)
                     except KeyError as e:
                         print(e)
                         print(full_line)
 
-        df['datetime'] = pd.to_datetime(df['year'].astype(str)) + pd.to_timedelta(
-                df[col0_names[0]].astype(float) - 1, unit='D')
+        df['datetime'] = pd.to_datetime(df['year']) + pd.to_timedelta( df[col0_names[0]].astype(float) - 1, unit='D')
 
         if 'O3 vertical ednsity (510 nm)' in df.columns:
             df['O3_vertical density (510 nm)'] = df['O3 vertical ednsity (510 nm)']
