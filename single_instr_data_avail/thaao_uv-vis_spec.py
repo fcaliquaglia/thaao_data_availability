@@ -28,7 +28,7 @@ def update_data_avail(instr):
     import os
     import pandas as pd
     import single_instr_data_avail.tools as sida_tls
-
+    import numpy as np
     import settings as ts
 
     # https://git.nilu.no/ebas/ebas-io/-/wikis/home#downloading-the-software
@@ -80,14 +80,14 @@ def update_data_avail(instr):
 
         col1_num = int(metadata[9].strip())
         if col1_num <= 9:
-            col1_multiplier = metadata[10].strip().split()
-            col1_multiplier = [float(x) for x in col1_multiplier]
+            col1_mult = metadata[10].strip().split()
+            col1_mult = [float(x) for x in col1_mult]
             col1_nan = metadata[11].strip().split()
             col1_nan = [float(x) for x in col1_nan]
             next_start += 2
         elif col1_num > 9:
-            col1_multiplier = metadata[10].strip().split() + metadata[11].strip().split()
-            col1_multiplier = [float(x) for x in col1_multiplier]
+            col1_mult = metadata[10].strip().split() + metadata[11].strip().split()
+            col1_mult = [float(x) for x in col1_mult]
             col1_nan = metadata[12].strip().split() + metadata[13].strip().split()
             col1_nan = [float(x) for x in col1_nan]
             next_start += 4
@@ -100,8 +100,8 @@ def update_data_avail(instr):
                 col1_uom.append(metadata[i].split(";")[1].strip())
 
         col2_num = int(metadata[next_start + col1_num].strip())
-        col2_multiplier = metadata[next_start + col1_num + 1].strip()
-        col2_multiplier = [float(x) for x in col2_multiplier.split()]
+        col2_mult = metadata[next_start + col1_num + 1].strip()
+        col2_mult = [float(x) for x in col2_mult.split()]
         col2_nan = metadata[next_start + col1_num + 2].strip()
         col2_nan = [float(x) for x in col2_nan.split()]
         next_start += 2
@@ -112,8 +112,14 @@ def update_data_avail(instr):
             if ";" in metadata[i]:
                 col2_uom.append(metadata[i].split(";")[1].strip())
 
-        metadata_dict = {key: {"mult": mult, "nanval": nan, "uom": uom} for key, mult, nan, uom, in
-                         zip(col1_names, col1_multiplier, col1_nan, col1_uom)}
+        metadata_dict0 = {col0_names[0]: {"mult": 1, "nanval": np.nan, "uom": 'fractional julian day'}}
+        metadata_dict1 = {key: {"mult": mult, "nanval": nan, "uom": uom} for key, mult, nan, uom, in
+                          zip(col1_names, col1_mult, col1_nan, col1_uom)}
+        metadata_dict2 = {key: {"mult": mult, "nanval": nan, "uom": uom} for key, mult, nan, uom, in
+                          zip(col2_names, col2_mult, col2_nan, col2_uom)}
+        metadata_dict2.update(metadata_dict0)
+        metadata_dict2.update(metadata_dict1)
+        metadata_dict = metadata_dict2
 
         df = pd.DataFrame(columns=col0_names + col2_names + col1_names)
 
@@ -128,36 +134,41 @@ def update_data_avail(instr):
                 k += 1
 
             if len(combined_lines) != col1_num:
-                continue  # Skip if still incorrect
+                continue
 
             full_line = first_line + combined_lines
 
-            if len(full_line) == len(df.columns):  # Ensure correct shape before adding
-                df.loc[len(df)] = full_line
-            else:
-                print(f"Skipping row due to incorrect column count: {full_line}")
+            if len(full_line) == len(df.columns):
+                try:
+                    df.loc[len(df)] = [int(x) for i, x in enumerate(full_line)]
+                except:
+                    pass
+
+            for icol in df.columns:
+                if not icol.startswith('type'):
+                    try:
+                        df[icol].replace(metadata_dict[icol]['nanval'], pd.NA, inplace=True)
+                    except KeyError as e:
+                        print(e)
+                        print(full_line)
+
         df['datetime'] = pd.to_datetime(df['year'].astype(str)) + pd.to_timedelta(
                 df[col0_names[0]].astype(float) - 1, unit='D')
 
-        try:
+        if 'O3 vertical ednsity (510 nm)' in df.columns:
             df['O3_vertical density (510 nm)'] = df['O3 vertical ednsity (510 nm)']
             df.drop(columns=['O3 vertical ednsity (510 nm)'], inplace=True)
-        except KeyError as e:
-            pass
-        try:
+
+        if 'NO2 vertical column_density (430 nm' in df.columns:
             df['NO2 vertical column density (430 nm)'] = df['NO2 vertical column_density (430 nm']
             df.drop(columns=['NO2 vertical column density (430 nm'], inplace=True)
-        except KeyError as e:
-            pass
-        try:
+
+        if 'Julian day of the current year' in df.columns:
             df['Fractional julian day of the current year'] = df['Julian day of the current year']
             df.drop(columns=['Fractional julian day of the current year'], inplace=True)
-        except KeyError as e:
-            pass
 
         # Strip extra spaces from column names to avoid issues
         df.columns = df.columns.str.strip()
-        # df.columns = df.columns.str.replace(' ', '_', regex=False)
 
         # First, reset index to avoid index conflicts during concatenation
         uv_vis_spec = uv_vis_spec.reset_index(drop=True)
@@ -192,19 +203,13 @@ def update_data_avail(instr):
                  'hour', 'min', 'month number']:
         try:
             uv_vis_spec.drop(columns=[elem], inplace=True)
-        except KeyError as e:
-            print(e)
-
-    for icol in uv_vis_spec.columns:
-        try:
-            uv_vis_spec[icol].replace(metadata_dict[icol]['nanval'], pd.NA, inplace=True)
-        except KeyError as e:
-            print(e)
+        except KeyError:
+            print(f"Column {elem} not found")
 
     import matplotlib.pyplot as plt
     plt.plot(
-        uv_vis_spec['NO2 vertical column density (430 nm)'] * metadata_dict['NO2 vertical column density (430 nm)'][
-            'mult'])
+            uv_vis_spec['NO2 vertical column density (430 nm)'] * metadata_dict['NO2 vertical column density (430 nm)'][
+                'mult'])
     plt.ylabel(metadata_dict['NO2 vertical column density (430 nm)']['uom'])
 
-    sida_tls.save_mask_txt(uv_vis_spec, os.path.join(folder, "thaao_" + instr), instr)
+    sida_tls.save_mask_txt(uv_vis_spec, folder, instr)
