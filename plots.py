@@ -23,6 +23,7 @@ plt.rcParams.update({'figure.figsize': (15, 10)})
 
 def draw_data_summary():
     print('UNDER DEVELOPMENT')
+
     data_all = pd.concat(
             [tls.load_data_file(instr).resample("D").mean().add_prefix(f"{instr}__") for instr in ts.instr_list],
             axis=1).sort_index()
@@ -41,30 +42,37 @@ def draw_data_summary():
         instr = var_.split('__')[0]
         var = var_.split('__')[1]
         print(f'Plotting {var}')
-        # if not var in ts.instr_metadata[instr]['plot_vars']:
-        #     continue
+
         vars_details = ts.instr_metadata[instr]['plot_vars'][var]
+
+        # Primary Y-Axis (left)
         ax.plot(
-                data_filtered.index, data_filtered[var_], color=f'{vars_details[0]}', marker='o', markersize=2,
-                linestyle='-')
-        ax.set_ylabel(f"{var} [{vars_details[1]}]", color=f'{vars_details[0]}', fontsize=10, fontweight='bold')
-        ax.tick_params(axis='y', colors=f'{vars_details[0]}', labelsize=8)
+                data_filtered.index, data_filtered[var_], color=vars_details[0], marker='o', markersize=2,
+                linestyle='-'
+        )
+        ax.set_ylabel(f"{var} [{vars_details[1]}]", color=vars_details[0], fontsize=10, fontweight='bold')
+        ax.tick_params(axis='y', colors=vars_details[0], labelsize=8)
         ax.grid(True, linestyle='--', alpha=0.5)
+
+        # Create a secondary y-axis on the right
+        ax_right = ax.twinx()
+        ax_right.set_ylabel(f"{var} [{vars_details[1]}]", color=vars_details[0], fontsize=10, fontweight='bold')
+        ax_right.tick_params(axis='y', colors=vars_details[0], labelsize=8)
 
         # Remove the top x-axis spine for all subplots
         ax.spines['top'].set_visible(False)
 
-        # Remove the bottom x-axis spine for all but the last subplot (the last one will keep the bottom spine)
+        # Remove the bottom x-axis spine for all but the last subplot
         if i < len(data_all.columns) - 1:
             ax.spines['bottom'].set_visible(False)
 
         # Remove x-axis ticks for all but the last subplot
         if i < len(data_all.columns) - 1:
-            ax.xaxis.set_ticks_position('none')  # No ticks for upper and bottom axes
+            ax.xaxis.set_ticks_position('none')
         else:
-            ax.xaxis.set_ticks_position('bottom')  # Show ticks only on the bottom for the last subplot
+            ax.xaxis.set_ticks_position('bottom')
 
-    # Draw events and campaigns based on switches
+            # Draw events and campaigns based on switches
     if sw.switch_history:
         draw_events(ax, sw.start_date.year, sw.end_date.year)
     if sw.switch_campaigns:
@@ -91,13 +99,7 @@ def plot_data_avail(ax, instr, yy1, yy2):
     """Plot data availability"""
 
     idx = ts.instr_metadata[instr]['idx']
-    if not os.path.exists(ts.instr_metadata[instr]['csv_path']):
-        tls.update_csv_file(instr)
-    try:
-        data_val = tls.load_data_file(instr)
-    except (ValueError, FileNotFoundError):
-        tls.update_csv_file(instr)
-        data_val = tls.load_data_file(instr)
+    data_val = tls.load_data_file(instr)
 
     # Filter data within the specified range (yy1, yy2) using .loc[]
     data_val = data_val.iloc[(data_val.index >= yy1) & (data_val.index <= yy2), 0]

@@ -44,7 +44,7 @@ def check_csv_file_age():
                                     'rad_uli'] else instr
         basefol = ts.basefolder_skycam if instr == 'skycam' else ts.basefolder
 
-        csv_file_path = os.path.join(basefol, f'thaao_{instr1}', f'{instr}_data_avail_list.csv')
+        csv_file_path = ts.instr_metadata[instr]['csv_path']
         if os.path.exists(csv_file_path):
             # Get the last modified date of the file
             last_modified = dt.datetime.fromtimestamp(os.path.getmtime(csv_file_path))
@@ -120,6 +120,10 @@ def get_switch_input(prompt, default=False):
 def load_data_file(instr):
     """Load the data from the input file and return a DataFrame with 'datetime' as the index."""
     print(f'Loading csv file for {instr}')
+
+    if not os.path.exists(ts.instr_metadata[instr]['csv_path']):
+        update_csv_file(instr)
+
     inp = ts.instr_metadata[instr]['csv_path']
     try:
         data_val = pd.read_csv(inp, index_col='datetime', parse_dates=True)
