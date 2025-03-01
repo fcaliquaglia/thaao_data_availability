@@ -21,15 +21,15 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "February 2025"
 
-instr = 'uv-vis_spec'
+import os
+
+import pandas as pd
+
+import settings as ts
+import single_instr_data_avail.sida_tools as sida_tls
 
 
 def update_data_avail(instr):
-    import os
-    import pandas as pd
-    import single_instr_data_avail.sida_tools as sida_tls
-    import settings as ts
-
     # https://git.nilu.no/ebas/ebas-io/-/wikis/home#downloading-the-software
 
     date_list = pd.date_range(
@@ -39,7 +39,7 @@ def update_data_avail(instr):
     # uv_vis_spec = nasa_ames_parser(date_list, folder)
     uv_vis_spec = pd.read_csv(
             os.path.join(folder, 'uv-vis_spec.csv'), parse_dates=['datetime'], index_col='datetime')
-    sida_tls.save_m_csv(uv_vis_spec, folder, instr)
+    sida_tls.save_csv(instr, uv_vis_spec)
 
 
 def nasa_ames_parser(date_list, folder):

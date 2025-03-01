@@ -14,6 +14,7 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "February 2025"
 
+import datetime as dt
 from tkinter import messagebox, simpledialog
 
 import pandas as pd
@@ -87,13 +88,20 @@ def main():
     # Prompt for updating data availability before anything else
     update_data_availability()
 
-    tls.set_date_params('Start year: ', 'End year: ')
+    start_year = simpledialog.askinteger(
+            "Input", 'Start year: ', minvalue=1920, maxvalue=dt.datetime.today().year, initialvalue=sw.start.year)
+    sw.start_date = dt.datetime(start_year, 1, 1)
+
+    end_year = simpledialog.askinteger(
+            "Input", 'End year: ', minvalue=1920, maxvalue=dt.datetime.today().year, initialvalue=sw.end.year)
+    sw.end_date = dt.datetime(end_year, 12, 31)
 
     # Configure plot settings
     configure_plot_settings()
 
     # Display selected instruments
     messagebox.showinfo("Selected Instruments", f'These instruments are plotted: {ts.instr_list}')
+    print(f'These instruments are plotted: {ts.instr_list}')
 
     # minor updates for the metadata
     for instr_name in ts.instr_list:

@@ -26,9 +26,6 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "February 2025"
 
-instr = 'rs_sondes'
-
-
 def update_data_avail(instr):
     import single_instr_data_avail.sida_tools as sida_tls
     import os

@@ -71,7 +71,13 @@ def plot_data_avail(ax, instr, yy1, yy2):
     """Plot data availability"""
 
     idx = ts.instr_metadata[instr]['idx']
-    data_val = tls.load_data_file(instr)
+    if not os.path.exists(ts.instr_metadata[instr]['csv_path']):
+        tls.update_csv_file(instr)
+    try:
+        data_val = tls.load_data_file(instr)
+    except (ValueError, FileNotFoundError):
+        tls.update_csv_file(instr)
+        data_val = tls.load_data_file(instr)
 
     # Filter data within the specified range (yy1, yy2) using .loc[]
     data_val = data_val.iloc[(data_val.index >= yy1) & (data_val.index <= yy2), 0]
@@ -223,6 +229,7 @@ def draw_data_avail(a1, a2):
     ax.legend(
             handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.05), fancybox=True, shadow=True,
             ncol=6, labelcolor=[ts.institution_colors[elem] for elem in ts.institution_colors], prop={'weight': 'bold'})
+    plt.tight_layout()
 
     return fig
 
