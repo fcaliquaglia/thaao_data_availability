@@ -1,7 +1,6 @@
 import datetime as dt
 import gc
 import os
-import sys
 
 import matplotlib.cm as cm
 import matplotlib.dates as mdates
@@ -23,33 +22,40 @@ plt.rcParams.update({'figure.figsize': (15, 10)})
 
 
 def draw_data_summary(instr_data, iii_labs):
-
     print('UNDER DEVELOPMENT')
-
-
     for instr_idx, (inp_file, _) in enumerate(instr_data):
         instr_metadata = ts.instr_metadata.get(ts.instr_list[instr_idx])
-        start_seas, end_seas = pd.Timestamp(instr_metadata['start_seas']).month, pd.Timestamp(
-                instr_metadata['end_seas']).month
 
-    data = tls.load_data_file(inp_file)
+    data_orig = tls.load_data_file(inp_file)
+    data = data_orig.resample('D').mean()
 
     # Define variables to plot (modify based on actual data columns)
-    variables = {'CO2 (ppm)'              : ('black', 'ppm'), 'CH4 (ppb)': ('green', 'ppb'),
-                 'Total Ozone (DU)'       : ('blue', 'DU'), 'Aerosol Optical Depth': ('brown', ''),
-                 'Column Water Vapor (cm)': ('teal', 'cm'), 'Precipitation (mm)': ('orange', 'mm'),
-                 'Cloud-Free Fraction (%)': ('pink', '%'), 'Shortwave Irradiance (W/m²)': ('darkred', 'W/m²'),
-                 'Temperature (°C)'       : ('red', '°C')}
+    variables = {'AirTC': ('black', 'degC'), 'RH': ('blue', '%')}
+
+    import matplotlib.dates as mdates
 
     # Create figure and subplots
-    fig, axes = plt.subplots(len(variables), 1, figsize=(12, 12), sharex=True, constrained_layout=True, dpi=100)
+    fig, axes = plt.subplots(len(variables), 1, figsize=(12, 12), sharex=True, dpi=200)
 
     # Plot each variable
-    for ax, (var, (color, unit)) in zip(axes, variables.items()):
+    for i, (ax, (var, (color, unit))) in enumerate(zip(axes, variables.items())):
         ax.plot(data.index, data[var], color=color, marker='o', markersize=2, linestyle='-')
         ax.set_ylabel(f"{var} ({unit})", color=color, fontsize=10, fontweight='bold')
         ax.tick_params(axis='y', colors=color, labelsize=8)
         ax.grid(True, linestyle='--', alpha=0.5)
+
+        # Remove the top x-axis spine for all subplots
+        ax.spines['top'].set_visible(False)
+
+        # Remove the bottom x-axis spine for all but the last subplot (the last one will keep the bottom spine)
+        if i < len(variables) - 1:
+            ax.spines['bottom'].set_visible(False)
+
+        # Remove x-axis ticks for all but the last subplot
+        if i < len(variables) - 1:
+            ax.xaxis.set_ticks_position('none')  # No ticks for upper and bottom axes
+        else:
+            ax.xaxis.set_ticks_position('bottom')  # Show ticks only on the bottom for the last subplot
 
     # Format x-axis with year labels
     axes[-1].xaxis.set_major_locator(mdates.YearLocator())
@@ -57,13 +63,13 @@ def draw_data_summary(instr_data, iii_labs):
     plt.xticks(rotation=45, fontsize=9)
 
     # Add a logo (comment out if not needed)
-    # logo = plt.imread('your_logo.png')
-    # newax = fig.add_axes([0.1, 0.75, 0.15, 0.15], anchor='NW', zorder=1)
-    # newax.imshow(logo)
-    # newax.axis('off')
+    logo = plt.imread('logo.png')
+    newax = fig.add_axes([0.1, 0.75, 0.15, 0.15], anchor='NW', zorder=1)
+    newax.imshow(logo)
+    newax.axis('off')
 
     # Title and show plot
-    fig.suptitle('Climate Observations from Your Observatory', fontsize=14, fontweight='bold')
+    fig.suptitle('Thle High Arctic Atmospheric Observatory', fontsize=14, fontweight='bold')
 
     return fig
 
@@ -280,12 +286,20 @@ def plot_panels(plot_type):
     elif plot_type == 'summary':
         newdir = os.path.join(ts.da_folder, 'summary', f'{sw.start.year}-{sw.end.year}')
         os.makedirs(newdir, exist_ok=True)
-        fig = draw_data_summary(instrument_data, ii_labs)
-        figname = os.path.join(
-                newdir,
-                f'thaao_data_avail_{sw.start.year}_{sw.end.year}_{sw.switch_instr_list}_{dt.datetime.today().strftime("%Y%m%d")}.png')
-        plt.savefig(figname, transparent=False)
-        plt.clf()
-        plt.close(fig)
-        gc.collect()
+
+        total_steps = len(ii_labs)
+        with tqdm(
+                total=total_steps, desc=f"\nPlotting {plot_type} data",
+                bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as pbar:
+            for ibar, instr in enumerate(ii_labs):
+                fig = draw_data_summary(instrument_data, ii_labs)
+                figname = os.path.join(
+                        newdir,
+                        f'thaao_data_avail_{sw.start.year}_{sw.end.year}_{sw.switch_instr_list}_{dt.datetime.today().strftime("%Y%m%d")}.png')
+                plt.savefig(figname, transparent=False)
+                plt.clf()
+                plt.close(fig)
+                gc.collect()
+                pbar.update(1)
+
     return
