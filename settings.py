@@ -41,13 +41,14 @@ end_season = dt.datetime(1900, 12, 31)
 
 instr_sets = {
     "thaao": ['rs_sondes', 'rad_uli', 'rad_dli', 'rad_usi', 'rad_dsi', 'rad_par_up', 'rad_par_down', 'rad_tb', 'skycam',
-              'mms_trios', 'metar', 'vespa', 'ceilometer', 'hatpro', 'dir_rad_trkr', 'pm10', 'ftir', 'aeronet', 'gnss',
+              'mms_trios', 'metar', 'vespa', 'ceilometer', 'dir_rad_trkr', 'pm10', 'ftir', 'aeronet', 'gnss',
               'ecapac_mrr', 'ecapac_aws_snow', 'ecapac_disdro_precip', 'aws_vespa'],
-    "legacy": ['uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'gbms', 'wv_isotopes', 'lidar_temp'],
+    "legacy": ['uv-vis_spec', 'lidar_ae', 'o3_sondes', 'aero_sondes', 'gbms', 'wv_isotopes', 'lidar_temp', 'hatpro'],
     "hyso": ['hyso_seismo_1', 'hyso_seismo_2', 'hyso_seismo_3', 'hyso_seismo_4', 'hyso_tide_1'], }
 
 instr_sets["all"] = instr_sets["legacy"] + instr_sets["hyso"] + instr_sets["thaao"]
 instr_list = []
+
 
 # =============================================================
 # FUNCTION: CREATE INSTRUMENT METADATA
@@ -139,7 +140,7 @@ metadata_entries = {'aeronet'                                                   
     'gnss'                                                                                                      : create_instr_metadata(
             dt.datetime(2021, 5, 1), institution='INGV', data_avail_py='thaao_gnss.py'),
     'uv-vis_spec'                                                                                               : create_instr_metadata(
-            dt.datetime(1991, 2, 1), dt.datetime(2016, 11, 30), institution='DMI', # 1991-2016
+            dt.datetime(1991, 2, 1), dt.datetime(2016, 11, 30), institution='DMI',  # 1991-2016
             data_avail_py='thaao_uv-vis_spec.py'),
     'vespa'                                                                                                     : create_instr_metadata(
             dt.datetime(2016, 7, 1), institution='INGV', data_avail_py='thaao_vespa.py'),

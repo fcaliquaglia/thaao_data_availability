@@ -71,7 +71,7 @@ def main():
     """
     Main function for instrument selection, data availability update, and plotting.
     """
-    ts.instr_list = 'ecapac_aws_snow' # tmp for dev
+    ts.instr_list = 'metar' # tmp for dev
     tls.update_csv_file(ts.instr_list) # tmp for dev
 
     root = tls.create_root()
