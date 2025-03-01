@@ -27,25 +27,18 @@ import os
 import pandas as pd
 import xarray as xr
 
-instr = 'aws_vespa'
+import settings as ts
+import single_instr_data_avail.sida_tools as sida_tls
 
 
 def update_data_avail(instr):
-    import os
-    import pandas as pd
-    import single_instr_data_avail.sida_tools as sida_tls
-
-    import settings as ts
-    # Create NetCDF file from all weekly files
-    date_list = pd.date_range(
-            ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='h').tolist()
     folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
     create_netcdf_file(folder)
 
     # Load the NetCDF dataset and save the data to text file
     all_weekly = xr.open_dataset(os.path.join(folder, 'Meteo_weekly_all.nc'))
-    sida_tls.save_m_csv(all_weekly['Air_K'].to_dataframe(), folder, instr)
+    sida_tls.save_csv(instr, all_weekly.to_dataframe())
 
 
 def read_and_process_file(f):

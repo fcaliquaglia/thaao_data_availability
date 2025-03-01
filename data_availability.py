@@ -105,9 +105,14 @@ def main():
 
     # minor updates for the metadata
     for instr_name in ts.instr_list:
-        tls.csv_filename_creation(instr_name)
+        ts.instr_metadata = tls.csv_filename_creation(instr_name)
 
     # Execute plotting based on user selection
+    if sw.switch_summary_panel:
+        plot_type = 'summary'
+        print(f"Generating {plot_type} plots...")
+        plts.plot_panels(plot_type)
+        print(f"{plot_type.capitalize()} plots completed!")
     if sw.switch_rolling_panels:
         plot_type = 'rolling'
         print(f"Generating {plot_type} plots...")
@@ -115,11 +120,6 @@ def main():
         print(f"{plot_type.capitalize()} plots completed!")
     if sw.switch_cumulative_panels:
         plot_type = 'cumulative'
-        print(f"Generating {plot_type} plots...")
-        plts.plot_panels(plot_type)
-        print(f"{plot_type.capitalize()} plots completed!")
-    if sw.switch_summary_panel:
-        plot_type = 'summary'
         print(f"Generating {plot_type} plots...")
         plts.plot_panels(plot_type)
         print(f"{plot_type.capitalize()} plots completed!")

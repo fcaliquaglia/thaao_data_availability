@@ -40,7 +40,8 @@ def check_csv_file_age():
         if instr in ts.instr_sets['legacy']:
             print(f'{instr} is not active anymore. Skipping data update. Manually delete it for forced update.')
             continue
-        instr1 = 'rad' if instr in ['rad_par_up', 'rad_par_down', 'rad_tb', 'rad_dsi', 'rad_dli', 'rad_usi', 'rad_uli'] else instr
+        instr1 = 'rad' if instr in ['rad_par_up', 'rad_par_down', 'rad_tb', 'rad_dsi', 'rad_dli', 'rad_usi',
+                                    'rad_uli'] else instr
         basefol = ts.basefolder_skycam if instr == 'skycam' else ts.basefolder
 
         csv_file_path = os.path.join(basefol, f'thaao_{instr1}', f'{instr}_data_avail_list.csv')
@@ -104,6 +105,8 @@ def update_instr_list():
             ts.instr_list += ts.instr_sets[category]
         elif category in list(ts.instr_metadata.keys()):
             ts.instr_list.append(category)
+        else:
+            print(f'{category} is wrong!')
     return
 
 
@@ -116,6 +119,7 @@ def get_switch_input(prompt, default=False):
 
 def load_data_file(instr):
     """Load the data from the input file and return a DataFrame with 'datetime' as the index."""
+    print(f'Loading csv file for {instr}')
     inp = ts.instr_metadata[instr]['csv_path']
     try:
         data_val = pd.read_csv(inp, index_col='datetime', parse_dates=True)
@@ -131,13 +135,16 @@ def csv_filename_creation(instr):
     """Create the appropriate file path for each instrument."""
     try:
         if instr == 'skycam':
-            ts.instr_metadata[instr]['csv_path'] = os.path.join(ts.basefolder_skycam, 'thaao_skycam', f'{instr}_data_avail_list.csv')
+            ts.instr_metadata[instr]['csv_path'] = os.path.join(
+                ts.basefolder_skycam, 'thaao_skycam', f'{instr}_data_avail_list.csv')
         elif instr.startswith('rad'):
-            ts.instr_metadata[instr]['csv_path'] = os.path.join(ts.basefolder, 'thaao_rad', f'{instr}_data_avail_list.csv')
+            ts.instr_metadata[instr]['csv_path'] = os.path.join(
+                ts.basefolder, 'thaao_rad', f'{instr}_data_avail_list.csv')
         else:
-            ts.instr_metadata[instr]['csv_path'] = os.path.join(ts.basefolder, f'thaao_{instr}', f'{instr}_data_avail_list.csv')
+            ts.instr_metadata[instr]['csv_path'] = os.path.join(
+                ts.basefolder, f'thaao_{instr}', f'{instr}_data_avail_list.csv')
     except FileNotFoundError:
         ts.instr_metadata[instr]['csv_path'] = ''
         print(f'File for {instr} not found')
 
-    return
+    return ts.instr_metadata

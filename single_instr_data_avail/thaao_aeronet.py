@@ -46,8 +46,6 @@ Original file is located at
 
 """**Setup input parameters such as date, data level, averaging type, AOD range for mapping, AOD/Angstrom exponent, and geographical limits**"""
 
-instr = 'aeronet'
-
 
 def update_data_avail(instr):
     import datetime  # for time data manipulation
@@ -110,23 +108,22 @@ def update_data_avail(instr):
         oFile.write(str(soup.text))
         oFile.close()
 
-    df = pd.read_csv(
+    aeronet = pd.read_csv(
             os.path.join(ts.basefolder, 'thaao_aeronet', 'temp.csv'),
             skiprows=6)  # loads the csv data into a Pandas dataframe
 
-    if len(df) > 0:
-        df = df.replace(-999.0, np.nan)  # replaces all -999.0 vakyes with NaN; helps with accurate data aggregation
-        df[['Day', 'Month', 'Year']] = df['Date(dd:mm:yyyy)'].str.split(
+    if len(aeronet) > 0:
+        aeronet = aeronet.replace(
+            -999.0, np.nan)  # replaces all -999.0 vakyes with NaN; helps with accurate data aggregation
+        aeronet[['Day', 'Month', 'Year']] = aeronet['Date(dd:mm:yyyy)'].str.split(
                 ':', expand=True)  # splits the date column and then joins it back together using "-" instead of ":"
-        df['Date'] = df[['Year', 'Month', 'Day']].apply(
+        aeronet['Date'] = aeronet[['Year', 'Month', 'Day']].apply(
                 lambda x: '-'.join(x.values.astype(str)),
                 axis="columns")  # because datetime format in python does not recognize colons
-        df['Date'] = pd.to_datetime(df['Date'])  # converts the new date column to datetime format
+        aeronet['Date'] = pd.to_datetime(aeronet['Date'])  # converts the new date column to datetime format
     else:
         print("No data to parse. Please retry with different parameters.")
 
-    aeronet = pd.DataFrame(columns=['dt', 'mask'])
-    for i in date_list:
-        if i in df['Date'].values:
-            aeronet.loc[i] = [i, True]
+    aeronet.set_index('Date', inplace=True)
+
     sida_tls.save_csv(instr, aeronet)

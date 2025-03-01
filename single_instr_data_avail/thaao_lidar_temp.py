@@ -10,19 +10,17 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "February 2025"
 
-instr = 'lidar_temp'
-
+import glob
+import pandas as pd
+from pathlib import Path
+import settings as ts
+import single_instr_data_avail.sida_tools as sida_tls
 
 def update_data_avail(instr):
     """
     Updates the availability of LIDAR temperature data by checking for existing
     zip files and matching file patterns in the specified directory.
     """
-    import glob
-    import pandas as pd
-    from pathlib import Path
-    import settings as ts
-    import single_instr_data_avail.sida_tools as sida_tls
 
     # Generate a list of dates based on instrument metadata
     date_list = pd.date_range(

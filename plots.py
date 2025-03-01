@@ -23,9 +23,8 @@ plt.rcParams.update({'figure.figsize': (15, 10)})
 
 def draw_data_summary():
     print('UNDER DEVELOPMENT')
-
     data_all = pd.concat(
-            [tls.load_data_file(instr).resample("D").mean() for instr in ts.instr_list], axis=1).sort_index()
+            [tls.load_data_file(instr).resample("D").mean() for instr in [ts.instr_list]], axis=1).sort_index()
     data_filtered = data_all.loc[(data_all.index.year >= sw.start.year) & (data_all.index.year <= sw.end.year)]
 
     fig, axes = plt.subplots(len(data_filtered.columns), 1, figsize=(12, 12), sharex=True, dpi=200)
@@ -49,6 +48,12 @@ def draw_data_summary():
             ax.xaxis.set_ticks_position('none')  # No ticks for upper and bottom axes
         else:
             ax.xaxis.set_ticks_position('bottom')  # Show ticks only on the bottom for the last subplot
+
+    # Draw events and campaigns based on switches
+    if sw.switch_history:
+        draw_events(ax, sw.start, sw.start)
+    if sw.switch_campaigns:
+        draw_campaigns(ax, sw.start, sw.start)
 
     # Format x-axis with year labels
     axes[-1].xaxis.set_major_locator(mdates.YearLocator())

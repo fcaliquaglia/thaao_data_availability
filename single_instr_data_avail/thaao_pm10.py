@@ -21,8 +21,6 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "February 2025"
 
-instr = 'pm10'
-
 from pathlib import Path
 import pandas as pd
 import settings as ts
@@ -37,7 +35,8 @@ def update_data_avail(instr):
     pm10_tmp = pd.read_excel(file_path, index_col=0)
 
     # Create a DataFrame with True values for each date in pm10_tmp
-    pm10 = pd.DataFrame({"dt": pd.to_datetime(pm10_tmp.index), "mask": True})
+    pm10 = pd.DataFrame({"datetime": pd.to_datetime(pm10_tmp.index), "PM10 [ug m-3]": pm10_tmp['PM10 [ug m-3]']})
+    pm10.set_index('datetime', inplace=True)
 
     # Save data
     sida_tls.save_csv(instr, pm10)
