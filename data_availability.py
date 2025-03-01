@@ -74,34 +74,36 @@ def main():
     """
     Main function for instrument selection, data availability update, and plotting.
     """
-    root = tls.create_root()
+    # root = tls.create_root()
+    #
+    # # Prompt for updating data availability before anything else
+    # configure_update_data_availability()
+    #
+    # # Instrument list selection
+    # sw.switch_instr_list = simpledialog.askstring(
+    #         "Instrument Selection for plotting",
+    #         'Which category of instruments (or single instrument)?  \n [thaao, legacy, hyso, all, "single_instr"]')
+    #
+    # tls.update_instr_list()
+    # tls.set_date_params('Start year: ', 'End year: ')
+    #
+    # # Configure plot settings
+    # configure_plot_settings()
+    #
+    # # Display selected instruments
+    # messagebox.showinfo("Selected Instruments", f'These instruments are plotted: {ts.instr_list}')
+    #
+    # # Check and update availability .csv files if needed
+    # total_steps = len(ts.instr_list)
+    # with tqdm(
+    #         total=total_steps, desc=f"Check and update availability .csv file", colour='blue',
+    #         bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as tbar:
+    #     for instr in ts.instr_list:
+    #         print(instr)
+    #         tls.check_csv_file_age(instr)
+    #         tbar.update(1)
 
-    # Prompt for updating data availability before anything else
-    configure_update_data_availability()
-
-    # Instrument list selection
-    sw.switch_instr_list = simpledialog.askstring(
-            "Instrument Selection for plotting",
-            'Which category of instruments (or single instrument)?  \n [thaao, legacy, hyso, all, "single_instr"]')
-
-    tls.update_instr_list()
-    tls.set_date_params('Start year: ', 'End year: ')
-
-    # Configure plot settings
-    configure_plot_settings()
-
-    # Display selected instruments
-    messagebox.showinfo("Selected Instruments", f'These instruments are plotted: {ts.instr_list}')
-
-    # Check and update availability .csv files if needed
-    total_steps = len(ts.instr_list)
-    with tqdm(
-            total=total_steps, desc=f"Check and update availability .csv file", colour='blue',
-            bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as tbar:
-        for instr in ts.instr_list:
-            print(instr)
-            tls.check_csv_file_age(instr)
-            tbar.update(1)
+    ts.instr_list = ['ecapac_aws_snow']
 
     # Execute plotting based on user selection
     if sw.switch_rolling_panels:

@@ -21,22 +21,24 @@ __email__ = "filippo.caliquaglia@gmail.com"
 __status__ = "Research"
 __lastupdate__ = ""
 
+import datetime as dt
+
 # switches
-data_avail_update = 'False'
+data_avail_update = False
 
 switch_instr_list = 'thaao'
 
-switch_campaigns = 'True'  # Draw field campaigns?
-switch_history = 'False'  # Draw historical events?
-switch_prog_bar = 'False'  # Draw progress bar?
+switch_campaigns = False  # Draw field campaigns?
+switch_history = False  # Draw historical events?
+switch_prog_bar = False  # Draw progress bar?
 
-switch_cumulative_panels = 'False'
-switch_rolling_panels = 'False'
-switch_summary_panel = 'False'
+switch_cumulative_panels = False
+switch_rolling_panels = False
+switch_summary_panel = True
 
 # inputs
-start = '2020'
-end = '2024'
+start = dt.datetime(2020, 12, 31)
+end = dt.datetime(2024, 12, 31)
 
 # cumulative
 time_freq_c = '6'
