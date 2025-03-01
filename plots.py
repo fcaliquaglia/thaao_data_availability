@@ -24,17 +24,15 @@ plt.rcParams.update({'figure.figsize': (15, 10)})
 def draw_data_summary():
     print('UNDER DEVELOPMENT')
 
-    data_all = pd.DataFrame()
-    for instr in ts.instr_list:
-        data_orig = tls.load_data_file(instr)
-        data = data_orig.resample('D').mean()
-        data_all = pd.concat([data_all, data])
+    data_all = pd.concat(
+            [tls.load_data_file(instr).resample("D").mean() for instr in ts.instr_list], axis=1).sort_index()
+    data_filtered = data_all.loc[(data_all.index.year >= sw.start.year) & (data_all.index.year <= sw.end.year)]
 
-    fig, axes = plt.subplots(len(data_all), 1, figsize=(12, 12), sharex=True, dpi=200)
+    fig, axes = plt.subplots(len(data_filtered.columns), 1, figsize=(12, 12), sharex=True, dpi=200)
 
     # Plot each variable
-    for i, (ax, var) in enumerate(zip(axes, data_all.columns)):
-        ax.plot(data_all.index, data_all[var], color='red', marker='o', markersize=2, linestyle='-')
+    for i, (ax, var) in enumerate(zip(axes, data_filtered.columns)):
+        ax.plot(data_filtered.index, data_filtered[var], color='red', marker='o', markersize=2, linestyle='-')
         ax.set_ylabel(f"{var} []", color='red', fontsize=10, fontweight='bold')
         ax.tick_params(axis='y', colors='red', labelsize=8)
         ax.grid(True, linestyle='--', alpha=0.5)
@@ -64,7 +62,7 @@ def draw_data_summary():
     newax.axis('off')
 
     # Title and show plot
-    fig.suptitle('Thle High Arctic Atmospheric Observatory', fontsize=14, fontweight='bold')
+    fig.suptitle('Thule High Arctic Atmospheric Observatory - THAAO', fontsize=14, fontweight='bold')
 
     return fig
 
@@ -230,7 +228,7 @@ def draw_data_avail(a1, a2, instr_data, iii_labs):
 
 def plot_panels(plot_type):
     """Generates panels for different types (rolling, cumulative)."""
-    newdir = os.path.join(ts.da_folder, plot_type, sw.switch_instr_list, f'{sw.start.year}-{sw.end.year}')
+    newdir = os.path.join(ts.da_folder, plot_type, f'{sw.start.year}-{sw.end.year}')
     os.makedirs(newdir, exist_ok=True)
 
     if plot_type == 'rolling':
@@ -273,7 +271,7 @@ def plot_panels(plot_type):
         fig = draw_data_summary()
         figname = os.path.join(
                 newdir,
-                f'thaao_data_avail_{sw.start.year}_{sw.end.year}_{sw.switch_instr_list}_{dt.datetime.today().strftime("%Y%m%d")}.png')
+                f'thaao_data_avail_{sw.start.year}_{sw.end.year}_{dt.datetime.today().strftime("%Y%m%d")}.png')
         plt.savefig(figname, transparent=False)
         plt.clf()
         plt.close(fig)

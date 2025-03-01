@@ -74,7 +74,7 @@ def main():
     # Instrument list selection
     sw.switch_instr_list = simpledialog.askstring(
             "Instrument Selection for operations",
-            'Which category of instruments (or single instrument)?  \n [thaao, legacy, hyso, all, "single_instr"]')
+            'Which category of instruments (or single instrument, separated by white space)?  \n [thaao, legacy, hyso, all, "single_instr"]')
     tls.update_instr_list()
     # Prompt for updating data availability before anything else
     update_data_availability()
