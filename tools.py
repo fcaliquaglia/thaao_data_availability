@@ -35,7 +35,7 @@ import settings as ts
 import switches as sw
 
 
-def check_txt_file_age(instr):
+def check_csv_file_age(instr):
     if instr in ['rad_par_up', 'rad_par_down', 'rad_tb', 'rad_dsi', 'rad_dli', 'rad_usi', 'rad_uli']:
         instr1 = 'rad'
     else:
@@ -54,16 +54,16 @@ def check_txt_file_age(instr):
         if (current_date - last_modified).days > sw.days_of_an_old_file:
             print(f"{txt_file_path} is older than {sw.days_of_an_old_file} days. Generating new file...")
             # Call the function to regenerate the .txt file
-            update_txt_file(instr)
+            update_csv_file(instr)
         else:
             print(f"{txt_file_path} is up-to-date.")
     else:
         print(f"{txt_file_path} does not exist. Generating new file...")
         # Call the function to generate the .txt file if it doesn't exist
-        update_txt_file(instr)
+        update_csv_file(instr)
 
 
-def update_txt_file(instr):
+def update_csv_file(instr):
     """
     Runs an external script function directly.
     """

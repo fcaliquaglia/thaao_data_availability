@@ -28,17 +28,17 @@ import tools as tls
 
 def configure_update_data_availability():
     """
-    Prompts the user to update a data availability .txt file for a specific instrument.
+    Prompts the user to update a data availability .csv file for a specific instrument.
     If the user opts for an update, the function will process it and then exit the script.
     """
-    sw.data_avail_update = tls.get_switch_input('Do you want to update a data availability .txt file?')
+    sw.data_avail_update = tls.get_switch_input('Do you want to update a data availability .csv file?')
 
     if sw.data_avail_update:
         sw.switch_instr_list = simpledialog.askstring(
-                "Instrument Selection for .txt update",
-                'For which instrument do you want to update \n the .txt data availability file?')
+                "Instrument Selection for .csv update",
+                'For which instrument do you want to update \n the .csv data availability file?')
         tls.update_instr_list()
-        tls.update_txt_file(ts.instr_list)
+        tls.update_csv_file(ts.instr_list)
         print(f'Data availability file for {ts.instr_list} updated! Thanks and bye!')
         sys.exit()  # Exit after updating
 
@@ -90,17 +90,17 @@ def main():
     # Display selected instruments
     messagebox.showinfo("Selected Instruments", f'These instruments are plotted: {ts.instr_list}')
 
-    # Check and update availability .txt files if needed
+    # Check and update availability .csv files if needed
     total_steps = len(ts.instr_list)
     with tqdm(
-            total=total_steps, desc=f"Check and update availability .txt file", colour='blue',
+            total=total_steps, desc=f"Check and update availability .csv file", colour='blue',
             bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as tbar:
         for instr in ts.instr_list:
             print(instr)
-            tls.check_txt_file_age(instr)
+            tls.check_csv_file_age(instr)
             tbar.update(1)
 
-    # Execute plotting based on user selections
+    # Execute plotting based on user selection
     if sw.switch_rolling_panels:
         plot_type = 'rolling'
         print(f"Generating {plot_type} plots...")
