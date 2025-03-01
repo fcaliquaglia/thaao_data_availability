@@ -112,7 +112,7 @@ metadata_entries = {'aeronet'                                                   
             dt.datetime(2021, 8, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
             end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_hyso_tide_1.py'),
     'metar'                                                                                                     : create_instr_metadata(
-            dt.datetime(1951, 10, 1), institution='U.Alaska,Florence,StonyBrook/USSF', data_avail_py='metar.py'),
+            dt.datetime(1951, 10, 1), institution='U.Alaska,Florence,StonyBrook/USSF', data_avail_py='thaao_metar.py'),
     'mms_trios'                                                                                                 : create_instr_metadata(
             dt.datetime(2021, 9, 1), institution='INGV', data_avail_py='thaao_mms_trios.py'),
     'o3_sondes'                                                                                                 : create_instr_metadata(
