@@ -45,7 +45,7 @@ def update_data_avail(instr):
 
     # Load the NetCDF dataset and save the data to text file
     all_weekly = xr.open_dataset(os.path.join(folder, 'Meteo_weekly_all.nc'))
-    sida_tls.save_mask_txt(all_weekly['Air_K'].to_dataframe(), folder, instr)
+    sida_tls.save_m_csv(all_weekly['Air_K'].to_dataframe(), folder, instr)
 
 
 def read_and_process_file(f):

@@ -52,7 +52,7 @@ def update_data_avail(instr):
 
         print(fn)
 
-    # Save data to txt files using optimized saving
+    # Save data to csv files using optimized saving
     sida_tls.save_csv(instr, ceilometer)
 
 

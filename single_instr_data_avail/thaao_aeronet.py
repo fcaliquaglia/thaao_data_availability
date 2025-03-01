@@ -105,13 +105,13 @@ def update_data_avail(instr):
 
     """**Writes soup data to text file, assigns contents to Pandas dataframe, prepares data for plotting**"""
     with open(
-            os.path.join(ts.basefolder, 'thaao_aeronet', 'temp.txt'),
+            os.path.join(ts.basefolder, 'thaao_aeronet', 'temp.csv'),
             "w") as oFile:  # writes the data scraped from "beautiful soup" to a text file on your local Google drive
         oFile.write(str(soup.text))
         oFile.close()
 
     df = pd.read_csv(
-            os.path.join(ts.basefolder, 'thaao_aeronet', 'temp.txt'),
+            os.path.join(ts.basefolder, 'thaao_aeronet', 'temp.csv'),
             skiprows=6)  # loads the csv data into a Pandas dataframe
 
     if len(df) > 0:

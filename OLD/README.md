@@ -24,7 +24,7 @@
 
 Suite of scripts for instruments at THAAO to generate data availability lists and plots.
 
-Every script checks the existence of data (files) and create a .txt for each instrument.
+Every script checks the existence of data (files) and create a .csv for each instrument.
 
 Each script has to be launched singularly. Then `data_availability.py` can be launched inserting input to produce
 specific plots.

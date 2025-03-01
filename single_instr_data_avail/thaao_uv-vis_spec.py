@@ -39,7 +39,7 @@ def update_data_avail(instr):
     uv_vis_spec = nasa_ames_parser(date_list, folder)
     # uv_vis_spec = pd.read_csv(
     #         os.path.join(folder, 'uv-vis_spec.csv'), parse_dates=['datetime'], index_col='datetime')
-    sida_tls.save_mask_txt(uv_vis_spec, folder, instr)
+    sida_tls.save_m_csv(uv_vis_spec, folder, instr)
 
 
 def nasa_ames_parser(date_list, folder):

@@ -64,5 +64,5 @@ def update_data_avail(instr):
     data_avail_hat = pd.concat([data_avail_hat, hatpro_tmp[['datetime', 'LWP_gm-2']]])
 
     data_avail_hat = data_avail_hat.set_index('datetime').sort_index()
-    # Saving the specific 'LWP_gm-2' column with the 'save_mask_txt' method
-    sida_tls.save_mask_txt(data_avail_hat, os.path.join(base_folder, "thaao_" + instr), instr)
+    # Saving the specific 'LWP_gm-2' column with the 'save_m_csv' method
+    sida_tls.save_m_csv(data_avail_hat, os.path.join(base_folder, "thaao_" + instr), instr)

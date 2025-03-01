@@ -44,22 +44,22 @@ def check_csv_file_age(instr):
         basefol=ts.basefolder_skycam
     else:
         basefol=ts.basefolder
-    txt_file_path = os.path.join(basefol, f'thaao_{instr1}', f'{instr}_data_avail_list.csv')
-    if os.path.exists(txt_file_path):
+    csv_file_path = os.path.join(basefol, f'thaao_{instr1}', f'{instr}_data_avail_list.csv')
+    if os.path.exists(csv_file_path):
         # Get the last modified date of the file
-        last_modified = dt.datetime.fromtimestamp(os.path.getmtime(txt_file_path))
+        last_modified = dt.datetime.fromtimestamp(os.path.getmtime(csv_file_path))
         current_date = dt.datetime.now()
 
         # Check if the file is older than n days
         if (current_date - last_modified).days > sw.days_of_an_old_file:
-            print(f"{txt_file_path} is older than {sw.days_of_an_old_file} days. Generating new file...")
-            # Call the function to regenerate the .txt file
+            print(f"{csv_file_path} is older than {sw.days_of_an_old_file} days. Generating new file...")
+            # Call the function to regenerate the .csv file
             update_csv_file(instr)
         else:
-            print(f"{txt_file_path} is up-to-date.")
+            print(f"{csv_file_path} is up-to-date.")
     else:
-        print(f"{txt_file_path} does not exist. Generating new file...")
-        # Call the function to generate the .txt file if it doesn't exist
+        print(f"{csv_file_path} does not exist. Generating new file...")
+        # Call the function to generate the .csv file if it doesn't exist
         update_csv_file(instr)
 
 
@@ -67,7 +67,7 @@ def update_csv_file(instr):
     """
     Runs an external script function directly.
     """
-    script_path = os.path.join(os.getcwd(), 'single_instr_data_avail', ts.instr_metadata[instr]['data_avail_fn'])
+    script_path = os.path.join(os.getcwd(), 'single_instr_data_avail', ts.instr_metadata[instr]['data_avail_py'])
 
     if not os.path.isfile(script_path):
         print(f"Error: Script not found at {script_path}")
@@ -84,7 +84,7 @@ def update_csv_file(instr):
         print(f"Error: The script {script_path} does not contain 'update_data_avail(instr)' function.")
         return
     else:
-        print("Updating .txt file")
+        print("Updating .csv file")
         module.update_data_avail(instr)
         print("Update completed successfully.")
         gc.collect()

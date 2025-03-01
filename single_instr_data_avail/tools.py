@@ -30,7 +30,7 @@ import pandas as pd
 import settings as ts
 
 
-def save_mask_txt(data_val: pd.DataFrame, fol_out: str, instr_nm: str):
+def save_m_csv(data_val: pd.DataFrame, fol_out: str, instr_nm: str):
     """
     Saves a text file indicating the availability of data.
 
