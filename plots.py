@@ -285,7 +285,7 @@ def plot_panels(plot_type):
                 pbar.update(1)
 
     elif plot_type == 'summary':
-        newdir = os.path.join(ts.da_folder, 'summary', f'{sw.start}-{sw.end}')
+        newdir = os.path.join(ts.da_folder, 'summary', f'{sw.start.year}-{sw.end.year}')
         os.makedirs(newdir, exist_ok=True)
         fig = draw_data_summary(instrument_data, ii_labs)
         figname = os.path.join(
