@@ -70,11 +70,13 @@ def draw_data_summary():
             ax.set_xticklabels([])  # Hide x-axis labels
             ax.set_xlabel('')  # Remove x-axis title
             ax.spines['bottom'].set_visible(False)
+            ax.get_xaxis().set_visible(False)
         else:
             # Only the last subplot keeps the x-axis
             ax.xaxis.set_major_locator(mdates.YearLocator())
             ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
             ax.tick_params(axis='x', rotation=45, labelsize=9)
+            ax.xaxis.set_ticks_position('bottom')
 
     # Draw events and campaigns based on switches
     if sw.switch_history:
@@ -84,7 +86,7 @@ def draw_data_summary():
 
     # Add a logo (comment out if not needed)
     logo = plt.imread('logo.png')
-    newax = fig.add_axes([0.1, 0.75, 0.15, 0.15], anchor='NW', zorder=1)
+    newax = fig.add_axes([0.72, 0.88, 0.12, 0.12], anchor='NW', zorder=10)  # Adjust x, y to align with title
     newax.imshow(logo)
     newax.axis('off')
 
@@ -297,7 +299,7 @@ def plot_panels(plot_type):
     elif plot_type == 'summary':
         fig = draw_data_summary()
         figname = os.path.join(
-                newdir, f'thaao_data_avail_{sw.start_date.year}_{sw.end_date.year}_{dt.datetime.today().strftime("%Y%m%d")}.png')
+                os.path.dirname(newdir), f'thaao_data_avail_{sw.start_date.year}_{sw.end_date.year}_{dt.datetime.today().strftime("%Y%m%d")}.png')
         plt.savefig(figname, transparent=False)
         plt.clf()
         plt.close(fig)
