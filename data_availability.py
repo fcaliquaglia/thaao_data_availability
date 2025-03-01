@@ -38,8 +38,8 @@ def configure_update_data_availability():
                 "Instrument Selection for .csv update",
                 'For which instrument do you want to update \n the .csv data availability file?')
         tls.update_instr_list()
-        tls.update_csv_file(ts.instr_list)
-        print(f'Data availability file for {ts.instr_list} updated! Thanks and bye!')
+        tls.update_csv_file(ts.instr_list[0])
+        print(f'Data availability file for {ts.instr_list[0]} updated! Thanks and bye!')
         sys.exit()  # Exit after updating
 
 
@@ -102,8 +102,6 @@ def main():
             print(instr)
             tls.check_csv_file_age(instr)
             tbar.update(1)
-
-    ts.instr_list = ['ecapac_aws_snow', 'metar']
 
     # Execute plotting based on user selection
     if sw.switch_rolling_panels:

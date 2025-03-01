@@ -105,22 +105,33 @@ def update_data_avail(instr):
 
     print(f"Fetching data from: {url}")
 
+
+
     file_path = os.path.join(folder, "BGTL_METAR.csv")
+    if os.path.exists(file_path):
+        last_modified = dt.datetime.fromtimestamp(os.path.getmtime(file_path))
+        current_date = dt.datetime.now()
+        # Check if the file is older than n days
+        old_thresh = 7
+        if (current_date - last_modified).days > old_thresh:
+            print(f"{old_thresh} is older than {old_thresh} days. Downloading updated file...")
+            # Call the function to regenerate the .csv file
+            try:
+                with urlopen(url, timeout=100) as response:
+                    total_size = response.length  # Get file size from HTTP response
+                    chunk_size = 1024 * 1024  # 1MB chunks
 
-    try:
-        with urlopen(url, timeout=100) as response:
-            total_size = response.length  # Get file size from HTTP response
-            chunk_size = 1024 * 1024  # 1MB chunks
+                    with open(file_path, "wb") as f, tqdm(
+                            total=total_size, unit="B", unit_scale=True, desc="Downloading") as pbar:
+                        for chunk in iter(lambda: response.read(chunk_size), b""):
+                            f.write(chunk)
+                            pbar.update(len(chunk))
 
-            with open(file_path, "wb") as f, tqdm(
-                    total=total_size, unit="B", unit_scale=True, desc="Downloading") as pbar:
-                for chunk in iter(lambda: response.read(chunk_size), b""):
-                    f.write(chunk)
-                    pbar.update(len(chunk))
-
-    except Exception as e:
-        print(f"Error fetching data: {e}")
-        return
+            except Exception as e:
+                print(f"Error fetching data: {e}")
+                return
+        else:
+            print(f"{file_path} is up-to-date (up to a maximum of {old_thresh} days.")
 
     historical_data = pd.read_csv(
         file_path, usecols=["valid", "mslp", "relh", "tmpf"], index_col="valid", low_memory=False)
