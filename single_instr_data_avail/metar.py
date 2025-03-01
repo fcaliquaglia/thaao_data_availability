@@ -85,7 +85,7 @@ import numpy as np
 import settings as ts
 import single_instr_data_avail.tools as sida_tls
 from urllib.request import urlopen
-from tqdm import tqdm  # Progress bar
+from tqdm import tqdm
 
 instr = "metar"
 
