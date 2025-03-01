@@ -78,7 +78,7 @@ def update_data_avail(instr):
     historical_data["tmpc"] = (historical_data["tmpf"].astype(float).values * units.degF).to(units.degC)
 
     metar = pd.DataFrame(
-            {"timestamp": historical_data.index, "mslp": historical_data.mslp, "relh": historical_data.relh,
+            {"datetime": historical_data.index, "mslp": historical_data.mslp, "relh": historical_data.relh,
              "tmpc"     : historical_data.tmpc})
 
     sida_tls.save_csv(instr, metar)

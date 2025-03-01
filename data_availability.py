@@ -14,11 +14,9 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "February 2025"
 
-import sys
 from tkinter import messagebox, simpledialog
 
 import pandas as pd
-from tqdm import tqdm
 
 import plots as plts
 import settings as ts
@@ -26,20 +24,18 @@ import switches as sw
 import tools as tls
 
 
-def configure_update_data_availability():
+def update_data_availability():
     """
     Prompts the user to update a data availability .csv file for a specific instrument.
     If the user opts for an update, the function will process it and then exit the script.
     """
-    sw.data_avail_update = tls.get_switch_input('Do you want to update data availability .csv files?')
+    sw.data_avail_update = tls.get_switch_input(
+            'Do you want to update the data availability .csv files for the selected instruments?')
 
     if sw.data_avail_update:
         ts.update_threshold = simpledialog.askinteger(
-            "Update threshold", 'Update all data availability .csv files older than? \n (days)', minvalue=1)
-        tls.update_instr_list('all')
-        tls.update_csv_file()
-        print(f'Data availability files updated! Thanks and bye!')
-        sys.exit()  # Exit after updating
+                "Update threshold", 'Update the data availability .csv files older than? \n (days)', minvalue=1)
+        tls.check_csv_file_age()
 
 
 def configure_plot_settings():
@@ -75,15 +71,14 @@ def main():
     """
     root = tls.create_root()
 
-    # Prompt for updating data availability before anything else
-    configure_update_data_availability()
-
     # Instrument list selection
     sw.switch_instr_list = simpledialog.askstring(
-            "Instrument Selection for plotting",
+            "Instrument Selection for operations",
             'Which category of instruments (or single instrument)?  \n [thaao, legacy, hyso, all, "single_instr"]')
-
     tls.update_instr_list()
+    # Prompt for updating data availability before anything else
+    update_data_availability()
+
     tls.set_date_params('Start year: ', 'End year: ')
 
     # Configure plot settings
@@ -91,6 +86,8 @@ def main():
 
     # Display selected instruments
     messagebox.showinfo("Selected Instruments", f'These instruments are plotted: {ts.instr_list}')
+    for instr_name in ts.instr_list:
+        tls.csv_filename_creation(instr_name)
 
     # Execute plotting based on user selection
     if sw.switch_rolling_panels:

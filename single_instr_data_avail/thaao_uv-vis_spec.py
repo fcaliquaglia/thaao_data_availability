@@ -36,9 +36,9 @@ def update_data_avail(instr):
             ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='ME').tolist()
     folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
-    uv_vis_spec = nasa_ames_parser(date_list, folder)
-    # uv_vis_spec = pd.read_csv(
-    #         os.path.join(folder, 'uv-vis_spec.csv'), parse_dates=['datetime'], index_col='datetime')
+    # uv_vis_spec = nasa_ames_parser(date_list, folder)
+    uv_vis_spec = pd.read_csv(
+            os.path.join(folder, 'uv-vis_spec.csv'), parse_dates=['datetime'], index_col='datetime')
     sida_tls.save_m_csv(uv_vis_spec, folder, instr)
 
 

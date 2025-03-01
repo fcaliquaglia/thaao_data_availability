@@ -4,7 +4,6 @@ import os
 
 import matplotlib.cm as cm
 import matplotlib.dates as mdates
-import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -22,37 +21,33 @@ plt.rcParams.update({'figure.dpi': 300})
 plt.rcParams.update({'figure.figsize': (15, 10)})
 
 
-def draw_data_summary(instr_data, iii_labs):
+def draw_data_summary():
     print('UNDER DEVELOPMENT')
 
     data_all = pd.DataFrame()
-    for instr_idx, (inp_file, _) in enumerate(instr_data):
-        data_orig = tls.load_data_file(inp_file)
+    for instr in ts.instr_list:
+        data_orig = tls.load_data_file(instr)
         data = data_orig.resample('D').mean()
         data_all = pd.concat([data_all, data])
 
-    # Define variables to plot (modify based on actual data columns)
-    plt_var =metadata_entries
-
-    # Create figure and subplots
-    fig, axes = plt.subplots(len(variables), 1, figsize=(12, 12), sharex=True, dpi=200)
+    fig, axes = plt.subplots(len(data_all), 1, figsize=(12, 12), sharex=True, dpi=200)
 
     # Plot each variable
-    for i, (ax, (var, (color, unit))) in enumerate(zip(axes, variables.items())):
-        ax.plot(data.index, data[var], color=color, marker='o', markersize=2, linestyle='-')
-        ax.set_ylabel(f"{var} [{unit}]", color=color, fontsize=10, fontweight='bold')
-        ax.tick_params(axis='y', colors=color, labelsize=8)
+    for i, (ax, var) in enumerate(zip(axes, data_all.columns)):
+        ax.plot(data_all.index, data_all[var], color='red', marker='o', markersize=2, linestyle='-')
+        ax.set_ylabel(f"{var} []", color='red', fontsize=10, fontweight='bold')
+        ax.tick_params(axis='y', colors='red', labelsize=8)
         ax.grid(True, linestyle='--', alpha=0.5)
 
         # Remove the top x-axis spine for all subplots
         ax.spines['top'].set_visible(False)
 
         # Remove the bottom x-axis spine for all but the last subplot (the last one will keep the bottom spine)
-        if i < len(variables) - 1:
+        if i < len(data_all.columns) - 1:
             ax.spines['bottom'].set_visible(False)
 
         # Remove x-axis ticks for all but the last subplot
-        if i < len(variables) - 1:
+        if i < len(data_all.columns) - 1:
             ax.xaxis.set_ticks_position('none')  # No ticks for upper and bottom axes
         else:
             ax.xaxis.set_ticks_position('bottom')  # Show ticks only on the bottom for the last subplot
@@ -74,9 +69,9 @@ def draw_data_summary(instr_data, iii_labs):
     return fig
 
 
-def plot_data_avail(ax, inp, yy1, yy2, idx):
+def plot_data_avail(ax, instr, yy1, yy2, idx):
     """Plot data availability"""
-    data_val = tls.load_data_file(inp)
+    data_val = tls.load_data_file(instr)
 
     # Filter data within the specified range (yy1, yy2) using .loc[]
     data_val = data_val.loc[(data_val.index >= yy1) & (data_val.index <= yy2), 'mask']
@@ -204,7 +199,7 @@ def draw_data_avail(a1, a2, instr_data, iii_labs):
             bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as sbar:
         for instr_idx, (inp_file, _) in enumerate(instr_data):
             print(f'period:{start}-{end} --> {instr_idx:02}:{ts.instr_list[instr_idx]}')
-            plot_data_avail(ax, inp_file, a1, a2, instr_idx)
+            plot_data_avail(ax, ts.instr_list[instr_idx], a1, a2, instr_idx)
             plot_data_na(ax, a1, a2, instr_idx)
             gc.collect()
             sbar.update(1)
@@ -235,15 +230,10 @@ def draw_data_avail(a1, a2, instr_data, iii_labs):
 
 def plot_panels(plot_type):
     """Generates panels for different types (rolling, cumulative)."""
-
-    ii_labs = []
-    csv_file_metadata = [tls.csv_filename_selection(ii_labs, instr_name) for instr_idx, instr_name in
-                       enumerate(ts.instr_list)]
+    newdir = os.path.join(ts.da_folder, plot_type, sw.switch_instr_list, f'{sw.start.year}-{sw.end.year}')
+    os.makedirs(newdir, exist_ok=True)
 
     if plot_type == 'rolling':
-        newdir = os.path.join(ts.da_folder, 'rolling', sw.switch_instr_list, f'{sw.start.year}-{sw.end.year}')
-        os.makedirs(newdir, exist_ok=True)
-
         loop_data = pd.date_range(sw.start, sw.end, freq=sw.time_freq_r)
         total_steps = len(loop_data)
         with tqdm(
@@ -262,9 +252,6 @@ def plot_panels(plot_type):
                 pbar.update(1)
 
     elif plot_type == 'cumulative':
-        newdir = os.path.join(ts.da_folder, 'cumulative', sw.switch_instr_list, f'{sw.start.year}-{sw.end.year}')
-        os.makedirs(newdir, exist_ok=True)
-
         loop_data = pd.date_range(sw.start, sw.end, freq=sw.time_freq_c)
         total_steps = len(loop_data)
         with tqdm(
@@ -283,22 +270,13 @@ def plot_panels(plot_type):
                 pbar.update(1)
 
     elif plot_type == 'summary':
-        newdir = os.path.join(ts.da_folder, 'summary', f'{sw.start.year}-{sw.end.year}')
-        os.makedirs(newdir, exist_ok=True)
-
-        total_steps = len(ii_labs)
-        with tqdm(
-                total=total_steps, desc=f"\nPlotting {plot_type} data",
-                bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as pbar:
-            for ibar, instr in enumerate(ii_labs):
-                fig = draw_data_summary(csv_file_metadata, ii_labs)
-                figname = os.path.join(
-                        newdir,
-                        f'thaao_data_avail_{sw.start.year}_{sw.end.year}_{sw.switch_instr_list}_{dt.datetime.today().strftime("%Y%m%d")}.png')
-                plt.savefig(figname, transparent=False)
-                plt.clf()
-                plt.close(fig)
-                gc.collect()
-                pbar.update(1)
+        fig = draw_data_summary()
+        figname = os.path.join(
+                newdir,
+                f'thaao_data_avail_{sw.start.year}_{sw.end.year}_{sw.switch_instr_list}_{dt.datetime.today().strftime("%Y%m%d")}.png')
+        plt.savefig(figname, transparent=False)
+        plt.clf()
+        plt.close(fig)
+        gc.collect()
 
     return

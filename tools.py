@@ -35,7 +35,7 @@ import settings as ts
 import switches as sw
 
 
-def check_csv_file_age(instr):
+def check_csv_file_age():
     for instr in ts.instr_list:
         if instr in ['rad_par_up', 'rad_par_down', 'rad_tb', 'rad_dsi', 'rad_dli', 'rad_usi', 'rad_uli']:
             instr1 = 'rad'
@@ -53,15 +53,15 @@ def check_csv_file_age(instr):
 
             # Check if the file is older than n days
             if (current_date - last_modified).days > sw.days_of_an_old_file:
-                print(f"{csv_file_path} is older than {sw.days_of_an_old_file} days. Generating new file...")
-                # Call the function to regenerate the .csv file
+                print(f"{csv_file_path} is older than {sw.days_of_an_old_file} days. Updating the file...")
                 update_csv_file(instr)
+                print(f"{csv_file_path} has been updated! Great!")
             else:
-                print(f"{csv_file_path} is up-to-date.")
+                print(f"{csv_file_path} is up-to-date. Nothing to do.")
         else:
             print(f"{csv_file_path} does not exist. Generating new file...")
-            # Call the function to generate the .csv file if it doesn't exist
             update_csv_file(instr)
+            print(f"{csv_file_path} has been created! Great!")
 
 
 def update_csv_file(instr):
@@ -100,10 +100,8 @@ def create_root():
 
 
 # Function to update the instrument list with pop-up window input
-def update_instr_list(ilist=None):
-    if not ilist == None:
-        ilist = sw.switch_instr_list
-    for category in ilist.split():
+def update_instr_list():
+    for category in sw.switch_instr_list.split():
         if category in ts.instr_sets:
             ts.instr_list += ts.instr_sets[category]
         elif category in list(ts.metadata_entries.keys()):
@@ -136,11 +134,12 @@ def set_date_params(start_prompt, end_prompt):
     return
 
 
-def load_data_file(inp):
+def load_data_file(instr):
     """
     Loads the data from the input file. Returns a DataFrame with 'datetime' as the index
     and 'mask' column indicating data availability.
     """
+    inp = ts.metadata_entries[instr]['csv_path']
     try:
         data_val = pd.read_csv(inp, index_col='datetime', parse_dates=True)
         data_val.index = pd.DatetimeIndex(data_val.index)
@@ -153,17 +152,20 @@ def load_data_file(inp):
                 {'mask': [np.nan] * len(index_values)}, index=index_values)
 
 
-def csv_filename_selection(i_name):
+def csv_filename_creation(i_name):
     """Select the appropriate input file for each instrument."""
     try:
         if i_name == 'skycam':
-            inp_file = os.path.join(ts.basefolder_skycam, 'thaao_skycam', i_name + '_data_avail_list.csv')
+            ts.metadata_entries[i_name]['csv_path'] = os.path.join(
+                    ts.basefolder_skycam, 'thaao_skycam', i_name + '_data_avail_list.csv')
         elif i_name.startswith('rad'):
-            inp_file = os.path.join(ts.basefolder, 'thaao_rad', i_name + '_data_avail_list.csv')
+            ts.metadata_entries[i_name]['csv_path'] = os.path.join(
+                    ts.basefolder, 'thaao_rad', i_name + '_data_avail_list.csv')
         else:
-            inp_file = os.path.join(ts.basefolder, 'thaao_' + i_name, i_name + '_data_avail_list.csv')
+            ts.metadata_entries[i_name]['csv_path'] = os.path.join(
+                    ts.basefolder, 'thaao_' + i_name, i_name + '_data_avail_list.csv')
     except FileNotFoundError:
-        inp_file = None
+        ts.metadata_entries[i_name]['csv_path'] = ''
         print(f'File for {i_name} was not found')
 
-    return inp_file, i_name
+    return
