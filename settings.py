@@ -38,6 +38,7 @@ end_season = dt.datetime(1900, 12, 31)
 # =============================================================
 # DEFINE INSTRUMENT LISTS
 # =============================================================
+update_threshold =''
 
 instr_sets = {
     "thaao": ['rs_sondes', 'rad_uli', 'rad_dli', 'rad_usi', 'rad_dsi', 'rad_par_up', 'rad_par_down', 'rad_tb', 'skycam',

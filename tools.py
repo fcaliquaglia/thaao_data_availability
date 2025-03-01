@@ -36,37 +36,39 @@ import switches as sw
 
 
 def check_csv_file_age(instr):
-    if instr in ['rad_par_up', 'rad_par_down', 'rad_tb', 'rad_dsi', 'rad_dli', 'rad_usi', 'rad_uli']:
-        instr1 = 'rad'
-    else:
-        instr1 = instr
-    if instr == 'skycam':
-        basefol = ts.basefolder_skycam
-    else:
-        basefol = ts.basefolder
-    csv_file_path = os.path.join(basefol, f'thaao_{instr1}', f'{instr}_data_avail_list.csv')
-    if os.path.exists(csv_file_path):
-        # Get the last modified date of the file
-        last_modified = dt.datetime.fromtimestamp(os.path.getmtime(csv_file_path))
-        current_date = dt.datetime.now()
-
-        # Check if the file is older than n days
-        if (current_date - last_modified).days > sw.days_of_an_old_file:
-            print(f"{csv_file_path} is older than {sw.days_of_an_old_file} days. Generating new file...")
-            # Call the function to regenerate the .csv file
-            update_csv_file(instr)
+    for instr in ts.instr_list:
+        if instr in ['rad_par_up', 'rad_par_down', 'rad_tb', 'rad_dsi', 'rad_dli', 'rad_usi', 'rad_uli']:
+            instr1 = 'rad'
         else:
-            print(f"{csv_file_path} is up-to-date.")
-    else:
-        print(f"{csv_file_path} does not exist. Generating new file...")
-        # Call the function to generate the .csv file if it doesn't exist
-        update_csv_file(instr)
+            instr1 = instr
+        if instr == 'skycam':
+            basefol = ts.basefolder_skycam
+        else:
+            basefol = ts.basefolder
+        csv_file_path = os.path.join(basefol, f'thaao_{instr1}', f'{instr}_data_avail_list.csv')
+        if os.path.exists(csv_file_path):
+            # Get the last modified date of the file
+            last_modified = dt.datetime.fromtimestamp(os.path.getmtime(csv_file_path))
+            current_date = dt.datetime.now()
+
+            # Check if the file is older than n days
+            if (current_date - last_modified).days > sw.days_of_an_old_file:
+                print(f"{csv_file_path} is older than {sw.days_of_an_old_file} days. Generating new file...")
+                # Call the function to regenerate the .csv file
+                update_csv_file(instr)
+            else:
+                print(f"{csv_file_path} is up-to-date.")
+        else:
+            print(f"{csv_file_path} does not exist. Generating new file...")
+            # Call the function to generate the .csv file if it doesn't exist
+            update_csv_file(instr)
 
 
 def update_csv_file(instr):
     """
     Runs an external script function directly.
     """
+
     script_path = os.path.join(os.getcwd(), 'single_instr_data_avail', ts.instr_metadata[instr]['data_avail_py'])
 
     if not os.path.isfile(script_path):
@@ -98,8 +100,10 @@ def create_root():
 
 
 # Function to update the instrument list with pop-up window input
-def update_instr_list():
-    for category in sw.switch_instr_list.split():
+def update_instr_list(ilist=None):
+    if not ilist == None:
+        ilist = sw.switch_instr_list
+    for category in ilist.split():
         if category in ts.instr_sets:
             ts.instr_list += ts.instr_sets[category]
         elif category in list(ts.metadata_entries.keys()):
