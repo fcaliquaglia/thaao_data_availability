@@ -131,20 +131,21 @@ def load_data_file(instr):
         return pd.DataFrame({'mask': [np.nan] * len(index_values)}, index=index_values)
 
 
-def csv_filename_creation(instr):
+def csv_filename_creation():
     """Create the appropriate file path for each instrument."""
-    try:
-        if instr == 'skycam':
-            ts.instr_metadata[instr]['csv_path'] = os.path.join(
-                ts.basefolder_skycam, 'thaao_skycam', f'{instr}_data_avail_list.csv')
-        elif instr.startswith('rad'):
-            ts.instr_metadata[instr]['csv_path'] = os.path.join(
-                ts.basefolder, 'thaao_rad', f'{instr}_data_avail_list.csv')
-        else:
-            ts.instr_metadata[instr]['csv_path'] = os.path.join(
-                ts.basefolder, f'thaao_{instr}', f'{instr}_data_avail_list.csv')
-    except FileNotFoundError:
-        ts.instr_metadata[instr]['csv_path'] = ''
-        print(f'File for {instr} not found')
+    for instr in ts.instr_list:
+        try:
+            if instr == 'skycam':
+                ts.instr_metadata[instr]['csv_path'] = os.path.join(
+                    ts.basefolder_skycam, 'thaao_skycam', f'{instr}_data_avail_list.csv')
+            elif instr.startswith('rad'):
+                ts.instr_metadata[instr]['csv_path'] = os.path.join(
+                    ts.basefolder, 'thaao_rad', f'{instr}_data_avail_list.csv')
+            else:
+                ts.instr_metadata[instr]['csv_path'] = os.path.join(
+                    ts.basefolder, f'thaao_{instr}', f'{instr}_data_avail_list.csv')
+        except FileNotFoundError:
+            ts.instr_metadata[instr]['csv_path'] = ''
+            print(f'File for {instr} not found')
 
-    return ts.instr_metadata
+    return

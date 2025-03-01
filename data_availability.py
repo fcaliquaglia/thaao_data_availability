@@ -104,8 +104,7 @@ def main():
     print(f'These instruments are plotted: {ts.instr_list}')
 
     # minor updates for the metadata
-    for instr_name in ts.instr_list:
-        ts.instr_metadata = tls.csv_filename_creation(instr_name)
+    tls.csv_filename_creation()
 
     # Execute plotting based on user selection
     if sw.switch_summary_panel:

@@ -21,8 +21,6 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "February 2025"
 
-instr = 'aero_sondes'
-
 
 def update_data_avail(instr):
     import os
