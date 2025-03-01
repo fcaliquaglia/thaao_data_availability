@@ -99,7 +99,7 @@ def update_data_avail(instr):
 
     url = 'https://aeronet.gsfc.nasa.gov/cgi-bin/print_web_data_v3?site=' + site + '&year=' + yr_initial + '&month=' + mon_initial + '&day=' + day_initial + '&year2=' + yr_final + '&month2=' + mon_final + '&day2=' + day_final + '&AOD' + str(
             level) + '=1&AVG=20'
-    soup = BeautifulSoup(requests.get(url).text)  # web services contents are read here from URL
+    soup = BeautifulSoup(requests.get(url).text, features="html.parser")  # web services contents are read here from URL
 
     """**Writes soup data to text file, assigns contents to Pandas dataframe, prepares data for plotting**"""
     with open(
@@ -125,5 +125,27 @@ def update_data_avail(instr):
         print("No data to parse. Please retry with different parameters.")
 
     aeronet.set_index('Date', inplace=True)
+    aeronet = aeronet[['AOD_440nm', 'AOD_1640nm', 'AOD_1020nm', 'AOD_870nm', 'AOD_865nm', 'AOD_779nm',
+       'AOD_675nm', 'AOD_667nm', 'AOD_620nm', 'AOD_560nm', 'AOD_555nm',
+       'AOD_551nm', 'AOD_532nm', 'AOD_531nm', 'AOD_510nm', 'AOD_500nm',
+       'AOD_490nm', 'AOD_443nm', 'AOD_412nm', 'AOD_400nm',
+       'AOD_380nm', 'AOD_340nm', 'Precipitable_Water(cm)', 'AOD_681nm',
+       'AOD_709nm', 'AOD_Empty', 'AOD_Empty.1', 'AOD_Empty.2', 'AOD_Empty.3',
+       'AOD_Empty.4', '440-870_Angstrom_Exponent', '380-500_Angstrom_Exponent',
+       '440-675_Angstrom_Exponent', '500-870_Angstrom_Exponent',
+       '340-440_Angstrom_Exponent', '440-675_Angstrom_Exponent[Polar]',
+       'N[AOD_1640nm]', 'N[AOD_1020nm]', 'N[AOD_870nm]', 'N[AOD_865nm]',
+       'N[AOD_779nm]', 'N[AOD_675nm]', 'N[AOD_667nm]', 'N[AOD_620nm]',
+       'N[AOD_560nm]', 'N[AOD_555nm]', 'N[AOD_551nm]', 'N[AOD_532nm]',
+       'N[AOD_531nm]', 'N[AOD_510nm]', 'N[AOD_500nm]', 'N[AOD_490nm]',
+       'N[AOD_443nm]', 'N[AOD_440nm]', 'N[AOD_412nm]', 'N[AOD_400nm]',
+       'N[AOD_380nm]', 'N[AOD_340nm]', 'N[Precipitable_Water(cm)]',
+       'N[AOD_681nm]', 'N[AOD_709nm]',
+       'N[440-870_Angstrom_Exponent]', 'N[380-500_Angstrom_Exponent]',
+       'N[440-675_Angstrom_Exponent]', 'N[500-870_Angstrom_Exponent]',
+       'N[340-440_Angstrom_Exponent]', 'N[440-675_Angstrom_Exponent[Polar]]',
+       'Data_Quality_Level', 'AERONET_Instrument_Number',
+       'Site_Latitude(Degrees)', 'Site_Longitude(Degrees)',
+       'Site_Elevation(m)']]
 
     sida_tls.save_csv(instr, aeronet)

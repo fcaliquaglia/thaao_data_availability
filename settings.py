@@ -66,7 +66,7 @@ def create_instr_metadata(start_instr, end_instr=today, start_seas=start_season,
 
 metadata_entries = {'aeronet'                                                                                   : create_instr_metadata(
         dt.datetime(2007, 3, 1), institution='NCAR/NASA', start_seas=dt.datetime(1900, 3, 1),
-        end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_aeronet.py'),
+        end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_aeronet.py', plot_vars={'AOD_440nm': ('green', '')}),
     'aero_sondes'                                                                                               : create_instr_metadata(
             dt.datetime(1992, 1, 1), dt.datetime(1998, 12, 31), institution='DMI',
             data_avail_py='thaao_aero_sondes.py'),
