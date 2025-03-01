@@ -51,8 +51,8 @@ def configure_plot_settings():
     if sw.switch_rolling_panels:
         # Get lag value with default fallback
         lag_r = simpledialog.askinteger(
-            "Rolling", "Lag (in months):\n [12 for yearly plots]", minvalue=1, maxvalue=120,
-            initialvalue=sw.time_freq_r)
+                "Rolling", "Lag (in months):\n [12 for yearly plots]", minvalue=1, maxvalue=120,
+                initialvalue=sw.time_freq_r)
         sw.time_freq_r = pd.DateOffset(months=lag_r)
 
         # Get window size with default fallback
@@ -64,7 +64,7 @@ def configure_plot_settings():
     sw.switch_cumulative_panels = tls.get_switch_input('Plot cumulative panels?', False)
     if sw.switch_cumulative_panels:
         lag_c = simpledialog.askinteger(
-            "Cumulative", "Lag (in months):", minvalue=1, maxvalue=120, initialvalue=sw.time_freq_c)
+                "Cumulative", "Lag (in months):", minvalue=1, maxvalue=120, initialvalue=sw.time_freq_c)
         sw.time_freq_c = pd.DateOffset(months=lag_c)
 
     # Additional plot options
@@ -98,7 +98,6 @@ def main():
     # minor updates for the metadata
     for instr_name in ts.instr_list:
         tls.csv_filename_creation(instr_name)
-
 
     # Execute plotting based on user selection
     if sw.switch_rolling_panels:

@@ -87,8 +87,8 @@ def plot_data_avail(ax, instr, yy1, yy2):
     color = cm.rainbow(np.linspace(0, 1, 40))[idx]
     if not valid_indices.empty:
         ax.errorbar(
-                valid_indices, np.full(len(valid_indices), ts.instr_list.index(instr)), xerr=None, yerr=0.3, fmt='.', color=color, capsize=0,
-                markersize=0)
+                valid_indices, np.full(len(valid_indices), ts.instr_list.index(instr)), xerr=None, yerr=0.3, fmt='.',
+                color=color, capsize=0, markersize=0)
 
     del data_val
     return
@@ -116,8 +116,8 @@ def plot_data_na(ax, instr, yy1, yy2):
 
     # Plot missing data (grey color) only for masked values
     ax.errorbar(
-            date_index[mask], np.full(mask.sum(), ts.instr_list.index(instr)), xerr=None, yerr=0.3, fmt='.', color='lightgrey', capsize=0,
-            markersize=0)
+            date_index[mask], np.full(mask.sum(), ts.instr_list.index(instr)), xerr=None, yerr=0.3, fmt='.',
+            color='lightgrey', capsize=0, markersize=0)
 
     # Explicitly free memory (optional but useful in large loops)
     del date_index, mask
@@ -196,7 +196,8 @@ def draw_data_avail(a1, a2):
             total=total_steps, desc=f"Plotting instr data", position=1, colour='green',
             bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as sbar:
         for instr in ts.instr_list:
-            # print(f'period:{start}-{end} --> {instr_idx:02}:{ts.instr_list[instr_idx]}')
+            idx = ts.instr_metadata[instr]['idx']
+            print(f'period:{start}-{end} --> {idx:02}:{instr}')
             plot_data_avail(ax, instr, a1, a2)
             plot_data_na(ax, instr, a1, a2)
             gc.collect()
