@@ -58,7 +58,7 @@ def update_data_avail(instr):
     from bs4 import BeautifulSoup  # reads data from website (web scraping)
 
     import pandas as pd
-    import single_instr_data_avail.tools as sida_tls
+    import single_instr_data_avail.sida_tools as sida_tls
 
     import settings as ts
 

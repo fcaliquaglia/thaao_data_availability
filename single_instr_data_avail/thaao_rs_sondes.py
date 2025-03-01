@@ -30,7 +30,7 @@ instr = 'rs_sondes'
 
 
 def update_data_avail(instr):
-    import single_instr_data_avail.tools as sida_tls
+    import single_instr_data_avail.sida_tools as sida_tls
     import os
     from glob import glob
     import pandas as pd

@@ -27,7 +27,7 @@ instr = 'wv_isotopes'
 def update_data_avail(instr):
     import os
 
-    import single_instr_data_avail.tools as sida_tls
+    import single_instr_data_avail.sida_tools as sida_tls
     import pandas as pd
 
     import settings as ts

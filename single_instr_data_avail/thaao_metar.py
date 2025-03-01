@@ -28,7 +28,7 @@
 #     import os
 #
 #     import pandas as pd
-#     import single_instr_data_avail.tools as sida_tls
+#     import single_instr_data_avail.sida_tools as sida_tls
 #     from urllib.request import urlopen
 #
 #     import numpy as np

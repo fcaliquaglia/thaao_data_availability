@@ -31,7 +31,7 @@ def update_data_avail(instr):
     import datetime as dt
 
     import settings as ts
-    import single_instr_data_avail.tools as sida_tls
+    import single_instr_data_avail.sida_tools as sida_tls
     base_folder = ts.basefolder  # Base folder for efficiency
 
     year_ls = np.arange(2017, 2025)

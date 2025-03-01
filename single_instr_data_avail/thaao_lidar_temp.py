@@ -22,7 +22,7 @@ def update_data_avail(instr):
     import pandas as pd
     from pathlib import Path
     import settings as ts
-    import single_instr_data_avail.tools as sida_tls
+    import single_instr_data_avail.sida_tools as sida_tls
 
     # Generate a list of dates based on instrument metadata
     date_list = pd.date_range(

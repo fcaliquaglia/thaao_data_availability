@@ -27,7 +27,7 @@ instr = 'uv-vis_spec'
 def update_data_avail(instr):
     import os
     import pandas as pd
-    import single_instr_data_avail.tools as sida_tls
+    import single_instr_data_avail.sida_tools as sida_tls
     import settings as ts
 
     # https://git.nilu.no/ebas/ebas-io/-/wikis/home#downloading-the-software

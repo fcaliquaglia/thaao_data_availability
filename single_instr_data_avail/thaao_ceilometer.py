@@ -22,7 +22,7 @@ def update_data_avail(instr):
     import pandas as pd
 
     import settings as ts
-    import single_instr_data_avail.tools as sida_tls
+    import single_instr_data_avail.sida_tools as sida_tls
 
     date_list = pd.date_range(
             ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
