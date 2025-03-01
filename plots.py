@@ -25,8 +25,8 @@ def draw_data_summary():
     print('UNDER DEVELOPMENT')
 
     data_all = pd.concat(
-            [tls.load_data_file(instr).resample(ts.time_res).mean().add_prefix(f"{instr}__") for instr in ts.instr_list],
-            axis=1).sort_index()
+            [tls.load_data_file(instr).resample(ts.time_res).mean().add_prefix(f"{instr}__") for instr in
+             ts.instr_list], axis=1).sort_index()
 
     var_list = []
     for instr in ts.instr_list:
@@ -35,35 +35,37 @@ def draw_data_summary():
     data_filtered = data_all.loc[
         (data_all.index.year >= sw.start_date.year) & (data_all.index.year <= sw.end_date.year), var_list]
 
+    # Create subplots with shared x-axis
     fig, axes = plt.subplots(len(data_filtered.columns), 1, figsize=(22, 12), sharex=True)
 
     # Remove whitespace between subplots
     plt.subplots_adjust(hspace=0)
 
-    # Plot each variable
+    # Iterate over each variable and its corresponding axis
     for i, (ax, var_) in enumerate(zip(axes, data_filtered.columns)):
-        instr = var_.split('__')[0]
-        var = var_.split('__')[1]
+        instr, var = var_.split('__')  # Extract instrument and variable names
         print(f'Plotting {var}')
 
         vars_details = ts.instr_metadata[instr]['plot_vars'][var]
+        color = vars_details[0]  # Line color
+        unit = vars_details[1]  # Measurement unit
 
-        # Primary Y-Axis (left)
-        ax.plot(
-                data_filtered.index, data_filtered[var_], color=vars_details[0], marker='o', markersize=2,
-                linestyle='-'
-        )
-        ax.set_ylabel(f"{var} [{vars_details[1]}]", color=vars_details[0], fontsize=10, fontweight='bold')
-        ax.tick_params(axis='y', colors=vars_details[0], labelsize=8)
-        ax.grid(True, linestyle='--', alpha=0.5)
+        # Primary Y-Axis (Left)
+        ax.plot(data_filtered.index, data_filtered[var_], color=color, marker='o', markersize=2, linestyle='-')
+        ax.set_ylabel(f"{var} [{unit}]", color=color, fontsize=10, fontweight='bold')
+        ax.tick_params(axis='y', colors=color, labelsize=8)
 
-        # Create a secondary y-axis on the right
+        # Secondary Y-Axis (Right)
         ax_right = ax.twinx()
-        ax_right.set_ylabel(f"{var} [{vars_details[1]}]", color=vars_details[0], fontsize=10, fontweight='bold')
-        ax_right.tick_params(axis='y', colors=vars_details[0], labelsize=8)
+        ax_right.set_ylabel(f"{var} [{unit}]", color=color, fontsize=10, fontweight='bold')
+        ax_right.tick_params(axis='y', colors=color, labelsize=8)
 
-        # Remove the top x-axis spine for all subplots
+        # Remove unnecessary spines for a cleaner look
         ax.spines['top'].set_visible(False)
+        ax_right.spines['top'].set_visible(False)
+
+        # Apply grid to **all** subplots
+        ax.grid(True, linestyle='--', alpha=0.5)
 
         # Remove x-axis for all but the last subplot
         if i < len(data_filtered.columns) - 1:
@@ -84,14 +86,15 @@ def draw_data_summary():
     if sw.switch_campaigns:
         draw_campaigns(axes[-1], sw.start_date.year, sw.end_date.year)
 
-    # Add a logo (comment out if not needed)
+    # Add a logo **next to the title**
     logo = plt.imread('logo.png')
-    newax = fig.add_axes([0.72, 0.88, 0.12, 0.12], anchor='NW', zorder=10)  # Adjust x, y to align with title
-    newax.imshow(logo)
-    newax.axis('off')
+    logo_ax = fig.add_axes([0.76, 0.87, 0.12, 0.12], anchor='NE', zorder=10)  # Adjust for better positioning
+    logo_ax.imshow(logo)
+    logo_ax.axis('off')
 
-    # Title and show plot
+    # Set title and layout
     fig.suptitle('Thule High Arctic Atmospheric Observatory - THAAO', fontsize=14, fontweight='bold')
+    plt.tight_layout()
 
     return fig
 
@@ -299,7 +302,8 @@ def plot_panels(plot_type):
     elif plot_type == 'summary':
         fig = draw_data_summary()
         figname = os.path.join(
-                os.path.dirname(newdir), f'thaao_data_avail_{sw.start_date.year}_{sw.end_date.year}_{dt.datetime.today().strftime("%Y%m%d")}.png')
+                os.path.dirname(newdir),
+                f'thaao_data_avail_{sw.start_date.year}_{sw.end_date.year}_{dt.datetime.today().strftime("%Y%m%d")}.png')
         plt.savefig(figname, transparent=False)
         plt.clf()
         plt.close(fig)
