@@ -47,4 +47,4 @@ def update_data_avail(instr):
         except IndexError:
             pass
 
-    sida_tls.save_txt(instr, aero_sondes)
+    sida_tls.save_csv(instr, aero_sondes)

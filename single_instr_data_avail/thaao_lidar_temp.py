@@ -51,4 +51,4 @@ def update_data_avail(instr):
         lidar_temp.sort_index(inplace=True)
 
         # Save the DataFrame using sida_tls module
-        sida_tls.save_txt(instr, lidar_temp)
+        sida_tls.save_csv(instr, lidar_temp)

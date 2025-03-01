@@ -40,5 +40,5 @@ def update_data_avail(instr):
     pm10 = pd.DataFrame({"dt": pd.to_datetime(pm10_tmp.index), "mask": True})
 
     # Save data
-    sida_tls.save_txt(instr, pm10)
+    sida_tls.save_csv(instr, pm10)
 

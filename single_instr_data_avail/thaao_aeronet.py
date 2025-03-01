@@ -129,4 +129,4 @@ def update_data_avail(instr):
     for i in date_list:
         if i in df['Date'].values:
             aeronet.loc[i] = [i, True]
-    sida_tls.save_txt(instr, aeronet)
+    sida_tls.save_csv(instr, aeronet)

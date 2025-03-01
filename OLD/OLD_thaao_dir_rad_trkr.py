@@ -89,5 +89,5 @@ if __name__ == "__main__":
         except (FileNotFoundError, zipfile.BadZipFile) as e:
             print(e)
 
-    tls.save_txt(instr, dir_rad_trkr)
-    tls.save_txt(instr, dir_rad_trkr_missing, missing=True)
+    tls.save_csv(instr, dir_rad_trkr)
+    tls.save_csv(instr, dir_rad_trkr_missing, missing=True)

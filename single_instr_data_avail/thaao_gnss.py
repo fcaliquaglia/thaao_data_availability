@@ -41,4 +41,4 @@ def update_data_avail(instr):
     for i in date_list:
         gnss.loc[i] = [i, True]
 
-    sida_tls.save_txt(instr, gnss)
+    sida_tls.save_csv(instr, gnss)

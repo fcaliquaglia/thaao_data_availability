@@ -52,5 +52,5 @@ def update_data_avail(instr):
     # Convert the list of dictionaries into a DataFrame
     lidar_ae = pd.DataFrame(rows)
 
-    # Ensure tls.save_txt is implemented correctly to save the DataFrame
-    sida_tls.save_txt(instr, lidar_ae)
+    # Ensure tls.save_csv is implemented correctly to save the DataFrame
+    sida_tls.save_csv(instr, lidar_ae)

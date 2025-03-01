@@ -61,5 +61,4 @@ def update_data_avail(instr):
         else:
             hyso_seismo_missing.loc[i] = [i, True]
 
-    sida_tls.save_txt(instr, hyso_seismo)
-    sida_tls.save_txt(instr, hyso_seismo_missing, missing=True)
+    sida_tls.save_csv(instr, hyso_seismo)

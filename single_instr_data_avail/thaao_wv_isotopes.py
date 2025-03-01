@@ -67,5 +67,4 @@ def update_data_avail(instr):
         else:
             wv_isotopes_missing.loc[i] = [i, True]
 
-    sida_tls.save_txt(instr, wv_isotopes)
-    sida_tls.save_txt(instr, wv_isotopes_missing, missing=True)
+    sida_tls.save_csv(instr, wv_isotopes)

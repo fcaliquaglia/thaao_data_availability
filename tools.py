@@ -44,7 +44,7 @@ def check_txt_file_age(instr):
         basefol=ts.basefolder_skycam
     else:
         basefol=ts.basefolder
-    txt_file_path = os.path.join(basefol, f'thaao_{instr1}', f'{instr}_data_avail_list.txt')
+    txt_file_path = os.path.join(basefol, f'thaao_{instr1}', f'{instr}_data_avail_list.csv')
     if os.path.exists(txt_file_path):
         # Get the last modified date of the file
         last_modified = dt.datetime.fromtimestamp(os.path.getmtime(txt_file_path))
@@ -156,11 +156,11 @@ def input_file_selection(i_list, i_name):
     """Select the appropriate input file for each instrument."""
     try:
         if i_name == 'skycam':
-            inp_file = os.path.join(ts.basefolder_skycam, 'thaao_skycam', i_name + '_data_avail_list.txt')
+            inp_file = os.path.join(ts.basefolder_skycam, 'thaao_skycam', i_name + '_data_avail_list.csv')
         elif i_name.startswith('rad'):
-            inp_file = os.path.join(ts.basefolder, 'thaao_rad', i_name + '_data_avail_list.txt')
+            inp_file = os.path.join(ts.basefolder, 'thaao_rad', i_name + '_data_avail_list.csv')
         else:
-            inp_file = os.path.join(ts.basefolder, 'thaao_' + i_name, i_name + '_data_avail_list.txt')
+            inp_file = os.path.join(ts.basefolder, 'thaao_' + i_name, i_name + '_data_avail_list.csv')
         i_list.append(i_name)
     except FileNotFoundError:
         inp_file = None

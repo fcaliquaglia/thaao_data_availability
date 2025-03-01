@@ -55,7 +55,7 @@
 #
 #     vals = np.repeat(True, len(historical_data_metar))
 #     metar = pd.concat([pd.Series(historical_data_metar.index), pd.Series(vals)], axis=1)
-#     sida_tls.save_txt(instr, metar)
+#     sida_tls.save_csv(instr, metar)
 
 #!/usr/local/bin/python3
 # -*- coding: utf-8 -*-
@@ -127,4 +127,4 @@ def update_data_avail(instr):
     historical_data = pd.read_csv(file_path, usecols=["valid", "metar"], index_col="valid", low_memory=False)
     metar = pd.DataFrame({"timestamp": historical_data.index, "available": np.ones(len(historical_data), dtype=bool)})
 
-    sida_tls.save_txt(instr, metar)
+    sida_tls.save_csv(instr, metar)

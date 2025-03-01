@@ -111,6 +111,11 @@ def main():
         print(f"Generating {plot_type} plots...")
         plts.plot_panels(plot_type)
         print(f"{plot_type.capitalize()} plots completed!")
+    if sw.switch_summary_panel:
+        plot_type = 'summary'
+        print(f"Generating {plot_type} plots...")
+        plts.plot_summary(plot_type)
+        print(f"{plot_type.capitalize()} plots completed!")
 
     print('END')
 

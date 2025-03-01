@@ -46,4 +46,4 @@ def update_data_avail(instr):
                 gbms.loc[i] = [i, True]
         except IndexError:
             pass
-    sida_tls.save_txt(instr, gbms)
+    sida_tls.save_csv(instr, gbms)

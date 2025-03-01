@@ -49,5 +49,5 @@ if __name__ == "__main__":
         except (FileNotFoundError, zipfile.BadZipFile) as e:
             print(e)
 
-    tls.save_txt(instr, ceilometer)
-    tls.save_txt(instr, ceilometer_missing, missing=True)
+    tls.save_csv(instr, ceilometer)
+    tls.save_csv(instr, ceilometer_missing)

@@ -47,4 +47,4 @@ def update_data_avail(instr):
         if glob(fn):
             rs_sondes.loc[i] = [i, True]
 
-    sida_tls.save_txt(instr, rs_sondes)
+    sida_tls.save_csv(instr, rs_sondes)

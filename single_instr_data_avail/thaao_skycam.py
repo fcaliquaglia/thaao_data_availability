@@ -59,8 +59,7 @@ def update_data_avail(instr):
         print(fn)
 
     # Save data to txt files using optimized saving
-    sida_tls.save_txt(instr, skycam)
-    sida_tls.save_txt(instr, skycam_missing, missing=True)
+    sida_tls.save_csv(instr, skycam)
 
 
 def process_zip_file(zip_file_path, date_list_int):

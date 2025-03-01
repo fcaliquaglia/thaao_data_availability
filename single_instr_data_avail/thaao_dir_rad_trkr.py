@@ -49,5 +49,4 @@ def update_data_avail(instr):
     dir_rad_trkr_missing_df = pd.DataFrame(dir_rad_trkr_missing, columns=['dt', 'mask'])
 
     # Save the results
-    sida_tls.save_txt(instr, dir_rad_trkr_df)
-    sida_tls.save_txt(instr, dir_rad_trkr_missing_df, missing=True)
+    sida_tls.save_csv(instr, dir_rad_trkr_df)

@@ -46,7 +46,7 @@ def update_data_avail(instr):
     ecapac_aws_snow_df = pd.DataFrame(ecapac_aws_snow)
 
     # Save the DataFrame to a text file
-    sida_tls.save_txt(instr, ecapac_aws_snow_df)
+    sida_tls.save_csv(instr, ecapac_aws_snow_df)
 
 
 def generate_file_path(date, fol):

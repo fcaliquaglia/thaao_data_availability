@@ -46,5 +46,4 @@ def update_data_avail(instr):
             hyso_tide_1_missing.loc[i] = [i, True]
             print('file ' + str(fn) + ' not found')
 
-    sida_tls.save_txt(instr, hyso_tide_1)
-    sida_tls.save_txt(instr, hyso_tide_1_missing, missing=True)
+    sida_tls.save_csv(instr, hyso_tide_1)

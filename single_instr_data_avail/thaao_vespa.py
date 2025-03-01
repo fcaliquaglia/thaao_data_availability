@@ -50,5 +50,4 @@ def update_data_avail(instr):
         else:
             vespa_missing.loc[i] = [i, True]
 
-    sida_tls.save_txt(instr, vespa)
-    sida_tls.save_txt(instr, vespa_missing, missing=True)
+    sida_tls.save_csv(instr, vespa)

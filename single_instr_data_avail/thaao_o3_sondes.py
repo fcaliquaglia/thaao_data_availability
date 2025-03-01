@@ -51,5 +51,4 @@ def update_data_avail(instr):
         except IndexError:
             pass
 
-    sida_tls.save_txt(instr, o3_sondes)
-    sida_tls.save_txt(instr, o3_sondes_missing, missing=True)
+    sida_tls.save_csv(instr, o3_sondes)

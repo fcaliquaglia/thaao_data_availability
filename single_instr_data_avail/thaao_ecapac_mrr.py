@@ -53,4 +53,4 @@ def update_data_avail(instr):
             continue
 
     # Save the DataFrame to text file
-    sida_tls.save_txt(instr, ecapac_mrr)
+    sida_tls.save_csv(instr, ecapac_mrr)

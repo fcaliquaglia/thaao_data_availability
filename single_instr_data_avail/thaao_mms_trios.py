@@ -48,5 +48,4 @@ def update_data_avail(instr):
         else:
             mms_trios_missing.loc[i] = [i, False]
 
-    sida_tls.save_txt(instr, mms_trios)
-    sida_tls.save_txt(instr, mms_trios_missing, missing=True)
+    sida_tls.save_csv(instr, mms_trios)

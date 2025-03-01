@@ -50,16 +50,15 @@ def save_mask_txt(data_val: pd.DataFrame, fol_out: str, instr_nm: str):
     out_file = pd.DataFrame({"timestamp": data_val.index.values, "valid_mask": valid_mask.values})
 
     # Save file
-    output_path = Path(fol_out) / f"{instr_nm}_data_avail_list.txt"
+    output_path = Path(fol_out) / f"{instr_nm}_data_avail_list.csv"
     print(f"Saving: {output_path}")
     np.savetxt(output_path, out_file.values, fmt='%s')
     print(f"Saved: {output_path}")
 
 
-def save_txt(instr_nm, data_val, missing=False):
+def save_csv(instr_nm, data_val):
     """
 
-    :param missing:
     :param data_val:
     :param instr_nm:
     :return:
@@ -69,12 +68,7 @@ def save_txt(instr_nm, data_val, missing=False):
     else:
         fol_out = os.path.join(ts.basefolder, f'thaao_{instr_nm}')
 
-    if missing:
-        print('Saving missing: ' + instr_nm)
-        np.savetxt(os.path.join(fol_out, f'{instr_nm}_data_missing_list.txt'), data_val, fmt='%s')
-        print('Saved ' + str(os.path.join(fol_out, instr_nm + '_data_missing_list.txt')))
-    else:
-        print('Saving: ' + instr_nm)
-        np.savetxt(os.path.join(fol_out, f'{instr_nm}_data_avail_list.txt'), data_val, fmt='%s')
-        print('Saved ' + str(os.path.join(fol_out, instr_nm + '_data_avail_list.txt')))
+    print('Saving: ' + instr_nm)
+    data_val.to_csv(os.path.join(fol_out, f'{instr_nm}_data_avail_list.csv'), sep=',', index=True, float_format='%.2f')
+    print('Saved ' + str(os.path.join(fol_out, instr_nm + '_data_avail_list.csv')))
     return

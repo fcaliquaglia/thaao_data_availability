@@ -56,4 +56,4 @@ def update_data_avail(instr):
             pass
         ftir = pd.concat([ftir_tmp, ftir])
 
-    sida_tls.save_txt(instr, ftir)
+    sida_tls.save_csv(instr, ftir)

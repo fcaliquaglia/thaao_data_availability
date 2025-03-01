@@ -30,8 +30,9 @@ switch_campaigns = 'True'  # Draw field campaigns?
 switch_history = 'False'  # Draw historical events?
 switch_prog_bar = 'False'  # Draw progress bar?
 
-switch_cumulative_panels = 'False'  # Plot cumulative panels?
-switch_rolling_panels = 'False'  # Plot panels for gif?
+switch_cumulative_panels = 'False'
+switch_rolling_panels = 'False'
+switch_summary_panel = 'False'
 
 # inputs
 start = '2020'

@@ -47,4 +47,4 @@ def update_data_avail(instr):
         if os.path.exists(fn):
             ecapac_disdro_precip.loc[i] = [i, True]
 
-    sida_tls.save_txt(instr, ecapac_disdro_precip)
+    sida_tls.save_csv(instr, ecapac_disdro_precip)

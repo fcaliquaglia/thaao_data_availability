@@ -78,5 +78,5 @@ if __name__ == "__main__":
     #     except urllib.request.URLError as e:
     #         pass
 
-    tls.save_txt(instr, skycam)
-    tls.save_txt(instr, skycam_missing, missing=True)
+    tls.save_csv(instr, skycam)
+    tls.save_csv(instr, skycam_missing, missing=True)

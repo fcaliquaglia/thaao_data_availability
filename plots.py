@@ -1,5 +1,7 @@
+import datetime as dt
 import gc
 import os
+import sys
 
 import matplotlib.cm as cm
 import matplotlib.dates as mdates
@@ -18,6 +20,48 @@ scale_factor = 1.5
 plt.rcParams.update({'font.size': 6 * scale_factor})
 plt.rcParams.update({'figure.dpi': 300})
 plt.rcParams.update({'figure.figsize': (15, 10)})
+
+
+def plot_summary():
+
+    print('UNDER DEVLOPMENT')
+    sys.exit()
+
+    data = tls.load_data_file(inp)
+
+    # Define variables to plot (modify based on actual data columns)
+    variables = {'CO2 (ppm)'              : ('black', 'ppm'), 'CH4 (ppb)': ('green', 'ppb'),
+                 'Total Ozone (DU)'       : ('blue', 'DU'), 'Aerosol Optical Depth': ('brown', ''),
+                 'Column Water Vapor (cm)': ('teal', 'cm'), 'Precipitation (mm)': ('orange', 'mm'),
+                 'Cloud-Free Fraction (%)': ('pink', '%'), 'Shortwave Irradiance (W/m²)': ('darkred', 'W/m²'),
+                 'Temperature (°C)'       : ('red', '°C')}
+
+    # Create figure and subplots
+    fig, axes = plt.subplots(len(variables), 1, figsize=(12, 12), sharex=True, constrained_layout=True, dpi=100)
+
+    # Plot each variable
+    for ax, (var, (color, unit)) in zip(axes, variables.items()):
+        ax.plot(data.index, data[var], color=color, marker='o', markersize=2, linestyle='-')
+        ax.set_ylabel(f"{var} ({unit})", color=color, fontsize=10, fontweight='bold')
+        ax.tick_params(axis='y', colors=color, labelsize=8)
+        ax.grid(True, linestyle='--', alpha=0.5)
+
+    # Format x-axis with year labels
+    axes[-1].xaxis.set_major_locator(mdates.YearLocator())
+    axes[-1].xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+    plt.xticks(rotation=45, fontsize=9)
+
+    # Add a logo (comment out if not needed)
+    # logo = plt.imread('your_logo.png')
+    # newax = fig.add_axes([0.1, 0.75, 0.15, 0.15], anchor='NW', zorder=1)
+    # newax.imshow(logo)
+    # newax.axis('off')
+
+    # Title and show plot
+    fig.suptitle('Climate Observations from Your Observatory', fontsize=14, fontweight='bold')
+    plt.show()
+
+    return fig
 
 
 def plot_data_avail(ax, inp, yy1, yy2, idx):
@@ -228,4 +272,16 @@ def plot_panels(plot_type):
                 plt.close(fig)
                 gc.collect()
                 pbar.update(1)
+
+    elif plot_type == 'summary':
+        newdir = os.path.join(ts.da_folder, 'summary', f'{sw.start.year}-{sw.end.year}')
+        os.makedirs(newdir, exist_ok=True)
+        fig = plot_summary()
+        figname = os.path.join(
+                newdir,
+                f'thaao_data_avail_{sw.start.year}_{sw.end.year}_{sw.switch_instr_list}_{dt.datetime.today().strftime("%Y%m%d")}.png')
+        plt.savefig(figname, transparent=False)
+        plt.clf()
+        plt.close(fig)
+        gc.collect()
     return
