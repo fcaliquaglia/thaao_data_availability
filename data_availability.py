@@ -79,12 +79,15 @@ def main():
     Main function for instrument selection, data availability update, and plotting.
     """
     root = tls.create_root()
+    # minor updates for the metadata
+
 
     # Instrument list selection
     sw.switch_instr_list = simpledialog.askstring(
             "Instrument Selection for operations",
             'Which category of instruments (or single instrument, separated by white space)?  \n [thaao, legacy, hyso, all, "single_instr"]')
     tls.update_instr_list()
+    tls.csv_filename_creation()
     # Prompt for updating data availability before anything else
     update_data_availability()
 
@@ -103,8 +106,6 @@ def main():
     messagebox.showinfo("Selected Instruments", f'These instruments are plotted: {ts.instr_list}')
     print(f'These instruments are plotted: {ts.instr_list}')
 
-    # minor updates for the metadata
-    tls.csv_filename_creation()
 
     # Execute plotting based on user selection
     if sw.switch_summary_panel:
