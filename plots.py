@@ -24,7 +24,7 @@ plt.rcParams.update({'figure.figsize': (15, 10)})
 
 def plot_summary():
 
-    print('UNDER DEVLOPMENT')
+    print('UNDER DEVELOPMENT')
     sys.exit()
 
     data = tls.load_data_file(inp)
@@ -59,7 +59,6 @@ def plot_summary():
 
     # Title and show plot
     fig.suptitle('Climate Observations from Your Observatory', fontsize=14, fontweight='bold')
-    plt.show()
 
     return fig
 

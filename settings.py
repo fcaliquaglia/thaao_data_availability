@@ -47,7 +47,7 @@ instr_sets = {
     "hyso": ['hyso_seismo_1', 'hyso_seismo_2', 'hyso_seismo_3', 'hyso_seismo_4', 'hyso_tide_1'], }
 
 instr_sets["all"] = instr_sets["legacy"] + instr_sets["hyso"] + instr_sets["thaao"]
-
+instr_list = []
 
 # =============================================================
 # FUNCTION: CREATE INSTRUMENT METADATA

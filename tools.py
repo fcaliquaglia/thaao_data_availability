@@ -99,12 +99,12 @@ def create_root():
 
 # Function to update the instrument list with pop-up window input
 def update_instr_list():
-    ts.instr_list = []
     for category in sw.switch_instr_list.split():
         if category in ts.instr_sets:
             ts.instr_list += ts.instr_sets[category]
         elif category in list(ts.metadata_entries.keys()):
             ts.instr_list = category
+    return
 
 
 # Function for getting boolean input through a pop-up window (yes/no)
