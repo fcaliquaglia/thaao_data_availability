@@ -24,16 +24,31 @@ plt.rcParams.update({'figure.figsize': (15, 10)})
 def draw_data_summary():
     print('UNDER DEVELOPMENT')
     data_all = pd.concat(
-            [tls.load_data_file(instr).resample("D").mean() for instr in ts.instr_list], axis=1).sort_index()
-    data_filtered = data_all.loc[(data_all.index.year >= sw.start.year) & (data_all.index.year <= sw.end.year)]
+            [tls.load_data_file(instr).resample("D").mean().add_prefix(f"{instr}__") for instr in ts.instr_list],
+            axis=1).sort_index()
 
-    fig, axes = plt.subplots(len(data_filtered.columns), 1, figsize=(12, 12), sharex=True, dpi=200)
+    var_list = []
+    for instr in ts.instr_list:
+        var_list += [instr + '__' + j for j in list(ts.instr_metadata[instr]['plot_vars'].keys())]
+
+    data_filtered = data_all.loc[
+        (data_all.index.year >= sw.start_date.year) & (data_all.index.year <= sw.end_date.year), var_list]
+
+    fig, axes = plt.subplots(len(data_filtered.columns), 1, figsize=(18, 12), sharex=True, dpi=200)
 
     # Plot each variable
-    for i, (ax, var) in enumerate(zip(axes, data_filtered.columns)):
-        ax.plot(data_filtered.index, data_filtered[var], color='red', marker='o', markersize=2, linestyle='-')
-        ax.set_ylabel(f"{var} []", color='red', fontsize=10, fontweight='bold')
-        ax.tick_params(axis='y', colors='red', labelsize=8)
+    for i, (ax, var_) in enumerate(zip(axes, data_filtered.columns)):
+        instr = var_.split('__')[0]
+        var = var_.split('__')[1]
+        print(f'Plotting {var}')
+        # if not var in ts.instr_metadata[instr]['plot_vars']:
+        #     continue
+        vars_details = ts.instr_metadata[instr]['plot_vars'][var]
+        ax.plot(
+                data_filtered.index, data_filtered[var_], color=f'{vars_details[0]}', marker='o', markersize=2,
+                linestyle='-')
+        ax.set_ylabel(f"{var} [{vars_details[1]}]", color=f'{vars_details[0]}', fontsize=10, fontweight='bold')
+        ax.tick_params(axis='y', colors=f'{vars_details[0]}', labelsize=8)
         ax.grid(True, linestyle='--', alpha=0.5)
 
         # Remove the top x-axis spine for all subplots
@@ -51,9 +66,9 @@ def draw_data_summary():
 
     # Draw events and campaigns based on switches
     if sw.switch_history:
-        draw_events(ax, sw.start, sw.start)
+        draw_events(ax, sw.start_date.year, sw.end_date.year)
     if sw.switch_campaigns:
-        draw_campaigns(ax, sw.start, sw.start)
+        draw_campaigns(ax, sw.start_date.year, sw.end_date.year)
 
     # Format x-axis with year labels
     axes[-1].xaxis.set_major_locator(mdates.YearLocator())
@@ -241,11 +256,11 @@ def draw_data_avail(a1, a2):
 
 def plot_panels(plot_type):
     """Generates panels for different types (rolling, cumulative)."""
-    newdir = os.path.join(ts.da_folder, plot_type, f'{sw.start.year}-{sw.end.year}')
+    newdir = os.path.join(ts.da_folder, plot_type, f'{sw.start_date.year}-{sw.end_date.year}')
     os.makedirs(newdir, exist_ok=True)
 
     if plot_type == 'rolling':
-        loop_data = pd.date_range(sw.start, sw.end, freq=sw.time_freq_r)
+        loop_data = pd.date_range(sw.start_date, sw.end_date, freq=sw.time_freq_r)
         total_steps = len(loop_data)
         with tqdm(
                 total=total_steps, desc=f"\nPlotting {plot_type} data",
@@ -262,16 +277,16 @@ def plot_panels(plot_type):
                 pbar.update(1)
 
     elif plot_type == 'cumulative':
-        loop_data = pd.date_range(sw.start, sw.end, freq=sw.time_freq_c)
+        loop_data = pd.date_range(sw.start_date, sw.end_date, freq=sw.time_freq_c)
         total_steps = len(loop_data)
         with tqdm(
                 total=total_steps, desc=f"\nPlotting {plot_type} data",
                 bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as pbar:
             for ibar, date in enumerate(loop_data):
                 end = date + sw.time_freq_c
-                fig = draw_data_avail(sw.start, end)
+                fig = draw_data_avail(sw.start_date, end)
                 figname = os.path.join(
-                        newdir, f'thaao_data_avail_{sw.start.strftime("%Y%m")}_{end.strftime("%Y%m")}.png')
+                        newdir, f'thaao_data_avail_{sw.start_date.strftime("%Y%m")}_{end.strftime("%Y%m")}.png')
                 plt.savefig(figname, transparent=False)
                 plt.clf()
                 plt.close(fig)
@@ -281,7 +296,7 @@ def plot_panels(plot_type):
     elif plot_type == 'summary':
         fig = draw_data_summary()
         figname = os.path.join(
-                newdir, f'thaao_data_avail_{sw.start.year}_{sw.end.year}_{dt.datetime.today().strftime("%Y%m%d")}.png')
+                newdir, f'thaao_data_avail_{sw.start_date.year}_{sw.end_date.year}_{dt.datetime.today().strftime("%Y%m%d")}.png')
         plt.savefig(figname, transparent=False)
         plt.clf()
         plt.close(fig)

@@ -37,8 +37,11 @@ switch_rolling_panels = False
 switch_summary_panel = True
 
 # inputs
-start = dt.datetime(2020, 1, 1)
-end = dt.datetime(2024, 12, 31)
+
+start = 2020
+end = 2024
+start_date = dt.datetime(start, 1, 1)
+end_date = dt.datetime(end, 12, 31)
 
 # cumulative
 time_freq_c = '6'

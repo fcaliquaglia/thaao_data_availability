@@ -89,11 +89,11 @@ def main():
     update_data_availability()
 
     start_year = simpledialog.askinteger(
-            "Input", 'Start year: ', minvalue=1920, maxvalue=dt.datetime.today().year, initialvalue=sw.start.year)
+            "Input", 'Start year: ', minvalue=1900, maxvalue=dt.datetime.today().year, initialvalue=sw.start)
     sw.start_date = dt.datetime(start_year, 1, 1)
 
     end_year = simpledialog.askinteger(
-            "Input", 'End year: ', minvalue=1920, maxvalue=dt.datetime.today().year, initialvalue=sw.end.year)
+            "Input", 'End year: ', minvalue=1900, maxvalue=dt.datetime.today().year, initialvalue=sw.end)
     sw.end_date = dt.datetime(end_year, 12, 31)
 
     # Configure plot settings
