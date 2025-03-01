@@ -43,20 +43,28 @@ def configure_plot_settings():
     Configures user-selected parameters for plotting, including rolling and cumulative panels.
     """
 
-    sw.switch_summary_panel = tls.get_switch_input('Plot data summary?')
+    sw.switch_summary_panel = tls.get_switch_input('Plot data summary?', False)
 
     sw.switch_rolling_panels = tls.get_switch_input(
-            'Plot rolling panels? \n [Yearly panels: set=12, window=12] ')
+            'Plot rolling panels? \n [Yearly panels: set=12, window=12]', False)
+
     if sw.switch_rolling_panels:
-        lag_r = simpledialog.askinteger("Rolling", "Lag (in months):\n [12 for yearly plots]", minvalue=1, maxvalue=120)
-        window_size = simpledialog.askinteger(
-                "Rolling", "Window size (in months):\n [12 for yearly plots]", minvalue=1, maxvalue=120)
+        # Get lag value with default fallback
+        lag_r = simpledialog.askinteger(
+            "Rolling", "Lag (in months):\n [12 for yearly plots]", minvalue=1, maxvalue=120,
+            initialvalue=sw.time_freq_r)
         sw.time_freq_r = pd.DateOffset(months=lag_r)
+
+        # Get window size with default fallback
+        window_size = simpledialog.askinteger(
+                "Rolling", "Window size (in months):\n [12 for yearly plots]", minvalue=1, maxvalue=120,
+                initialvalue=sw.time_window_r)
         sw.time_window_r = pd.DateOffset(months=window_size)
 
-    sw.switch_cumulative_panels = tls.get_switch_input('Plot cumulative panels?')
+    sw.switch_cumulative_panels = tls.get_switch_input('Plot cumulative panels?', False)
     if sw.switch_cumulative_panels:
-        lag_c = simpledialog.askinteger("Cumulative", "Lag (in months):", minvalue=1, maxvalue=120)
+        lag_c = simpledialog.askinteger(
+            "Cumulative", "Lag (in months):", minvalue=1, maxvalue=120, initialvalue=sw.time_freq_c)
         sw.time_freq_c = pd.DateOffset(months=lag_c)
 
     # Additional plot options
@@ -86,8 +94,11 @@ def main():
 
     # Display selected instruments
     messagebox.showinfo("Selected Instruments", f'These instruments are plotted: {ts.instr_list}')
+
+    # minor updates for the metadata
     for instr_name in ts.instr_list:
         tls.csv_filename_creation(instr_name)
+
 
     # Execute plotting based on user selection
     if sw.switch_rolling_panels:

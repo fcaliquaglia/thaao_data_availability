@@ -38,7 +38,7 @@ end_season = dt.datetime(1900, 12, 31)
 # =============================================================
 # DEFINE INSTRUMENT LISTS
 # =============================================================
-update_threshold =''
+update_threshold = ''
 
 instr_sets = {
     "thaao": ['rs_sondes', 'rad_uli', 'rad_dli', 'rad_usi', 'rad_dsi', 'rad_par_up', 'rad_par_down', 'rad_tb', 'skycam',
@@ -154,6 +154,10 @@ metadata_entries = {'aeronet'                                                   
 instr_metadata = {
     name: {**meta, 'end_instr': meta.get('end_instr', today), 'start_seas': meta.get('start_seas', start_season),
            'end_seas'         : meta.get('end_seas', end_season), } for name, meta in metadata_entries.items()}
+
+for idx, key in enumerate(metadata_entries.keys()):
+    instr_metadata[key]["idx"] = idx
+
 # =============================================================
 # INSTITUTION COLORS
 # =============================================================

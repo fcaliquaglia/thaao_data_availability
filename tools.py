@@ -104,7 +104,7 @@ def update_instr_list():
     for category in sw.switch_instr_list.split():
         if category in ts.instr_sets:
             ts.instr_list += ts.instr_sets[category]
-        elif category in list(ts.metadata_entries.keys()):
+        elif category in list(ts.instr_metadata.keys()):
             ts.instr_list.append(category)
     return
 
@@ -122,10 +122,10 @@ def set_date_params(start_prompt, end_prompt):
     """ Generic date input handling """
     root = create_root()
 
-    start_year = tk.simpledialog.askinteger("Input", start_prompt, minvalue=1920, maxvalue=dt.datetime.today().year)
+    start_year = tk.simpledialog.askinteger("Input", start_prompt, minvalue=1920, maxvalue=dt.datetime.today().year, initialvalue=sw.start.year)
     start_date = dt.datetime(start_year, 1, 1)
 
-    end_year = tk.simpledialog.askinteger("Input", end_prompt, minvalue=1920, maxvalue=dt.datetime.today().year)
+    end_year = tk.simpledialog.askinteger("Input", end_prompt, minvalue=1920, maxvalue=dt.datetime.today().year, initialvalue=sw.end.year)
     end_date = dt.datetime(end_year, 12, 31)
 
     sw.start = start_date
@@ -139,7 +139,7 @@ def load_data_file(instr):
     Loads the data from the input file. Returns a DataFrame with 'datetime' as the index
     and 'mask' column indicating data availability.
     """
-    inp = ts.metadata_entries[instr]['csv_path']
+    inp = ts.instr_metadata[instr]['csv_path']
     try:
         data_val = pd.read_csv(inp, index_col='datetime', parse_dates=True)
         data_val.index = pd.DatetimeIndex(data_val.index)
@@ -152,20 +152,20 @@ def load_data_file(instr):
                 {'mask': [np.nan] * len(index_values)}, index=index_values)
 
 
-def csv_filename_creation(i_name):
+def csv_filename_creation(instr):
     """Select the appropriate input file for each instrument."""
     try:
-        if i_name == 'skycam':
-            ts.metadata_entries[i_name]['csv_path'] = os.path.join(
-                    ts.basefolder_skycam, 'thaao_skycam', i_name + '_data_avail_list.csv')
-        elif i_name.startswith('rad'):
-            ts.metadata_entries[i_name]['csv_path'] = os.path.join(
-                    ts.basefolder, 'thaao_rad', i_name + '_data_avail_list.csv')
+        if instr == 'skycam':
+            ts.instr_metadata[instr]['csv_path'] = os.path.join(
+                    ts.basefolder_skycam, 'thaao_skycam', instr + '_data_avail_list.csv')
+        elif instr.startswith('rad'):
+            ts.instr_metadata[instr]['csv_path'] = os.path.join(
+                    ts.basefolder, 'thaao_rad', instr + '_data_avail_list.csv')
         else:
-            ts.metadata_entries[i_name]['csv_path'] = os.path.join(
-                    ts.basefolder, 'thaao_' + i_name, i_name + '_data_avail_list.csv')
+            ts.instr_metadata[instr]['csv_path'] = os.path.join(
+                    ts.basefolder, 'thaao_' + instr, instr + '_data_avail_list.csv')
     except FileNotFoundError:
-        ts.metadata_entries[i_name]['csv_path'] = ''
-        print(f'File for {i_name} was not found')
+        ts.instr_metadata[instr]['csv_path'] = ''
+        print(f'File for {instr} was not found')
 
     return

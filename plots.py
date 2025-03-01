@@ -67,42 +67,40 @@ def draw_data_summary():
     return fig
 
 
-def plot_data_avail(ax, instr, yy1, yy2, idx):
+def plot_data_avail(ax, instr, yy1, yy2):
     """Plot data availability"""
+
+    idx = ts.instr_metadata[instr]['idx']
     data_val = tls.load_data_file(instr)
 
     # Filter data within the specified range (yy1, yy2) using .loc[]
-    data_val = data_val.loc[(data_val.index >= yy1) & (data_val.index <= yy2), 'mask']
+    data_val = data_val.iloc[(data_val.index >= yy1) & (data_val.index <= yy2), 0]
 
     if data_val.empty:
         print(f'all data are NAN')
         return  # Exit early if no data
-    #
-    # # Convert mask values to integer (0 or 1) while handling NaNs
-    # data_val = data_val.fillna(0).astype(int)
 
-    # Get valid indices where data is available (mask == 1)
-    valid_indices = data_val.index[data_val == 1]
+    # Get valid indices where data is not nan nor inf
+    valid_indices = data_val.index[~data_val.isna() & ~data_val.isin([np.inf, -np.inf])]
 
     # Determine color for plotting
     color = cm.rainbow(np.linspace(0, 1, 40))[idx]
     if not valid_indices.empty:
         ax.errorbar(
-                valid_indices, np.full(len(valid_indices), idx), xerr=None, yerr=0.3, fmt='.', color=color, capsize=0,
+                valid_indices, np.full(len(valid_indices), ts.instr_list.index(instr)), xerr=None, yerr=0.3, fmt='.', color=color, capsize=0,
                 markersize=0)
 
     del data_val
     return
 
 
-def plot_data_na(ax, yy1, yy2, idx):
+def plot_data_na(ax, instr, yy1, yy2):
     """Plot NA data"""
-
     # Generate date index directly as a Pandas Series with a boolean mask
     date_index = pd.date_range(yy1, yy2, freq='12h')
 
     # Fetch instrument metadata once
-    instr_metadata = ts.instr_metadata.get(ts.instr_list[idx])
+    instr_metadata = ts.instr_metadata.get(instr)
     start_seas, end_seas = pd.Timestamp(instr_metadata['start_seas']).month, pd.Timestamp(
             instr_metadata['end_seas']).month
 
@@ -118,7 +116,7 @@ def plot_data_na(ax, yy1, yy2, idx):
 
     # Plot missing data (grey color) only for masked values
     ax.errorbar(
-            date_index[mask], np.full(mask.sum(), idx), xerr=None, yerr=0.3, fmt='.', color='lightgrey', capsize=0,
+            date_index[mask], np.full(mask.sum(), ts.instr_list.index(instr)), xerr=None, yerr=0.3, fmt='.', color='lightgrey', capsize=0,
             markersize=0)
 
     # Explicitly free memory (optional but useful in large loops)
@@ -127,13 +125,13 @@ def plot_data_na(ax, yy1, yy2, idx):
     return
 
 
-def ax_style(axx, yy1, yy2, i_labs):
+def ax_style(axx, yy1, yy2):
     """
     Customizes the axis appearance, including setting limits, formatting date ticks,
     and styling y-ticks based on instrument metadata.
     """
 
-    i_length = len(i_labs)
+    i_length = len(ts.instr_list)
     axx.set_xlim(yy1, yy2)
     axx.set_ylim(-1, i_length)
 
@@ -143,6 +141,7 @@ def ax_style(axx, yy1, yy2, i_labs):
 
     # Y-axis styling
     axx.set_yticks(np.arange(i_length))
+    i_labs = [i for i in ts.instr_list]
     axx.set_yticklabels(i_labs)
 
     # Style y-ticks based on instrument metadata
@@ -183,22 +182,23 @@ def draw_campaigns(ax, a1, a2):
             ax.axvspan(campaign['start'], campaign['end'], alpha=0.25, color='cyan', zorder=10)
 
 
-def draw_data_avail(a1, a2, instr_data, iii_labs):
+def draw_data_avail(a1, a2):
     """Draws data availability with legends for instruments and campaigns."""
+
     fig, ax = plt.subplots()
     ax2 = ax.twinx()
 
     start = a1.strftime('%b %Y')
     end = a2.strftime('%b %Y')
 
-    total_steps = len(instr_data)
+    total_steps = len(ts.instr_list)
     with tqdm(
             total=total_steps, desc=f"Plotting instr data", position=1, colour='green',
             bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as sbar:
-        for instr_idx, (inp_file, _) in enumerate(instr_data):
-            print(f'period:{start}-{end} --> {instr_idx:02}:{ts.instr_list[instr_idx]}')
-            plot_data_avail(ax, ts.instr_list[instr_idx], a1, a2, instr_idx)
-            plot_data_na(ax, a1, a2, instr_idx)
+        for instr in ts.instr_list:
+            # print(f'period:{start}-{end} --> {instr_idx:02}:{ts.instr_list[instr_idx]}')
+            plot_data_avail(ax, instr, a1, a2)
+            plot_data_na(ax, instr, a1, a2)
             gc.collect()
             sbar.update(1)
 
@@ -209,8 +209,8 @@ def draw_data_avail(a1, a2, instr_data, iii_labs):
         draw_campaigns(ax, a1, a2)
 
     # Style the axis
-    ax_style(ax, a1, a2, iii_labs)
-    ax_style(ax2, a1, a2, iii_labs)
+    ax_style(ax, a1, a2)
+    ax_style(ax2, a1, a2)
 
     # Generate the legend
     legend_elements = [Line2D([0], [0], marker='', lw=0, color=ts.institution_colors[elem], label=elem) for elem in
@@ -239,10 +239,9 @@ def plot_panels(plot_type):
                 bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as pbar:
             for ibar, j in enumerate(loop_data):
                 yyyy1, yyyy2 = j, j + sw.time_window_r
-                fig = draw_data_avail(yyyy1, yyyy2, csv_file_metadata, ii_labs)
+                fig = draw_data_avail(yyyy1, yyyy2)
                 figname = os.path.join(
-                        newdir,
-                        f'thaao_data_avail_{yyyy1.strftime("%Y%m")}_{yyyy2.strftime("%Y%m")}_{sw.switch_instr_list}.png')
+                        newdir, f'thaao_data_avail_{yyyy1.strftime("%Y%m")}_{yyyy2.strftime("%Y%m")}.png')
                 plt.savefig(figname, transparent=False)
                 plt.clf()
                 plt.close(fig)
@@ -257,10 +256,9 @@ def plot_panels(plot_type):
                 bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as pbar:
             for ibar, date in enumerate(loop_data):
                 end = date + sw.time_freq_c
-                fig = draw_data_avail(sw.start, end, csv_file_metadata, ii_labs)
+                fig = draw_data_avail(sw.start, end)
                 figname = os.path.join(
-                        newdir,
-                        f'thaao_data_avail_{sw.start.strftime("%Y%m")}_{end.strftime("%Y%m")}_{sw.switch_instr_list}.png')
+                        newdir, f'thaao_data_avail_{sw.start.strftime("%Y%m")}_{end.strftime("%Y%m")}.png')
                 plt.savefig(figname, transparent=False)
                 plt.clf()
                 plt.close(fig)
@@ -270,8 +268,7 @@ def plot_panels(plot_type):
     elif plot_type == 'summary':
         fig = draw_data_summary()
         figname = os.path.join(
-                newdir,
-                f'thaao_data_avail_{sw.start.year}_{sw.end.year}_{dt.datetime.today().strftime("%Y%m%d")}.png')
+                newdir, f'thaao_data_avail_{sw.start.year}_{sw.end.year}_{dt.datetime.today().strftime("%Y%m%d")}.png')
         plt.savefig(figname, transparent=False)
         plt.clf()
         plt.close(fig)
