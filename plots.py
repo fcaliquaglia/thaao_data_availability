@@ -24,16 +24,31 @@ plt.rcParams.update({'figure.figsize': (15, 10)})
 def draw_data_summary():
     print('UNDER DEVELOPMENT')
     data_all = pd.concat(
-            [tls.load_data_file(instr).resample("D").mean() for instr in ts.instr_list], axis=1).sort_index()
-    data_filtered = data_all.loc[(data_all.index.year >= sw.start.year) & (data_all.index.year <= sw.end.year)]
+            [tls.load_data_file(instr).resample("D").mean().add_prefix(f"{instr}__") for instr in ts.instr_list],
+            axis=1).sort_index()
+
+    var_list = []
+    for instr in ts.instr_list:
+        var_list += [instr + '__' + j for j in list(ts.instr_metadata[instr]['plot_vars'].keys())]
+
+    data_filtered = data_all.loc[
+        (data_all.index.year >= sw.start.year) & (data_all.index.year <= sw.end.year), var_list]
 
     fig, axes = plt.subplots(len(data_filtered.columns), 1, figsize=(12, 12), sharex=True, dpi=200)
 
     # Plot each variable
-    for i, (ax, var) in enumerate(zip(axes, data_filtered.columns)):
-        ax.plot(data_filtered.index, data_filtered[var], color='red', marker='o', markersize=2, linestyle='-')
-        ax.set_ylabel(f"{var} []", color='red', fontsize=10, fontweight='bold')
-        ax.tick_params(axis='y', colors='red', labelsize=8)
+    for i, (ax, var_) in enumerate(zip(axes, data_filtered.columns)):
+        instr = var_.split('__')[0]
+        var = var_.split('__')[1]
+        print(f'Plotting {var}')
+        # if not var in ts.instr_metadata[instr]['plot_vars']:
+        #     continue
+        vars_details = ts.instr_metadata[instr]['plot_vars'][var]
+        ax.plot(
+                data_filtered.index, data_filtered[var_], color=f'{vars_details[0]}', marker='o', markersize=2,
+                linestyle='-')
+        ax.set_ylabel(f"{var} [{vars_details[1]}]", color=f'{vars_details[0]}', fontsize=10, fontweight='bold')
+        ax.tick_params(axis='y', colors=f'{vars_details[0]}', labelsize=8)
         ax.grid(True, linestyle='--', alpha=0.5)
 
         # Remove the top x-axis spine for all subplots
