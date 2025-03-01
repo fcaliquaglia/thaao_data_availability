@@ -68,6 +68,7 @@ def save_csv(instr_nm, data_val):
     else:
         fol_out = os.path.join(ts.basefolder, f'thaao_{instr_nm}')
 
+    data_val = data_val.apply(pd.to_numeric, errors='coerce')
     print('Saving: ' + instr_nm)
     data_val.to_csv(os.path.join(fol_out, f'{instr_nm}_data_avail_list.csv'), sep=',', index=True, float_format='%.2f')
     print('Saved ' + str(os.path.join(fol_out, instr_nm + '_data_avail_list.csv')))

@@ -86,16 +86,15 @@ def plot_data_avail(ax, inp, yy1, yy2, idx):
     if data_val.empty:
         print(f'all data are NAN')
         return  # Exit early if no data
-
-    # Convert mask values to integer (0 or 1) while handling NaNs
-    data_val = data_val.fillna(0).astype(int)
-
-    # Determine color for plotting
-    color = cm.rainbow(np.linspace(0, 1, 40))[idx]
+    #
+    # # Convert mask values to integer (0 or 1) while handling NaNs
+    # data_val = data_val.fillna(0).astype(int)
 
     # Get valid indices where data is available (mask == 1)
     valid_indices = data_val.index[data_val == 1]
 
+    # Determine color for plotting
+    color = cm.rainbow(np.linspace(0, 1, 40))[idx]
     if not valid_indices.empty:
         ax.errorbar(
                 valid_indices, np.full(len(valid_indices), idx), xerr=None, yerr=0.3, fmt='.', color=color, capsize=0,
