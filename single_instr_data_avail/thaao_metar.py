@@ -81,5 +81,4 @@ def update_data_avail(instr):
             {"timestamp": historical_data.index, "mslp": historical_data.mslp, "relh": historical_data.relh,
              "tmpc"     : historical_data.tmpc})
 
-
     sida_tls.save_csv(instr, metar)
