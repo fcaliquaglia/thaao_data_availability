@@ -34,7 +34,7 @@ def draw_data_summary():
     data_filtered = data_all.loc[
         (data_all.index.year >= sw.start_date.year) & (data_all.index.year <= sw.end_date.year), var_list]
 
-    fig, axes = plt.subplots(len(data_filtered.columns), 1, figsize=(18, 12), sharex=True, dpi=200)
+    fig, axes = plt.subplots(len(data_filtered.columns), 1, figsize=(22, 12), sharex=True)
 
     # Plot each variable
     for i, (ax, var_) in enumerate(zip(axes, data_filtered.columns)):

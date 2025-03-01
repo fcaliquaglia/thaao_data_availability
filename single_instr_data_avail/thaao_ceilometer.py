@@ -41,7 +41,7 @@ def update_data_avail(instr):
                     file_path, skipfooter=0, sep='\s+', header=0, skiprows=9, engine='python')
 
             # Replace 9999 with NaN
-            t_tmp[t_tmp == 9999] = np.nan
+            t_tmp[t_tmp == -9999.9] = np.nan
 
             # Append the DataFrame to the list
             dfs.append(t_tmp)
