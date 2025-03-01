@@ -32,14 +32,7 @@ def draw_data_summary(instr_data, iii_labs):
         start_seas, end_seas = pd.Timestamp(instr_metadata['start_seas']).month, pd.Timestamp(
                 instr_metadata['end_seas']).month
 
-        if instr == 'skycam':
-            fol_out = os.path.join(ts.basefolder_skycam, f'thaao_{instr}')
-        else:
-            fol_out = os.path.join(ts.basefolder, f'thaao_{instr}')
-
-    inp = os.path.join(fol_out, f'{instr}_data_avail_list.csv')
-
-    data = tls.load_data_file(inp)
+    data = tls.load_data_file(inp_file)
 
     # Define variables to plot (modify based on actual data columns)
     variables = {'CO2 (ppm)'              : ('black', 'ppm'), 'CH4 (ppb)': ('green', 'ppb'),

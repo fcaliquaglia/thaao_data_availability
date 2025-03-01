@@ -138,11 +138,7 @@ def load_data_file(inp):
     and 'mask' column indicating data availability.
     """
     try:
-        data_val = pd.read_table(inp, sep=' ')
-        data_val.columns = ['date', 'time', 'mask']
-        data_val['datetime'] = pd.to_datetime(data_val['date'] + ' ' + data_val['time'])
-        data_val.set_index('datetime', inplace=True)
-        data_val.drop(columns=['date', 'time'], inplace=True)
+        data_val = pd.read_csv(inp, index_col='datetime')
         return data_val
     except FileNotFoundError:
         print(f'{inp} not found or corrupted!')
