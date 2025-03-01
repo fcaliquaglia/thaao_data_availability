@@ -86,7 +86,7 @@ import pandas as pd
 from tqdm import tqdm
 from metpy.units import units
 import settings as ts
-import single_instr_data_avail.tools as sida_tls
+import single_instr_data_avail.sida_tools as sida_tls
 
 instr = "metar"
 
