@@ -103,7 +103,7 @@ def update_instr_list():
         if category in ts.instr_sets:
             ts.instr_list += ts.instr_sets[category]
         elif category in list(ts.metadata_entries.keys()):
-            ts.instr_list = category
+            ts.instr_list.append( category)
     return
 
 

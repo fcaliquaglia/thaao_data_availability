@@ -47,6 +47,9 @@ def configure_plot_settings():
     """
     Configures user-selected parameters for plotting, including rolling and cumulative panels.
     """
+
+    sw.switch_summary_panel = tls.get_switch_input('Plot data summary?')
+
     sw.switch_rolling_panels = tls.get_switch_input(
             'Plot rolling panels? \n [Yearly panels: set=12, window=12] ')
     if sw.switch_rolling_panels:
@@ -71,10 +74,6 @@ def main():
     """
     Main function for instrument selection, data availability update, and plotting.
     """
-    ts.instr_list = 'ecapac_aws_snow' # tmp for dev
-    #tls.update_csv_file(ts.instr_list) # tmp for dev
-    plts.plot_data_summary()
-
     root = tls.create_root()
 
     # Prompt for updating data availability before anything else
@@ -118,7 +117,7 @@ def main():
     if sw.switch_summary_panel:
         plot_type = 'summary'
         print(f"Generating {plot_type} plots...")
-        plts.plot_data_summary()
+        plts.plot_panels(plot_type)
         print(f"{plot_type.capitalize()} plots completed!")
 
     print('END')

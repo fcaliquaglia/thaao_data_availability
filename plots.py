@@ -22,10 +22,22 @@ plt.rcParams.update({'figure.dpi': 300})
 plt.rcParams.update({'figure.figsize': (15, 10)})
 
 
-def plot_data_summary():
+def draw_data_summary(instr_data, iii_labs):
 
     print('UNDER DEVELOPMENT')
-    sys.exit()
+
+
+    for instr_idx, (inp_file, _) in enumerate(instr_data):
+        instr_metadata = ts.instr_metadata.get(ts.instr_list[instr_idx])
+        start_seas, end_seas = pd.Timestamp(instr_metadata['start_seas']).month, pd.Timestamp(
+                instr_metadata['end_seas']).month
+
+        if instr == 'skycam':
+            fol_out = os.path.join(ts.basefolder_skycam, f'thaao_{instr}')
+        else:
+            fol_out = os.path.join(ts.basefolder, f'thaao_{instr}')
+
+    inp = os.path.join(fol_out, f'{instr}_data_avail_list.csv')
 
     data = tls.load_data_file(inp)
 
@@ -273,9 +285,9 @@ def plot_panels(plot_type):
                 pbar.update(1)
 
     elif plot_type == 'summary':
-        newdir = os.path.join(ts.da_folder, 'summary', f'{sw.start.year}-{sw.end.year}')
+        newdir = os.path.join(ts.da_folder, 'summary', f'{sw.start}-{sw.end}')
         os.makedirs(newdir, exist_ok=True)
-        fig = plot_data_summary()
+        fig = draw_data_summary(instrument_data, ii_labs)
         figname = os.path.join(
                 newdir,
                 f'thaao_data_avail_{sw.start.year}_{sw.end.year}_{sw.switch_instr_list}_{dt.datetime.today().strftime("%Y%m%d")}.png')
