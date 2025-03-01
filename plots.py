@@ -22,7 +22,7 @@ plt.rcParams.update({'figure.dpi': 300})
 plt.rcParams.update({'figure.figsize': (15, 10)})
 
 
-def plot_summary():
+def plot_data_summary():
 
     print('UNDER DEVELOPMENT')
     sys.exit()
@@ -275,7 +275,7 @@ def plot_panels(plot_type):
     elif plot_type == 'summary':
         newdir = os.path.join(ts.da_folder, 'summary', f'{sw.start.year}-{sw.end.year}')
         os.makedirs(newdir, exist_ok=True)
-        fig = plot_summary()
+        fig = plot_data_summary()
         figname = os.path.join(
                 newdir,
                 f'thaao_data_avail_{sw.start.year}_{sw.end.year}_{sw.switch_instr_list}_{dt.datetime.today().strftime("%Y%m%d")}.png')

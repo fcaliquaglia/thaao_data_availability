@@ -41,9 +41,9 @@ def check_csv_file_age(instr):
     else:
         instr1 = instr
     if instr == 'skycam':
-        basefol=ts.basefolder_skycam
+        basefol = ts.basefolder_skycam
     else:
-        basefol=ts.basefolder
+        basefol = ts.basefolder
     csv_file_path = os.path.join(basefol, f'thaao_{instr1}', f'{instr}_data_avail_list.csv')
     if os.path.exists(csv_file_path):
         # Get the last modified date of the file

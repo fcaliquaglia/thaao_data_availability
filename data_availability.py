@@ -71,8 +71,9 @@ def main():
     """
     Main function for instrument selection, data availability update, and plotting.
     """
-    ts.instr_list = 'metar' # tmp for dev
-    tls.update_csv_file(ts.instr_list) # tmp for dev
+    ts.instr_list = 'ecapac_aws_snow' # tmp for dev
+    #tls.update_csv_file(ts.instr_list) # tmp for dev
+    plts.plot_data_summary()
 
     root = tls.create_root()
 
@@ -117,7 +118,7 @@ def main():
     if sw.switch_summary_panel:
         plot_type = 'summary'
         print(f"Generating {plot_type} plots...")
-        plts.plot_summary()
+        plts.plot_data_summary()
         print(f"{plot_type.capitalize()} plots completed!")
 
     print('END')
