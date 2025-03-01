@@ -149,7 +149,7 @@ def load_data_file(inp):
                 {'mask': [np.nan] * len(index_values)}, index=index_values)
 
 
-def input_file_selection(i_list, i_name):
+def csv_filename_selection(i_name):
     """Select the appropriate input file for each instrument."""
     try:
         if i_name == 'skycam':
@@ -158,7 +158,6 @@ def input_file_selection(i_list, i_name):
             inp_file = os.path.join(ts.basefolder, 'thaao_rad', i_name + '_data_avail_list.csv')
         else:
             inp_file = os.path.join(ts.basefolder, 'thaao_' + i_name, i_name + '_data_avail_list.csv')
-        i_list.append(i_name)
     except FileNotFoundError:
         inp_file = None
         print(f'File for {i_name} was not found')

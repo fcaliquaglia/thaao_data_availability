@@ -4,6 +4,7 @@ import os
 
 import matplotlib.cm as cm
 import matplotlib.dates as mdates
+import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -24,7 +25,6 @@ plt.rcParams.update({'figure.figsize': (15, 10)})
 def draw_data_summary(instr_data, iii_labs):
     print('UNDER DEVELOPMENT')
 
-
     data_all = pd.DataFrame()
     for instr_idx, (inp_file, _) in enumerate(instr_data):
         data_orig = tls.load_data_file(inp_file)
@@ -32,9 +32,7 @@ def draw_data_summary(instr_data, iii_labs):
         data_all = pd.concat([data_all, data])
 
     # Define variables to plot (modify based on actual data columns)
-    variables = {'AirTC': ('black', 'degC'), 'RH': ('blue', '%')}
-
-    import matplotlib.dates as mdates
+    plt_var =metadata_entries
 
     # Create figure and subplots
     fig, axes = plt.subplots(len(variables), 1, figsize=(12, 12), sharex=True, dpi=200)
@@ -42,7 +40,7 @@ def draw_data_summary(instr_data, iii_labs):
     # Plot each variable
     for i, (ax, (var, (color, unit))) in enumerate(zip(axes, variables.items())):
         ax.plot(data.index, data[var], color=color, marker='o', markersize=2, linestyle='-')
-        ax.set_ylabel(f"{var} ({unit})", color=color, fontsize=10, fontweight='bold')
+        ax.set_ylabel(f"{var} [{unit}]", color=color, fontsize=10, fontweight='bold')
         ax.tick_params(axis='y', colors=color, labelsize=8)
         ax.grid(True, linestyle='--', alpha=0.5)
 
@@ -239,7 +237,7 @@ def plot_panels(plot_type):
     """Generates panels for different types (rolling, cumulative)."""
 
     ii_labs = []
-    instrument_data = [tls.input_file_selection(ii_labs, instr_name) for instr_idx, instr_name in
+    csv_file_metadata = [tls.csv_filename_selection(ii_labs, instr_name) for instr_idx, instr_name in
                        enumerate(ts.instr_list)]
 
     if plot_type == 'rolling':
@@ -253,7 +251,7 @@ def plot_panels(plot_type):
                 bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as pbar:
             for ibar, j in enumerate(loop_data):
                 yyyy1, yyyy2 = j, j + sw.time_window_r
-                fig = draw_data_avail(yyyy1, yyyy2, instrument_data, ii_labs)
+                fig = draw_data_avail(yyyy1, yyyy2, csv_file_metadata, ii_labs)
                 figname = os.path.join(
                         newdir,
                         f'thaao_data_avail_{yyyy1.strftime("%Y%m")}_{yyyy2.strftime("%Y%m")}_{sw.switch_instr_list}.png')
@@ -274,7 +272,7 @@ def plot_panels(plot_type):
                 bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as pbar:
             for ibar, date in enumerate(loop_data):
                 end = date + sw.time_freq_c
-                fig = draw_data_avail(sw.start, end, instrument_data, ii_labs)
+                fig = draw_data_avail(sw.start, end, csv_file_metadata, ii_labs)
                 figname = os.path.join(
                         newdir,
                         f'thaao_data_avail_{sw.start.strftime("%Y%m")}_{end.strftime("%Y%m")}_{sw.switch_instr_list}.png')
@@ -293,7 +291,7 @@ def plot_panels(plot_type):
                 total=total_steps, desc=f"\nPlotting {plot_type} data",
                 bar_format="{l_bar}{bar} {n_fmt}/{total_fmt} [{elapsed}<{remaining}]\n") as pbar:
             for ibar, instr in enumerate(ii_labs):
-                fig = draw_data_summary(instrument_data, ii_labs)
+                fig = draw_data_summary(csv_file_metadata, ii_labs)
                 figname = os.path.join(
                         newdir,
                         f'thaao_data_avail_{sw.start.year}_{sw.end.year}_{sw.switch_instr_list}_{dt.datetime.today().strftime("%Y%m%d")}.png')

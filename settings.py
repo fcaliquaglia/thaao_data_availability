@@ -55,12 +55,12 @@ instr_list = []
 # =============================================================
 
 def create_instr_metadata(start_instr, end_instr=today, start_seas=start_season, end_seas=end_season,
-                          data_avail_py=None, institution=None):
+                          data_avail_py=None, institution=None, plot_vars=None):
     """
     Creates a dictionary with instrument metadata.
     """
     return {'institution': institution, 'start_instr': start_instr, 'end_instr': end_instr, 'start_seas': start_seas,
-            'end_seas'   : end_seas, 'data_avail_py': data_avail_py}
+            'end_seas'   : end_seas, 'data_avail_py': data_avail_py, 'plot_vars': plot_vars}
 
 
 metadata_entries = {'aeronet'                                                                                   : create_instr_metadata(
@@ -79,7 +79,8 @@ metadata_entries = {'aeronet'                                                   
     'ecapac_mrr'                                                                                                : create_instr_metadata(
             dt.datetime(2023, 3, 1), institution='ENEA', data_avail_py='thaao_ecapac_mrr.py'),
     'ecapac_aws_snow'                                                                                           : create_instr_metadata(
-            dt.datetime(2023, 3, 1), institution='ENEA', data_avail_py='thaao_ecapac_aws_snow.py'),
+            dt.datetime(2023, 3, 1), institution='ENEA', data_avail_py='thaao_ecapac_aws_snow.py',
+            plot_vars={'AirTC': ('black', 'degC'), 'RH': ('blue', '%')}),
     'ecapac_disdro_precip'                                                                                      : create_instr_metadata(
             dt.datetime(2023, 3, 1), institution='ENEA', data_avail_py='thaao_ecapac_disdro_precip.py'),
     'ftir'                                                                                                      : create_instr_metadata(
@@ -112,7 +113,8 @@ metadata_entries = {'aeronet'                                                   
             dt.datetime(2021, 8, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
             end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_hyso_tide_1.py'),
     'metar'                                                                                                     : create_instr_metadata(
-            dt.datetime(1951, 10, 1), institution='U.Alaska,Florence,StonyBrook/USSF', data_avail_py='thaao_metar.py'),
+            dt.datetime(1951, 10, 1), institution='U.Alaska,Florence,StonyBrook/USSF', data_avail_py='thaao_metar.py',
+            plot_vars={'tmpc': ('black', 'degC'), 'relh': ('blue', '%')}),
     'mms_trios'                                                                                                 : create_instr_metadata(
             dt.datetime(2021, 9, 1), institution='INGV', data_avail_py='thaao_mms_trios.py'),
     'o3_sondes'                                                                                                 : create_instr_metadata(
