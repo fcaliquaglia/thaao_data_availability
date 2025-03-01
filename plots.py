@@ -23,11 +23,13 @@ plt.rcParams.update({'figure.figsize': (15, 10)})
 
 def draw_data_summary(instr_data, iii_labs):
     print('UNDER DEVELOPMENT')
-    for instr_idx, (inp_file, _) in enumerate(instr_data):
-        instr_metadata = ts.instr_metadata.get(ts.instr_list[instr_idx])
 
-    data_orig = tls.load_data_file(inp_file)
-    data = data_orig.resample('D').mean()
+
+    data_all = pd.DataFrame()
+    for instr_idx, (inp_file, _) in enumerate(instr_data):
+        data_orig = tls.load_data_file(inp_file)
+        data = data_orig.resample('D').mean()
+        data_all = pd.concat([data_all, data])
 
     # Define variables to plot (modify based on actual data columns)
     variables = {'AirTC': ('black', 'degC'), 'RH': ('blue', '%')}

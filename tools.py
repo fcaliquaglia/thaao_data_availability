@@ -67,7 +67,7 @@ def update_csv_file(instr):
     """
     Runs an external script function directly.
     """
-    script_path = os.path.join(os.getcwd(), 'single_instr_data_avail', ts.instr_metadata[instr]['data_avail_py'])
+    script_path = os.path.join(os.getcwd(), 'single_instr_data_avail', ts.instr_metadata[instr[0]]['data_avail_py'])
 
     if not os.path.isfile(script_path):
         print(f"Error: Script not found at {script_path}")
