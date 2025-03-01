@@ -35,7 +35,7 @@ def update_data_availability():
 
     if sw.data_avail_update:
         ts.update_threshold = simpledialog.askinteger(
-                "Update threshold", 'Update the data availability .csv files older than? \n (days)', minvalue=1)
+                "Update threshold", 'Update the data availability .csv files older than? \n (days)', minvalue=1, initialvalue=ts.update_threshold)
         tls.check_csv_file_age()
 
 

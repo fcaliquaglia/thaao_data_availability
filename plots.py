@@ -25,7 +25,7 @@ def draw_data_summary():
     print('UNDER DEVELOPMENT')
 
     data_all = pd.concat(
-            [tls.load_data_file(instr).resample("D").mean().add_prefix(f"{instr}__") for instr in ts.instr_list],
+            [tls.load_data_file(instr).resample(ts.time_res).mean().add_prefix(f"{instr}__") for instr in ts.instr_list],
             axis=1).sort_index()
 
     var_list = []
@@ -36,6 +36,9 @@ def draw_data_summary():
         (data_all.index.year >= sw.start_date.year) & (data_all.index.year <= sw.end_date.year), var_list]
 
     fig, axes = plt.subplots(len(data_filtered.columns), 1, figsize=(22, 12), sharex=True)
+
+    # Remove whitespace between subplots
+    plt.subplots_adjust(hspace=0)
 
     # Plot each variable
     for i, (ax, var_) in enumerate(zip(axes, data_filtered.columns)):
@@ -62,26 +65,22 @@ def draw_data_summary():
         # Remove the top x-axis spine for all subplots
         ax.spines['top'].set_visible(False)
 
-        # Remove the bottom x-axis spine for all but the last subplot
-        if i < len(data_all.columns) - 1:
+        # Remove x-axis for all but the last subplot
+        if i < len(data_filtered.columns) - 1:
+            ax.set_xticklabels([])  # Hide x-axis labels
+            ax.set_xlabel('')  # Remove x-axis title
             ax.spines['bottom'].set_visible(False)
-
-        # Remove x-axis ticks for all but the last subplot
-        if i < len(data_all.columns) - 1:
-            ax.xaxis.set_ticks_position('none')
         else:
-            ax.xaxis.set_ticks_position('bottom')
+            # Only the last subplot keeps the x-axis
+            ax.xaxis.set_major_locator(mdates.YearLocator())
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+            ax.tick_params(axis='x', rotation=45, labelsize=9)
 
-            # Draw events and campaigns based on switches
+    # Draw events and campaigns based on switches
     if sw.switch_history:
-        draw_events(ax, sw.start_date.year, sw.end_date.year)
+        draw_events(axes[-1], sw.start_date.year, sw.end_date.year)
     if sw.switch_campaigns:
-        draw_campaigns(ax, sw.start_date.year, sw.end_date.year)
-
-    # Format x-axis with year labels
-    axes[-1].xaxis.set_major_locator(mdates.YearLocator())
-    axes[-1].xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-    plt.xticks(rotation=45, fontsize=9)
+        draw_campaigns(axes[-1], sw.start_date.year, sw.end_date.year)
 
     # Add a logo (comment out if not needed)
     logo = plt.imread('logo.png')
