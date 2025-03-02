@@ -174,7 +174,7 @@ metadata_entries = {'aeronet': create_instr_metadata(
     'rad_par_up'             : create_instr_metadata(
             dt.datetime(2016, 7, 1), institution='ENEA', data_avail_py='thaao_rad.py',
             plot_vars={'PAR_UP': ('orange', 'W m-2')}),
-    'rad_tb'                 : create_instr_metadata(
+    'rad_tpb'                 : create_instr_metadata(
             dt.datetime(2017, 1, 1), institution='ENEA', data_avail_py='thaao_rad.py',
             plot_vars={'TPB': ('orange', 'W m-2')}),
     'rad_uli'                : create_instr_metadata(
