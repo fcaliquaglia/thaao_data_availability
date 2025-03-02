@@ -33,8 +33,9 @@ def update_data_avail(instr):
     folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
     vespa = pd.read_table(os.path.join(folder, 'vespaPWVClearSky.txt'), delimiter='\s+')
-    vespa['dt'] = vespa['yyyy-mm-dd'].values + ' ' + vespa['HH:MM:SS'].values
+    vespa['datetime'] = vespa['yyyy-mm-dd'].values + ' ' + vespa['HH:MM:SS'].values
     # rounding datetime index to hour
-    vespa.index = pd.DatetimeIndex(vespa['dt']).round('h')
+    vespa.set_index('datetime', inplace=True)
+    vespa.drop(columns=['yyyy-mm-dd', 'HH:MM:SS', 'Tout', 'Tatm', 'RH'], inplace=True)
 
     sida_tls.save_csv(instr, vespa)

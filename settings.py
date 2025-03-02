@@ -79,7 +79,7 @@ metadata_entries = {'aeronet'                                                   
             dt.datetime(2016, 1, 1), institution='INGV', data_avail_py='thaao_aws_vespa.py'),
     'ceilometer'                                                                                                : create_instr_metadata(
             dt.datetime(2019, 11, 1), institution='ENEA', data_avail_py='thaao_ceilometer.py',
-            plot_vars={'CBH_L1[m]': ('red', 'm'), 'TCC[oktas]': ('red', 'm')}),
+            plot_vars={'CBH_L1[m]': ('red', 'm'), 'TCC[okt]': ('red', 'm')}),
     'dir_rad_trkr'                                                                                              : create_instr_metadata(
             dt.datetime(2002, 10, 1), institution='DMI+ENEA', start_seas=dt.datetime(1900, 2, 1),
             end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_dir_rad_trkr.py'),
@@ -153,7 +153,7 @@ metadata_entries = {'aeronet'                                                   
             dt.datetime(1991, 2, 1), dt.datetime(2016, 11, 30), institution='DMI',  # 1991-2016
             data_avail_py='thaao_uv-vis_spec.py', plot_vars={'NO2 vertical column density (430 nm)': ('cyan', '??')}),
     'vespa'                                                                                                     : create_instr_metadata(
-            dt.datetime(2016, 7, 1), institution='INGV', data_avail_py='thaao_vespa.py'),
+            dt.datetime(2016, 7, 1), institution='INGV', data_avail_py='thaao_vespa.py', plot_vars={'PWV': ('cyan', '??')}),
     'wv_isotopes'                                                                                               : create_instr_metadata(
             dt.datetime(2011, 6, 1), dt.datetime(2019, 12, 31), institution='U.Alaska,Florence,StonyBrook/USSF',
             data_avail_py='thaao_wv_isotopes.py')}

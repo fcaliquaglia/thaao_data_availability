@@ -33,7 +33,7 @@ def draw_data_summary():
         var_list += [instr + '__' + j for j in list(ts.instr_metadata[instr]['plot_vars'].keys())]
 
     vars_dict = {'temp_vars': {'AirTC', 'tmpc'}, 'press_vars': {'mslp', 'BP_mbar'}, 'pm10_vars': {'PM10'},
-                 'relh_vars': {'relh', 'RH'}, 'iwv_vars': {'iwv'}, 'tcc_vars': {}, 'cbh_vars': {}, 'no2_vars': {},
+                 'relh_vars': {'relh', 'RH'}, 'iwv_vars': {'PWV'}, 'tcc_vars': {'TCC[okt]'}, 'cbh_vars': {}, 'no2_vars': {},
                  'o3_vars'  : {}, 'lwp_vars': {}, 'aod_vars': {'AOD_440nm'}, 'dsi_vars': {}, 'usi_vars': {},
                  'uli_vars' : {}, 'dli_vars': {}, 'alb_vars': {}}
 
