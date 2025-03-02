@@ -151,7 +151,9 @@ metadata_entries = {'aeronet'                                                   
             dt.datetime(2021, 5, 1), institution='INGV', data_avail_py='thaao_gnss.py'),
     'uv-vis_spec'                                                                                                : create_instr_metadata(
             dt.datetime(1991, 2, 1), dt.datetime(2016, 11, 30), institution='DMI',  # 1991-2016
-            data_avail_py='thaao_uv-vis_spec.py', plot_vars={'NO2 vertical column density (430 nm)': ('orange', '??')}),
+            data_avail_py='thaao_uv-vis_spec.py', plot_vars={'NO2 vertical column density (430 nm)': ('orange', '??'),
+                                                             'O3 vertical column density (510 nm)' : ('green', '??'),
+                                                             'O3 vertical column density (530 nm)' : ('green', '??')}),
     'vespa'                                                                                                      : create_instr_metadata(
             dt.datetime(2016, 7, 1), institution='INGV', data_avail_py='thaao_vespa.py',
             plot_vars={'PWV': ('cyan', '??')}),
