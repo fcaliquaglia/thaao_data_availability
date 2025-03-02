@@ -91,8 +91,8 @@ def draw_data_summary():
             ax = axes[get_key_from_value(subplt, 'tcc_vars')]
         elif var in vars_dict['no2_vars']:
             ax = axes[get_key_from_value(subplt, 'no2_vars')]
-        elif var in vars_dict['03_vars']:
-            ax = axes[get_key_from_value(subplt, '03_vars')]
+        elif var in vars_dict['o3_vars']:
+            ax = axes[get_key_from_value(subplt, 'o3_vars')]
         else:
             ax = None
 
