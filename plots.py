@@ -33,9 +33,10 @@ def draw_data_summary():
         var_list += [instr + '__' + j for j in list(ts.instr_metadata[instr]['plot_vars'].keys())]
 
     vars_dict = {'cbh_vars' : {'CBH_L1[m]'}, 'temp_vars': {'AirTC', 'tmpc'}, 'press_vars': {'mslp', 'BP_mbar'},
-                 'pm10_vars': {'PM10'}, 'relh_vars': {'relh', 'RH'}, 'tcc_vars': {'TCC[okt]'}, 'no2_vars': {},
-                 'o3_vars'  : {}, 'lwp_vars': {}, 'aod_vars': {'AOD_440nm'}, 'dsi_vars': {}, 'usi_vars': {},
-                 'uli_vars' : {}, 'dli_vars': {}, 'alb_vars': {}, 'iwv_vars': {'PWV'}}
+                 'pm10_vars': {'PM10'}, 'relh_vars': {'relh', 'RH'}, 'tcc_vars': {'TCC[okt]'},
+                 'no2_vars' : {'NO2 vertical column density (430 nm)'}, 'o3_vars': {}, 'lwp_vars': {},
+                 'aod_vars' : {'AOD_440nm'}, 'dsi_vars': {}, 'usi_vars': {}, 'bt_vars': {}, 'uli_vars': {},
+                 'dli_vars' : {}, 'alb_vars': {}, 'iwv_vars': {'PWV'}}
     import re
     subplt = []
     for var in var_list:
@@ -87,6 +88,10 @@ def draw_data_summary():
             ax = axes[get_key_from_value(subplt, 'cbh_vars')]
         elif var in vars_dict['tcc_vars']:
             ax = axes[get_key_from_value(subplt, 'tcc_vars')]
+        elif var in vars_dict['no2_vars']:
+            ax = axes[get_key_from_value(subplt, 'no2_vars')]
+        else:
+            ax=None
 
         vars_details = ts.instr_metadata[instr]['plot_vars'][var]
         color = vars_details[0]  # Line color
