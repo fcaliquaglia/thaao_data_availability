@@ -112,9 +112,9 @@ def main():
     # Execute plotting based on user selection
     if sw.switch_summary_panel:
         plot_type = 'summary'
-        print(f"Generating {plot_type} plots...")
+        print(f"Generating {plot_type} plot...")
         plts.plot_panels(plot_type)
-        print(f"{plot_type.capitalize()} plots completed!")
+        print(f"{plot_type.capitalize()} plot completed!")
     if sw.switch_rolling_panels:
         plot_type = 'rolling'
         print(f"Generating {plot_type} plots...")
