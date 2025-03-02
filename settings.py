@@ -38,7 +38,7 @@ end_season = dt.datetime(1900, 12, 31)
 # =============================================================
 # SUMMARY PLOTS
 # =============================================================
-time_res = 'ME'
+time_res = 'D'
 update_threshold = 7
 
 # =============================================================
@@ -79,7 +79,7 @@ metadata_entries = {'aeronet'                                                   
             dt.datetime(2016, 1, 1), institution='INGV', data_avail_py='thaao_aws_vespa.py'),
     'ceilometer'                                                                                                : create_instr_metadata(
             dt.datetime(2019, 11, 1), institution='ENEA', data_avail_py='thaao_ceilometer.py',
-            plot_vars={'CBH_L1[m]': ('red', 'm')}),
+            plot_vars={'CBH_L1[m]': ('red', 'm'), 'TCC[oktas]': ('red', 'm')}),
     'dir_rad_trkr'                                                                                              : create_instr_metadata(
             dt.datetime(2002, 10, 1), institution='DMI+ENEA', start_seas=dt.datetime(1900, 2, 1),
             end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_dir_rad_trkr.py'),

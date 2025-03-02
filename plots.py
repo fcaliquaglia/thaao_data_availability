@@ -34,7 +34,8 @@ def draw_data_summary():
 
     vars_dict = {'temp_vars': {'AirTC', 'tmpc'}, 'press_vars': {'mslp', 'BP_mbar'}, 'pm10_vars': {'PM10'},
                  'relh_vars': {'relh', 'RH'}, 'iwv_vars': {'iwv'}, 'tcc_vars': {}, 'cbh_vars': {}, 'no2_vars': {},
-                 'o3_vars'  : {}, 'lwp_vars': {}, 'aod_vars': {'AOD_440nm'}}
+                 'o3_vars'  : {}, 'lwp_vars': {}, 'aod_vars': {'AOD_440nm'}, 'dsi_vars': {}, 'usi_vars': {},
+                 'uli_vars' : {}, 'dli_vars': {}, 'alb_vars': {}}
 
     subplt = []
     for var in var_list:
@@ -92,15 +93,15 @@ def draw_data_summary():
         ax.tick_params(axis='y', colors=color, labelsize=8)
 
         # Secondary Y-Axis (Right)
-        ax_right = ax.twinx()
-        ax_right.set_ylabel(f"{var} [{unit}]", color=color, fontsize=10, fontweight='bold')
-        ax_right.tick_params(axis='y', colors=color, labelsize=8)
+        # ax_right = ax.twinx()
+        # ax_right.set_ylabel(f"{var} [{unit}]", color=color, fontsize=10, fontweight='bold')
+        # ax_right.tick_params(axis='y', colors=color, labelsize=8)
 
         # Remove unnecessary spines for a cleaner look
         ax.spines['top'].set_visible(False)
-        ax_right.spines['top'].set_visible(False)
-        ax_right.spines['bottom'].set_visible(False)
-        ax_right.get_xaxis().set_visible(False)
+        # ax_right.spines['top'].set_visible(False)
+        # ax_right.spines['bottom'].set_visible(False)
+        # ax_right.get_xaxis().set_visible(False)
 
         # Apply grid to **all** subplots
         ax.grid(True, linestyle='--', alpha=0.5)
