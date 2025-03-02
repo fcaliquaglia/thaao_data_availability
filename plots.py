@@ -37,7 +37,7 @@ def draw_data_summary():
         for key, values in ts.vars_dict.items():
             matching_columns = data_all.columns[data_all.columns.str.contains(escaped_var)]
             if not matching_columns.empty:
-                if var.split('__')[1] in values:
+                if var.split('__')[1] in values['list']:
                     subplt.append(key)
                     break  # Stop searching after finding the first match
 

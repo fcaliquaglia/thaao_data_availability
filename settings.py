@@ -75,12 +75,11 @@ vars_dict = {'cbh_vars'      : {'list': ['CBH_L1[m]'], 'label': 'Cloud Base Heig
              'atm_ch4_vars'  : {'list': ['ch4'], 'label': 'CH4 vert', 'uom': '??'},
              'lwp_vars'      : {'list': [], 'label': 'LWP', 'uom': 'kg m-2'},
              'aod_vars'      : {'list': ['AOD_440nm'], 'label': 'AOD 440', 'uom': ''},
-             'dsi_vars'      : {'list': ['rad_dsi'], 'label': 'DSI', 'uom': 'W m-2'},
-             'usi_vars'      : {'list': ['rad_usi'], 'label': 'USI', 'uom': 'W m-2'},
-             'tpb_vars'       : {'list': ['rad_tbp'], 'label': 'TBP', 'uom': 'K'},
-             'uli_vars'      : {'list': ['rad_uli'], 'label': 'ULI', 'uom': 'W m-2'},
-             'dli_vars'      : {'list': ['rad_dli'], 'label': 'DLI', 'uom': 'W m-2'},
-             'alb_vars'      : {'list': ['rad_alb'], 'label': 'alb', 'uom': ''},
+             'si_vars'      : {'list': ['DSI', 'USI'], 'label': 'DSI-USI', 'uom': 'W m-2'},
+             'li_vars'      : {'list': ['DLI', 'ULI'], 'label': 'DLI-ULI', 'uom': 'W m-2'},
+             'tpb_vars'      : {'list': ['TBP'], 'label': 'TBP', 'uom': 'K'},
+             'par_vars'      : {'list': ['PAR_DOWN', 'PAR_UP'], 'label': 'PAR DOWN-UP', 'uom': 'W m-2'},
+             'alb_vars'      : {'list': ['ALBEDO_SW'], 'label': 'alb', 'uom': ''},
              'iwv_vars'      : {'list': ['PWV', 'iwv'], 'label': 'IWV', 'uom': 'mm'}}
 
 
