@@ -49,7 +49,7 @@ def draw_data_summary():
                  'o3_vars'                                                                                             : {
                      'O3 vertical column density (510 nm)', 'O3 vertical column density (530 nm)', 'o3'},
                  'atm_gases_vars'                                                                                      : {
-                     'ch4', 'c2h6', 'co', 'clono2', 'h2co', 'hcl', 'hcn', 'hf', 'hno3', 'n20', 'nh3', 'ocs'},
+                     'ch4', 'c2h6', 'co', 'h2co', 'hcn', 'hf', 'hno3', 'n20', 'nh3', 'ocs'},
                  'lwp_vars'                                                                                            : {},
                  'aod_vars'                                                                                            : {
                      'AOD_440nm'},
