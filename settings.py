@@ -172,16 +172,16 @@ metadata_entries = {'aeronet': create_instr_metadata(
             plot_vars={'PAR_DOWN': ('orange', 'W m-2')}),
     'rad_par_up'             : create_instr_metadata(
             dt.datetime(2016, 7, 1), institution='ENEA', data_avail_py='thaao_rad.py',
-            plot_vars={'PAR_UP': ('orange', 'W m-2')}),
+            plot_vars={'PAR_UP': ('magenta', 'W m-2')}),
     'rad_tpb'                 : create_instr_metadata(
             dt.datetime(2017, 1, 1), institution='ENEA', data_avail_py='thaao_rad.py',
-            plot_vars={'TPB': ('orange', 'W m-2')}),
+            plot_vars={'TPB': ('red', 'W m-2')}),
     'rad_uli'                : create_instr_metadata(
             dt.datetime(2016, 7, 1), institution='ENEA', data_avail_py='thaao_rad.py',
-            plot_vars={'LW_UP': ('orange', 'W m-2')}),
+            plot_vars={'LW_UP': ('magenta', 'W m-2')}),
     'rad_usi'                : create_instr_metadata(
             dt.datetime(2016, 7, 1), institution='ENEA', data_avail_py='thaao_rad.py',
-            plot_vars={'SW_UP': ('orange', 'W m-2')}),
+            plot_vars={'SW_UP': ('magenta', 'W m-2')}),
     'rad_alb'                : create_instr_metadata(
             dt.datetime(2016, 7, 1), institution='ENEA', data_avail_py='thaao_rad.py',
             plot_vars={'ALBEDO_SW': ('grey', '')}),
