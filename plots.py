@@ -23,8 +23,6 @@ plt.rcParams.update({'figure.figsize': (15, 10)})
 
 
 def draw_data_summary():
-    print('UNDER DEVELOPMENT')
-
     data_all = pd.concat(
             [tls.load_data_file(instr).resample(ts.time_res).mean().add_prefix(f"{instr}__") for instr in
              ts.instr_list], axis=1).sort_index()
@@ -61,58 +59,60 @@ def draw_data_summary():
                 return key
         return None  # Return None if value is not found
 
+    categories = [key for key, value in ts.vars_dict.items() if value['list']]
+
     # Iterate over each variable and its corresponding axis
     for i, var_ in enumerate(data_filtered.columns):
         instr, var = var_.split('__')  # Extract instrument and variable names
         print(f'Plotting {var}')
-
         # Assign specific columns to different axes based on name
-        if var in ts.vars_dict['temp_vars']:
-            ax = axes[get_key_from_value(subplt, 'temp_vars')]
-        elif var in ts.vars_dict['relh_vars']:
-            ax = axes[get_key_from_value(subplt, 'relh_vars')]
-        elif var in ts.vars_dict['press_vars']:
-            ax = axes[get_key_from_value(subplt, 'press_vars')]
-        elif var in ts.vars_dict['iwv_vars']:
-            ax = axes[get_key_from_value(subplt, 'iwv_vars')]
-        elif var in ts.vars_dict['pm10_vars']:
-            ax = axes[get_key_from_value(subplt, 'pm10_vars')]
-        elif var in ts.vars_dict['aod_vars']:
-            ax = axes[get_key_from_value(subplt, 'aod_vars')]
-        elif var in ts.vars_dict['cbh_vars']:
-            ax = axes[get_key_from_value(subplt, 'cbh_vars')]
-        elif var in ts.vars_dict['tcc_vars']:
-            ax = axes[get_key_from_value(subplt, 'tcc_vars')]
-        elif var in ts.vars_dict['no2_vars']:
-            ax = axes[get_key_from_value(subplt, 'no2_vars')]
-        elif var in ts.vars_dict['o3_vars']:
-            ax = axes[get_key_from_value(subplt, 'o3_vars')]
-        elif var in ts.vars_dict['atm_gases_vars']:
-            ax = axes[get_key_from_value(subplt, 'atm_gases_vars')]
-        elif var in ts.vars_dict['atm_ch4_vars']:
-            ax = axes[get_key_from_value(subplt, 'atm_ch4_vars')]
-        else:
-            ax = None
+        ax, lab, uom = None, None, None
+
+        for category in categories:
+            if var in ts.vars_dict[category]:
+                ax = axes[get_key_from_value(subplt, category)]
+                lab = ts.vars_dict[category]['label']
+                uom = ts.vars_dict[category]['uom']
+                break
 
         vars_details = ts.instr_metadata[instr]['plot_vars'][var]
         color = vars_details[0]  # Line color
-        unit = vars_details[1]  # Measurement unit
 
         # Primary Y-Axis (Left)
-        ax.plot(data_filtered.index, data_filtered[var_], color=color, marker='o', markersize=2, linestyle='-')
-        ax.set_ylabel(f"{var} [{unit}]", color=color, fontsize=10, fontweight='bold')
+        ax.plot(data_filtered.index, data_filtered[var_], color=color, marker='o', markersize=2, linestyle='-', label=instr)
+        ax.set_ylabel(f"{lab} [{uom}]", color=color, fontsize=10, fontweight='bold')
         ax.tick_params(axis='y', colors=color, labelsize=8)
+        ax.patch.set_facecolor('lightgrey')
 
-        # Secondary Y-Axis (Right)
-        # ax_right = ax.twinx()
-        # ax_right.set_ylabel(f"{var} [{unit}]", color=color, fontsize=10, fontweight='bold')
-        # ax_right.tick_params(axis='y', colors=color, labelsize=8)
+        # Handling of the axes:
+        if i == 0:  # First (uppermost) panel
+            # Top x-axis: visible with spines, ticks, and labels
+            ax.spines['top'].set_visible(True)
+            ax.xaxis.set_ticks_position('top')  # Ensure ticks are on the top
+            ax.set_xticklabels(data_filtered.index.year, rotation=45)
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+            ax.tick_params(axis='x', rotation=45, labelsize=9)  # Ensure labels on the top
+            ax.spines['bottom'].set_visible(False)  # No bottom x-axis spines
+            ax.get_xaxis().set_visible(True)  # Show x-axis on the bottom panel
 
-        # Remove unnecessary spines for a cleaner look
-        ax.spines['top'].set_visible(False)
-        # ax_right.spines['top'].set_visible(False)
-        # ax_right.spines['bottom'].set_visible(False)
-        # ax_right.get_xaxis().set_visible(False)
+        else:
+            # For all intermediate panels (central ones)
+            ax.spines['top'].set_visible(False)  # Hide the top x-axis
+            ax.xaxis.set_ticks_position('bottom')  # Keep ticks on the bottom
+            ax.set_xticklabels([])  # Remove x-axis labels
+            ax.set_xlabel('')  # Remove x-axis title
+            ax.get_xaxis().set_visible(False)  # Hide x-axis title and labels
+
+        if i == len(data_filtered.columns) - 1:  # Last (lowermost) panel
+            # Bottom x-axis: visible with spines, ticks, and labels
+            ax.spines['bottom'].set_visible(True)
+            ax.xaxis.set_ticks_position('bottom')  # Ensure ticks are on the bottom
+            ax.xaxis.set_major_locator(mdates.YearLocator())
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+            ax.tick_params(axis='x', rotation=45, labelsize=9)  # Ensure labels on the bottom
+        else:
+            # Hide the bottom x-axis for all but the last panel
+            ax.spines['bottom'].set_visible(False)
 
         # Apply grid to **all** subplots
         ax.grid(True, linestyle='--', alpha=0.5)
@@ -122,19 +122,6 @@ def draw_data_summary():
             draw_events(ax, sw.start_date.year, sw.end_date.year)
         if sw.switch_campaigns:
             draw_campaigns(ax, sw.start_date.year, sw.end_date.year)
-
-        # Remove x-axis for all but the last subplot
-        if i < len(data_filtered.columns) - 1:
-            ax.set_xticklabels([])  # Hide x-axis labels
-            ax.set_xlabel('')  # Remove x-axis title
-            ax.spines['bottom'].set_visible(False)
-            ax.get_xaxis().set_visible(False)
-        else:
-            # Only the last subplot keeps the x-axis
-            ax.xaxis.set_major_locator(mdates.YearLocator())
-            ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-            ax.tick_params(axis='x', rotation=45, labelsize=9)
-            ax.xaxis.set_ticks_position('bottom')
 
     # Add a logo **next to the title**
     logo = plt.imread('logo.png')

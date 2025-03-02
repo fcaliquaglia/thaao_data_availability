@@ -38,7 +38,7 @@ switch_summary_panel = True
 
 # inputs
 
-start = 2020
+start = 1990
 end = 2024
 start_date = dt.datetime(start, 1, 1)
 end_date = dt.datetime(end, 12, 31)

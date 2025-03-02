@@ -65,6 +65,8 @@ def save_csv(instr_nm, data_val):
     """
     if instr_nm == 'skycam':
         fol_out = os.path.join(ts.basefolder_skycam, f'thaao_{instr_nm}')
+    elif instr_nm in ['rad_dli', 'rad_dsi', 'rad_uli', 'rad_usi', 'rad_tb', 'rad_alb']:
+        fol_out = os.path.join(ts.basefolder, f'thaao_rad')
     else:
         fol_out = os.path.join(ts.basefolder, f'thaao_{instr_nm}')
 
