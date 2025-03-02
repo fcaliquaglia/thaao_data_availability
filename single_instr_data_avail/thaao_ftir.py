@@ -102,7 +102,7 @@ def update_data_avail(instr):
 
     # Convert data to numeric and handle errors (e.g., NaN for invalid data)
     all_gas_data = all_gas_data.apply(pd.to_numeric, errors='coerce')
-
+    all_gas_data = all_gas_data.T.groupby(level=0).first().T
     # Save the resulting DataFrame as a CSV
     sida_tls.save_csv(instr, all_gas_data)
 
