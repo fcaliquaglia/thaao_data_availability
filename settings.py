@@ -68,16 +68,16 @@ vars_dict = {'cbh_vars'      : {'list': ['CBH_L1[m]'], 'label': 'Cloud Base Heig
              'tcc_vars'      : {'list': ['TCC[okt]'], 'label': 'TCC', 'uom': 'okt'},
              'no2_vars'      : {'list': ['NO2 vertical column density (430 nm)'], 'label': 'NO2 vert', 'uom': '??'},
              'o3_vars'       : {
-                 'list' : ['O3 vertical column density (510 nm)', 'O3 vertical column density (530 nm)', 'o3'],
-                 'label': 'O3 vert', 'uom': '??'},
-             'atm_gases_vars': {'list': ['c2h6', 'co', 'h2co', 'hcn', 'hf', 'hno3', 'nh3', 'ocs'], 'label': 'Atm Gases',
-                                'uom' : '??'},
+                 'list'      : ['O3 vertical column density (510 nm)', 'O3 vertical column density (530 nm)', 'o3'],
+                 'label'     : 'O3 vert', 'uom': '??'},
+             'atm_gases_vars': {'list': ['c2h6', 'co', 'h2co', 'hcn', 'hf', 'hno3', 'nh3', 'ocs'],
+                 'label'     : 'Atm Gases', 'uom' : '??'},
              'atm_ch4_vars'  : {'list': ['ch4'], 'label': 'CH4 vert', 'uom': '??'},
              'lwp_vars'      : {'list': [], 'label': 'LWP', 'uom': 'kg m-2'},
              'aod_vars'      : {'list': ['AOD_440nm'], 'label': 'AOD 440', 'uom': ''},
-             'si_vars'      : {'list': ['SW_DOWN', 'SW_UP'], 'label': 'DSI-USI', 'uom': 'W m-2'},
-             'li_vars'      : {'list': ['LW_DOWN', 'LW_UP'], 'label': 'DLI-ULI', 'uom': 'W m-2'},
-             'tpb_vars'      : {'list': ['TBP'], 'label': 'TBP', 'uom': 'K'},
+             'si_vars'       : {'list': ['SW_DOWN', 'SW_UP'], 'label': 'DSI-USI', 'uom': 'W m-2'},
+             'li_vars'       : {'list': ['LW_DOWN', 'LW_UP'], 'label': 'DLI-ULI', 'uom': 'W m-2'},
+             'tbp_vars'      : {'list': ['TBP'], 'label': 'TBP', 'uom': 'K'},
              'par_vars'      : {'list': ['PAR_DOWN', 'PAR_UP'], 'label': 'PAR DOWN-UP', 'uom': 'W m-2'},
              'alb_vars'      : {'list': ['ALBEDO_SW'], 'label': 'alb', 'uom': ''},
              'iwv_vars'      : {'list': ['PWV', 'iwv'], 'label': 'IWV', 'uom': 'mm'}}
@@ -173,7 +173,7 @@ metadata_entries = {'aeronet': create_instr_metadata(
     'rad_par_up'             : create_instr_metadata(
             dt.datetime(2016, 7, 1), institution='ENEA', data_avail_py='thaao_rad.py',
             plot_vars={'PAR_UP': ('magenta', 'W m-2')}),
-    'rad_tpb'                 : create_instr_metadata(
+    'rad_tbp'                 : create_instr_metadata(
             dt.datetime(2017, 1, 1), institution='ENEA', data_avail_py='thaao_rad.py',
             plot_vars={'TBP': ('red', 'W m-2')}),
     'rad_uli'                : create_instr_metadata(
