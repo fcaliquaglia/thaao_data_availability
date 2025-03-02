@@ -94,6 +94,6 @@ def update_data_avail(instr):
             print(f'OK: year {date.year}')
         except FileNotFoundError:
             print(f'NOT FOUND: year {date.year}')
-    rs_sondes.columns = ['iwv']
+    rs_sondes.columns = ['rs_iwv']
 
     sida_tls.save_csv(instr, rs_sondes)

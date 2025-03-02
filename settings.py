@@ -80,7 +80,7 @@ vars_dict = {'cbh_vars'      : {'list': ['CBH_L1[m]'], 'label': 'Cloud Base Heig
              'tbp_vars'      : {'list': ['TBP'], 'label': 'TBP', 'uom': 'K'},
              'par_vars'      : {'list': ['PAR_DOWN', 'PAR_UP'], 'label': 'PAR DOWN-UP', 'uom': 'W m-2'},
              'alb_vars'      : {'list': ['ALBEDO_SW'], 'label': 'alb', 'uom': ''},
-             'iwv_vars'      : {'list': ['PWV', 'iwv'], 'label': 'IWV', 'uom': 'mm'}}
+             'iwv_vars'      : {'list': ['PWV', 'rs_iwv', 'IWV'], 'label': 'IWV', 'uom': 'mm'}}
 
 
 # =============================================================
@@ -120,11 +120,11 @@ metadata_entries = {'aeronet': create_instr_metadata(
     'ftir'                   : create_instr_metadata(
             dt.datetime(1999, 10, 1), institution='NCAR/NASA', start_seas=dt.datetime(1900, 3, 1),
             end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_ftir.py',
-            plot_vars={'ch4' : ('red', '??'), 'o3': ('purple', '??'), 'c2h6': ('green', '??'), 'co': ('green', '??'),
-                       'h2co': ('green', '??'),
+            plot_vars={'ch4' : ('red', '??'), 'o3': ('purple', '??'), 'c2h6': ('green', '??'), 'co': ('blue', '??'),
+                       'h2co': ('cyan', '??'),
                        # 'clono2': ('green', '??'), 'hcl': ('green', '??'),'n20': ('green', '??'),
-                       'hcn' : ('green', '??'), 'hf': ('green', '??'), 'hno3': ('green', '??'), 'nh3': ('green', '??'),
-                       'ocs' : ('green', '??')}),
+                       'hcn' : ('pink', '??'), 'hf': ('black', '??'), 'hno3': ('yellow', '??'), 'nh3': ('orange', '??'),
+                       'ocs' : ('grey', '??')}),
     'gbms'                   : create_instr_metadata(
             dt.datetime(1992, 1, 1), dt.datetime(2012, 12, 31), institution='U.Alaska,Florence,StonyBrook/USSF',
             data_avail_py='thaao_gbms.py'),
@@ -196,7 +196,7 @@ metadata_entries = {'aeronet': create_instr_metadata(
             dt.datetime(1991, 2, 1), dt.datetime(2016, 11, 30), institution='DMI',  # 1991-2016
             data_avail_py='thaao_uv-vis_spec.py', plot_vars={'NO2 vertical column density (430 nm)': ('orange', '??'),
                                                              'O3 vertical column density (510 nm)' : ('green', '??'),
-                                                             'O3 vertical column density (530 nm)' : ('green', '??')}),
+                                                             'O3 vertical column density (530 nm)' : ('lightgreen', '??')}),
     'vespa'                  : create_instr_metadata(
             dt.datetime(2016, 7, 1), institution='INGV', data_avail_py='thaao_vespa.py',
             plot_vars={'PWV': ('cyan', '??')}),
