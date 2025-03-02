@@ -32,13 +32,35 @@ def draw_data_summary():
     for instr in ts.instr_list:
         var_list += [instr + '__' + j for j in list(ts.instr_metadata[instr]['plot_vars'].keys())]
 
-    vars_dict = {'cbh_vars' : {'CBH_L1[m]'}, 'temp_vars': {'AirTC', 'tmpc'}, 'press_vars': {'mslp', 'BP_mbar'},
-                 'pm10_vars': {'PM10'}, 'relh_vars': {'relh', 'RH'}, 'tcc_vars': {'TCC[okt]'},
-                 'no2_vars' : {'NO2 vertical column density (430 nm)'},
-                 'o3_vars'  : {'O3 vertical column density (510 nm)', 'O3 vertical column density (530 nm)', 'o3'},
-                 'atm_gases_vars': {'ch4', 'c2h6', 'co', 'clono2', 'h2co', 'hcl', 'hcn', 'hf', 'hno3', 'n20', 'nh3', 'ocs'},
-                 'lwp_vars' : {}, 'aod_vars': {'AOD_440nm'}, 'dsi_vars': {}, 'usi_vars': {}, 'bt_vars': {},
-                 'uli_vars' : {}, 'dli_vars': {}, 'alb_vars': {}, 'iwv_vars': {'PWV'}}
+    vars_dict = {'cbh_vars'                                                                                            : {
+        'CBH_L1[m]'},
+                 'temp_vars'                                                                                           : {
+                     'AirTC', 'tmpc'},
+                 'press_vars'                                                                                          : {
+                     'mslp', 'BP_mbar'},
+                 'pm10_vars'                                                                                           : {
+                     'PM10'},
+                 'relh_vars'                                                                                           : {
+                     'relh', 'RH'},
+                 'tcc_vars'                                                                                            : {
+                     'TCC[okt]'},
+                 'no2_vars'                                                                                            : {
+                     'NO2 vertical column density (430 nm)'},
+                 'o3_vars'                                                                                             : {
+                     'O3 vertical column density (510 nm)', 'O3 vertical column density (530 nm)', 'o3'},
+                 'atm_gases_vars'                                                                                      : {
+                     'ch4', 'c2h6', 'co', 'clono2', 'h2co', 'hcl', 'hcn', 'hf', 'hno3', 'n20', 'nh3', 'ocs'},
+                 'lwp_vars'                                                                                            : {},
+                 'aod_vars'                                                                                            : {
+                     'AOD_440nm'},
+                 'dsi_vars'                                                                                            : {},
+                 'usi_vars'                                                                                            : {},
+                 'bt_vars'                                                                                             : {},
+                 'uli_vars'                                                                                            : {},
+                 'dli_vars'                                                                                            : {},
+                 'alb_vars'                                                                                            : {},
+                 'iwv_vars'                                                                                            : {
+                     'PWV'}}
     import re
     subplt = []
     for var in var_list:

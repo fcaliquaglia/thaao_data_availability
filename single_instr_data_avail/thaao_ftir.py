@@ -91,4 +91,10 @@ def update_data_avail(instr):
     gas_data.sort_index(inplace=True)
 
     # Save the resulting DataFrame as a CSV
+    gas_data = gas_data.apply(pd.to_numeric, errors='coerce')
+
+    sida_tls.save_csv(instr, gas_data)
+    #
+    ftir = pd.read_csv(
+            os.path.join(folder, 'ftir_data_avail_list.csv'), parse_dates=['datetime'], index_col='datetime')
     sida_tls.save_csv(instr, gas_data)
