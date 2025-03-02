@@ -55,6 +55,18 @@ instr_sets = {
 instr_sets["all"] = instr_sets["legacy"] + instr_sets["hyso"] + instr_sets["thaao"]
 instr_list = []
 
+# =============================================================
+# VARIABLES DICTIONARY
+# =============================================================
+
+vars_dict = {'cbh_vars': {'CBH_L1[m]'}, 'temp_vars': {'AirTC', 'tmpc'}, 'press_vars': {'mslp', 'BP_mbar'},
+    'pm10_vars'        : {'PM10'}, 'relh_vars': {'relh', 'RH'}, 'tcc_vars': {'TCC[okt]'},
+    'no2_vars'         : {'NO2 vertical column density (430 nm)'},
+    'o3_vars'          : {'O3 vertical column density (510 nm)', 'O3 vertical column density (530 nm)', 'o3'},
+    'atm_gases_vars'   : {'c2h6', 'co', 'h2co', 'hcn', 'hf', 'hno3', 'nh3', 'ocs'}, 'atm_ch4_vars': {'ch4'},
+    'lwp_vars'         : {}, 'aod_vars': {'AOD_440nm'}, 'dsi_vars': {}, 'usi_vars': {}, 'bt_vars': {}, 'uli_vars': {},
+    'dli_vars'         : {}, 'alb_vars': {}, 'iwv_vars': {'PWV'}}
+
 
 # =============================================================
 # FUNCTION: CREATE INSTRUMENT METADATA
@@ -94,9 +106,10 @@ metadata_entries = {'aeronet'                                                   
             dt.datetime(1999, 10, 1), institution='NCAR/NASA', start_seas=dt.datetime(1900, 3, 1),
             end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_ftir.py',
             plot_vars={'ch4' : ('red', '??'), 'o3': ('purple', '??'), 'c2h6': ('green', '??'), 'co': ('green', '??'),
-                       'h2co': ('green', '??'), # 'clono2': ('green', '??'), 'hcl': ('green', '??'),'n20': ('green', '??'),
-                       'hcn' : ('green', '??'), 'hf': ('green', '??'), 'hno3': ('green', '??'),
-                       'nh3' : ('green', '??'), 'ocs': ('green', '??')}),
+                       'h2co': ('green', '??'),
+                       # 'clono2': ('green', '??'), 'hcl': ('green', '??'),'n20': ('green', '??'),
+                       'hcn' : ('green', '??'), 'hf': ('green', '??'), 'hno3': ('green', '??'), 'nh3': ('green', '??'),
+                       'ocs' : ('green', '??')}),
     'gbms'                                                                                                       : create_instr_metadata(
             dt.datetime(1992, 1, 1), dt.datetime(2012, 12, 31), institution='U.Alaska,Florence,StonyBrook/USSF',
             data_avail_py='thaao_gbms.py'),

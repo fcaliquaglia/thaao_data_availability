@@ -35,7 +35,8 @@ def update_data_availability():
 
     if sw.data_avail_update:
         ts.update_threshold = simpledialog.askinteger(
-                "Update threshold", 'Update the data availability .csv files older than? \n (days)', minvalue=1, initialvalue=ts.update_threshold)
+                "Update threshold", 'Update the data availability .csv files older than? \n (days)', minvalue=1,
+                initialvalue=ts.update_threshold)
         tls.check_csv_file_age()
 
 
@@ -81,7 +82,6 @@ def main():
     root = tls.create_root()
     # minor updates for the metadata
 
-
     # Instrument list selection
     sw.switch_instr_list = simpledialog.askstring(
             "Instrument Selection for operations",
@@ -90,6 +90,9 @@ def main():
     tls.csv_filename_creation()
     # Prompt for updating data availability before anything else
     update_data_availability()
+
+    # time resolution
+    ts.time_res = simpledialog.askstring("Time resolution", 'What time resolution?  \n [H, D, ME]', initialvalue='ME')
 
     start_year = simpledialog.askinteger(
             "Input", 'Start year: ', minvalue=1900, maxvalue=dt.datetime.today().year, initialvalue=sw.start)
@@ -105,7 +108,6 @@ def main():
     # Display selected instruments
     messagebox.showinfo("Selected Instruments", f'These instruments are plotted: {ts.instr_list}')
     print(f'These instruments are plotted: {ts.instr_list}')
-
 
     # Execute plotting based on user selection
     if sw.switch_summary_panel:

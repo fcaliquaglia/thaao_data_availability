@@ -10,6 +10,7 @@ import pandas as pd
 from matplotlib import patches
 from matplotlib.lines import Line2D
 from tqdm import tqdm
+import re
 
 import settings as ts
 import switches as sw
@@ -32,42 +33,10 @@ def draw_data_summary():
     for instr in ts.instr_list:
         var_list += [instr + '__' + j for j in list(ts.instr_metadata[instr]['plot_vars'].keys())]
 
-    vars_dict = {'cbh_vars'                                                                                            : {
-        'CBH_L1[m]'},
-                 'temp_vars'                                                                                           : {
-                     'AirTC', 'tmpc'},
-                 'press_vars'                                                                                          : {
-                     'mslp', 'BP_mbar'},
-                 'pm10_vars'                                                                                           : {
-                     'PM10'},
-                 'relh_vars'                                                                                           : {
-                     'relh', 'RH'},
-                 'tcc_vars'                                                                                            : {
-                     'TCC[okt]'},
-                 'no2_vars'                                                                                            : {
-                     'NO2 vertical column density (430 nm)'},
-                 'o3_vars'                                                                                             : {
-                     'O3 vertical column density (510 nm)', 'O3 vertical column density (530 nm)', 'o3'},
-                 'atm_gases_vars'                                                                                      : {
-                      'c2h6', 'co', 'h2co', 'hcn', 'hf', 'hno3', 'nh3', 'ocs'},
-        'atm_ch4_vars': {
-            'ch4'},
-                 'lwp_vars'                                                                                            : {},
-                 'aod_vars'                                                                                            : {
-                     'AOD_440nm'},
-                 'dsi_vars'                                                                                            : {},
-                 'usi_vars'                                                                                            : {},
-                 'bt_vars'                                                                                             : {},
-                 'uli_vars'                                                                                            : {},
-                 'dli_vars'                                                                                            : {},
-                 'alb_vars'                                                                                            : {},
-                 'iwv_vars'                                                                                            : {
-                     'PWV'}}
-    import re
     subplt = []
     for var in var_list:
         escaped_var = re.escape(var)
-        for key, values in vars_dict.items():
+        for key, values in ts.vars_dict.items():
             matching_columns = data_all.columns[data_all.columns.str.contains(escaped_var)]
             if not matching_columns.empty:
                 if var.split('__')[1] in values:
@@ -98,29 +67,29 @@ def draw_data_summary():
         print(f'Plotting {var}')
 
         # Assign specific columns to different axes based on name
-        if var in vars_dict['temp_vars']:
+        if var in ts.vars_dict['temp_vars']:
             ax = axes[get_key_from_value(subplt, 'temp_vars')]
-        elif var in vars_dict['relh_vars']:
+        elif var in ts.vars_dict['relh_vars']:
             ax = axes[get_key_from_value(subplt, 'relh_vars')]
-        elif var in vars_dict['press_vars']:
+        elif var in ts.vars_dict['press_vars']:
             ax = axes[get_key_from_value(subplt, 'press_vars')]
-        elif var in vars_dict['iwv_vars']:
+        elif var in ts.vars_dict['iwv_vars']:
             ax = axes[get_key_from_value(subplt, 'iwv_vars')]
-        elif var in vars_dict['pm10_vars']:
+        elif var in ts.vars_dict['pm10_vars']:
             ax = axes[get_key_from_value(subplt, 'pm10_vars')]
-        elif var in vars_dict['aod_vars']:
+        elif var in ts.vars_dict['aod_vars']:
             ax = axes[get_key_from_value(subplt, 'aod_vars')]
-        elif var in vars_dict['cbh_vars']:
+        elif var in ts.vars_dict['cbh_vars']:
             ax = axes[get_key_from_value(subplt, 'cbh_vars')]
-        elif var in vars_dict['tcc_vars']:
+        elif var in ts.vars_dict['tcc_vars']:
             ax = axes[get_key_from_value(subplt, 'tcc_vars')]
-        elif var in vars_dict['no2_vars']:
+        elif var in ts.vars_dict['no2_vars']:
             ax = axes[get_key_from_value(subplt, 'no2_vars')]
-        elif var in vars_dict['o3_vars']:
+        elif var in ts.vars_dict['o3_vars']:
             ax = axes[get_key_from_value(subplt, 'o3_vars')]
-        elif var in vars_dict['atm_gases_vars']:
+        elif var in ts.vars_dict['atm_gases_vars']:
             ax = axes[get_key_from_value(subplt, 'atm_gases_vars')]
-        elif var in vars_dict['atm_ch4_vars']:
+        elif var in ts.vars_dict['atm_ch4_vars']:
             ax = axes[get_key_from_value(subplt, 'atm_ch4_vars')]
         else:
             ax = None
