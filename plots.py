@@ -32,7 +32,7 @@ def draw_data_summary():
     for instr in ts.instr_list:
         var_list += [instr + '__' + j for j in list(ts.instr_metadata[instr]['plot_vars'].keys())]
 
-    vars_dict = {'temp_vars': {'AirTC', 'tmpc'}, 'press_vars': {'mslp', ''}, 'pm10_vars': {'PM10'},
+    vars_dict = {'temp_vars': {'AirTC', 'tmpc'}, 'press_vars': {'mslp', 'BP_mbar'}, 'pm10_vars': {'PM10'},
                  'relh_vars': {'relh', 'RH'}, 'iwv_vars': {'iwv'}, 'tcc_vars': {}, 'cbh_vars': {}, 'no2_vars': {},
                  'o3_vars'  : {}, 'lwp_vars': {}, 'aod_vars': {'AOD_440nm'}}
 
@@ -64,7 +64,7 @@ def draw_data_summary():
         return None  # Return None if value is not found
 
     # Iterate over each variable and its corresponding axis
-    for i, (ax_, var_) in enumerate(zip(axes, data_filtered.columns)):
+    for i, var_ in enumerate(data_filtered.columns):
         instr, var = var_.split('__')  # Extract instrument and variable names
         print(f'Plotting {var}')
 
