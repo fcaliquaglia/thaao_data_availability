@@ -169,7 +169,7 @@ def draw_data_summary():
 
     # Add a logo **next to the title**
     logo = plt.imread('logo.png')
-    logo_ax = fig.add_axes([0.76, 0.87, 0.12, 0.12], anchor='NE', zorder=10)  # Adjust for better positioning
+    logo_ax = fig.add_axes([0.05, 0.87, 0.12, 0.12], anchor='NE', zorder=10)  # Adjust the x-position (0.05) for left
     logo_ax.imshow(logo)
     logo_ax.axis('off')
 
@@ -384,7 +384,7 @@ def plot_panels(plot_type):
         fig = draw_data_summary()
         figname = os.path.join(
                 os.path.dirname(newdir),
-                f'thaao_data_avail_{sw.start_date.year}_{sw.end_date.year}_{dt.datetime.today().strftime("%Y%m%d")}.png')
+                f'thaao_data_avail_{sw.start_date.year}_{sw.end_date.year}_{dt.datetime.today().strftime("%Y%m%d")}_{ts.time_res}.png')
         plt.savefig(figname, transparent=False)
         plt.clf()
         plt.close(fig)
