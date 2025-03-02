@@ -87,7 +87,7 @@ metadata_entries = {'aeronet'                                                   
             dt.datetime(2023, 3, 1), institution='ENEA', data_avail_py='thaao_ecapac_mrr.py'),
     'ecapac_aws_snow'                                                                                           : create_instr_metadata(
             dt.datetime(2023, 3, 1), institution='ENEA', data_avail_py='thaao_ecapac_aws_snow.py',
-            plot_vars={'AirTC': ('black', 'degC'), 'RH': ('blue', '%')}),
+            plot_vars={'AirTC': ('grey', 'degC'), 'RH': ('blue', '%'), 'BP_mbar': ('cyan', 'hPa')}),
     'ecapac_disdro_precip'                                                                                      : create_instr_metadata(
             dt.datetime(2023, 3, 1), institution='ENEA', data_avail_py='thaao_ecapac_disdro_precip.py'),
     'ftir'                                                                                                      : create_instr_metadata(
@@ -121,13 +121,14 @@ metadata_entries = {'aeronet'                                                   
             end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_hyso_tide_1.py'),
     'metar'                                                                                                     : create_instr_metadata(
             dt.datetime(1951, 10, 1), institution='U.Alaska,Florence,StonyBrook/USSF', data_avail_py='thaao_metar.py',
-            plot_vars={'tmpc': ('black', 'degC'), 'relh': ('blue', '%')}),
+            plot_vars={'tmpc': ('brown', 'degC'), 'relh': ('blue', '%'), 'mslp': ('purple', 'hPa')}),
     'mms_trios'                                                                                                 : create_instr_metadata(
             dt.datetime(2021, 9, 1), institution='INGV', data_avail_py='thaao_mms_trios.py'),
     'o3_sondes'                                                                                                 : create_instr_metadata(
             dt.datetime(1991, 12, 1), dt.datetime(2016, 12, 31), institution='DMI', data_avail_py='thaao_o3_sondes.py'),
     'pm10'                                                                                                      : create_instr_metadata(
-            dt.datetime(2010, 1, 1), institution='U.Alaska,Florence,StonyBrook/USSF', data_avail_py='thaao_pm10.py'),
+            dt.datetime(2010, 1, 1), institution='U.Alaska,Florence,StonyBrook/USSF', data_avail_py='thaao_pm10.py',
+            plot_vars={'PM10': ('black', 'ug m-3')}),
     'rad_dli'                                                                                                   : create_instr_metadata(
             dt.datetime(2009, 1, 1), institution='ENEA', data_avail_py='thaao_rad.py'),
     'rad_dsi'                                                                                                   : create_instr_metadata(

@@ -35,7 +35,7 @@ def update_data_avail(instr):
     pm10_tmp = pd.read_excel(file_path, index_col=0)
 
     # Create a DataFrame with True values for each date in pm10_tmp
-    pm10 = pd.DataFrame({"datetime": pd.to_datetime(pm10_tmp.index), "PM10 [ug m-3]": pm10_tmp['PM10 [ug m-3]']})
+    pm10 = pd.DataFrame({"datetime": pd.to_datetime(pm10_tmp.index), "PM10": pm10_tmp['PM10']})
     pm10.set_index('datetime', inplace=True)
 
     # Save data
