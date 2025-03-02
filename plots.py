@@ -1,6 +1,7 @@
 import datetime as dt
 import gc
 import os
+import re
 
 import matplotlib.cm as cm
 import matplotlib.dates as mdates
@@ -10,7 +11,6 @@ import pandas as pd
 from matplotlib import patches
 from matplotlib.lines import Line2D
 from tqdm import tqdm
-import re
 
 import settings as ts
 import switches as sw
@@ -48,7 +48,14 @@ def draw_data_summary():
         (data_all.index.year >= sw.start_date.year) & (data_all.index.year <= sw.end_date.year), var_list]
 
     # Create subplots with shared x-axis
-    fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(28, 28), sharex=True)
+    # generic
+    # fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(28, 28), sharex=True)
+    # A3
+    # fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(16.5, 11.7), dpi=300, sharex=True)
+    # A2
+    fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(16.5, 23.4), dpi=300, sharex=True)
+    # A0
+    # fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(33.1, 46.8), dpi=300, sharex=True)
 
     # Remove whitespace between subplots
     plt.subplots_adjust(hspace=0)
@@ -79,7 +86,8 @@ def draw_data_summary():
         color = vars_details[0]  # Line color
 
         # Primary Y-Axis (Left)
-        ax.plot(data_filtered.index, data_filtered[var_], color=color, marker='o', markersize=2, linestyle='-', label=instr)
+        ax.plot(
+            data_filtered.index, data_filtered[var_], color=color, marker='o', markersize=2, linestyle='-', label=instr)
         ax.set_ylabel(f"{lab} \n [{uom}]", color=color, fontsize=10, fontweight='bold')
         ax.tick_params(axis='y', colors=color, labelsize=8)
         ax.patch.set_facecolor('lightgrey')

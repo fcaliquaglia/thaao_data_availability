@@ -115,7 +115,7 @@ metadata_entries = {'aeronet': create_instr_metadata(
             dt.datetime(2023, 3, 1), institution='ENEA', data_avail_py='thaao_ecapac_mrr.py'),
     'ecapac_aws_snow'        : create_instr_metadata(
             dt.datetime(2023, 3, 1), institution='ENEA', data_avail_py='thaao_ecapac_aws_snow.py',
-            plot_vars={'AirTC': ('grey', 'degC'), 'RH': ('blue', '%'), 'BP_mbar': ('cyan', 'hPa')}),
+            plot_vars={'AirTC': ('blue', 'degC'), 'RH': ('blue', '%'), 'BP_mbar': ('blue', 'hPa')}),
     'ecapac_disdro_precip'   : create_instr_metadata(
             dt.datetime(2023, 3, 1), institution='ENEA', data_avail_py='thaao_ecapac_disdro_precip.py'),
     'ftir'                   : create_instr_metadata(
@@ -154,7 +154,7 @@ metadata_entries = {'aeronet': create_instr_metadata(
             end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_hyso_tide_1.py'),
     'metar'                  : create_instr_metadata(
             dt.datetime(1951, 10, 1), institution='U.Alaska,Florence,StonyBrook/USSF', data_avail_py='thaao_metar.py',
-            plot_vars={'tmpc': ('brown', 'degC'), 'relh': ('blue', '%'), 'mslp': ('purple', 'hPa')}),
+            plot_vars={'tmpc': ('purple', 'degC'), 'relh': ('purple', '%'), 'mslp': ('purple', 'hPa')}),
     'mms_trios'              : create_instr_metadata(
             dt.datetime(2021, 9, 1), institution='INGV', data_avail_py='thaao_mms_trios.py'),
     'o3_sondes'              : create_instr_metadata(
