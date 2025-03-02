@@ -77,7 +77,7 @@ vars_dict = {'cbh_vars'      : {'list': ['CBH_L1[m]'], 'label': 'Cloud Base Heig
              'aod_vars'      : {'list': ['AOD_440nm'], 'label': 'AOD 440', 'uom': ''},
              'dsi_vars'      : {'list': ['rad_dsi'], 'label': 'DSI', 'uom': 'W m-2'},
              'usi_vars'      : {'list': ['rad_usi'], 'label': 'USI', 'uom': 'W m-2'},
-             'bt_vars'       : {'list': ['rad_tb'], 'label': 'BT', 'uom': 'K'},
+             'bt_vars'       : {'list': ['rad_tbp'], 'label': 'TBP', 'uom': 'K'},
              'uli_vars'      : {'list': ['rad_uli'], 'label': 'ULI', 'uom': 'W m-2'},
              'dli_vars'      : {'list': ['rad_dli'], 'label': 'DLI', 'uom': 'W m-2'},
              'alb_vars'      : {'list': ['rad_alb'], 'label': 'alb', 'uom': ''},
