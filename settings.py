@@ -108,7 +108,7 @@ metadata_entries = {'aeronet': create_instr_metadata(
             dt.datetime(2016, 1, 1), institution='INGV', data_avail_py='thaao_aws_vespa.py'),
     'ceilometer'             : create_instr_metadata(
             dt.datetime(2019, 11, 1), institution='ENEA', data_avail_py='thaao_ceilometer.py',
-            plot_vars={'CBH_L1[m]': ('red', ''), 'TCC[okt]': ('red', '')}),
+            plot_vars={'CBH_L1[m]': ('brown', ''), 'TCC[okt]': ('brown', '')}),
     'dir_rad_trkr'           : create_instr_metadata(
             dt.datetime(2002, 10, 1), institution='DMI+ENEA', start_seas=dt.datetime(1900, 2, 1),
             end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_dir_rad_trkr.py'),
@@ -122,8 +122,8 @@ metadata_entries = {'aeronet': create_instr_metadata(
     'ftir'                   : create_instr_metadata(
             dt.datetime(1999, 10, 1), institution='NCAR/NASA', start_seas=dt.datetime(1900, 3, 1),
             end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_ftir.py',
-            plot_vars={'ch4': ('red', '??'), 'o3': ('purple', '??'), 'co': ('blue', '??'),
-                       # 'h2co': ('cyan', '??'),'c2h6': ('green', '??'), 'ocs' : ('grey', '??')
+            plot_vars={'ch4': ('red', '??'), 'o3': ('red', '??'), 'co': ('red', '??'),
+                       # 'h2co': ('red', '??'),'c2h6': ('green', '??'), 'ocs' : ('grey', '??')
                        # 'clono2': ('green', '??'), 'hcl': ('green', '??'),'n20': ('green', '??'),
                        # 'hcn' : ('pink', '??'), 'hf': ('black', '??'), 'hno3': ('yellow', '??'), 'nh3': ('orange', '??'),
                        }),
@@ -132,7 +132,7 @@ metadata_entries = {'aeronet': create_instr_metadata(
             data_avail_py='thaao_gbms.py'),
     'hatpro'                 : create_instr_metadata(
             dt.datetime(2017, 1, 1), dt.datetime(2024, 9, 30), institution='ENEA', data_avail_py='thaao_hatpro.py',
-            plot_vars={'IWV': ('mm', 'purple'), 'LWP': ('g m-2', 'blue')}),
+            plot_vars={'IWV': ('mm', 'yellow'), 'LWP': ('g m-2', 'yellow')}),
     'lidar_temp'             : create_instr_metadata(
             dt.datetime(1993, 11, 1), institution='U.Sap+ENEA', start_seas=dt.datetime(1900, 11, 1),
             end_seas=dt.datetime(1900, 3, 31), data_avail_py='thaao_lidar_temp.py'),
@@ -190,7 +190,7 @@ metadata_entries = {'aeronet': create_instr_metadata(
             plot_vars={'ALBEDO_SW': ('grey', '')}),
     'rs_sondes'              : create_instr_metadata(
             dt.datetime(1973, 1, 1), institution='DMI+INGV', data_avail_py='thaao_rs_sondes.py',
-            plot_vars={'rs_iwv': ('purple', 'mm')}),
+            plot_vars={'rs_iwv': ('brown', 'mm')}),
     'skycam'                 : create_instr_metadata(
             dt.datetime(2016, 7, 1), institution='ENEA', data_avail_py='thaao_skycam.py'),
     'gnss'                   : create_instr_metadata(
@@ -198,9 +198,9 @@ metadata_entries = {'aeronet': create_instr_metadata(
     'uv-vis_spec'            : create_instr_metadata(
             dt.datetime(1991, 2, 1), dt.datetime(2016, 11, 30), institution='DMI',  # 1991-2016
             data_avail_py='thaao_uv-vis_spec.py', plot_vars={'NO2 vertical column density (430 nm)': ('orange', '??'),
-                                                             'O3 vertical column density (510 nm)' : ('green', '??'),
+                                                             'O3 vertical column density (510 nm)' : ('orange', '??'),
                                                              'O3 vertical column density (530 nm)' : (
-                                                             'lightgreen', '??')}),
+                                                             'orange', '??')}),
     'vespa'                  : create_instr_metadata(
             dt.datetime(2016, 7, 1), institution='INGV', data_avail_py='thaao_vespa.py',
             plot_vars={'PWV': ('cyan', '??')}),
