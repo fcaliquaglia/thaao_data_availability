@@ -71,8 +71,7 @@ vars_dict = {'cbh_vars'      : {'list': ['CBH_L1[m]'], 'label': 'Cloud Base Heig
              'o3_vars'       : {
                  'list'      : ['O3 vertical column density (510 nm)', 'O3 vertical column density (530 nm)', 'o3'],
                  'label'     : 'O3 vert', 'uom': '??'},
-             'atm_gases_vars': {'list': ['c2h6', 'h2co', 'hcn', 'hf', 'hno3', 'nh3', 'ocs'],
-                 'label'     : 'Atm Gases', 'uom' : '??'},
+             'atm_gases_vars': {'list': ['nh3'], 'label' : 'Atm Gases', 'uom' : '??'}, #  'ocs', 'c2h6', 'h2co', 'hcn', 'hf', 'hno3',
              'atm_ch4_vars'  : {'list': ['ch4'], 'label': 'CH4 vert', 'uom': '??'},
              'lwp_vars'      : {'list': [], 'label': 'LWP', 'uom': 'kg m-2'},
              'aod_vars'      : {'list': ['AOD_440nm'], 'label': 'AOD 440', 'uom': ''},
