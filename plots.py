@@ -80,7 +80,7 @@ def draw_data_summary():
 
         # Primary Y-Axis (Left)
         ax.plot(data_filtered.index, data_filtered[var_], color=color, marker='o', markersize=2, linestyle='-', label=instr)
-        ax.set_ylabel(f"{lab} [{uom}]", color=color, fontsize=10, fontweight='bold')
+        ax.set_ylabel(f"{lab} \n [{uom}]", color=color, fontsize=10, fontweight='bold')
         ax.tick_params(axis='y', colors=color, labelsize=8)
         ax.patch.set_facecolor('lightgrey')
 
