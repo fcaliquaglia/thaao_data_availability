@@ -71,7 +71,7 @@ def save_csv(instr_nm, data_val):
     data_val = data_val.apply(lambda x: x.strip() if isinstance(x, str) else x)
     data_val = data_val.apply(pd.to_numeric, errors='coerce')
     print('Saving: ' + instr_nm)
-    flt_fmt = '%.6e' if instr_nm == 'uv-vis_spec' else '%.2f'
+    flt_fmt = '%.6e' if instr_nm in ['uv-vis_spec', 'ftir'] else '%.2f'
     data_val.to_csv(
         os.path.join(fol_out, f'{instr_nm}_data_avail_list.csv'), sep=',', index=True, index_label='datetime',
         float_format=flt_fmt)
