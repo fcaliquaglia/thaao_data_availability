@@ -49,7 +49,9 @@ def draw_data_summary():
                  'o3_vars'                                                                                             : {
                      'O3 vertical column density (510 nm)', 'O3 vertical column density (530 nm)', 'o3'},
                  'atm_gases_vars'                                                                                      : {
-                     'ch4', 'c2h6', 'co', 'h2co', 'hcn', 'hf', 'hno3', 'n20', 'nh3', 'ocs'},
+                      'c2h6', 'co', 'h2co', 'hcn', 'hf', 'hno3', 'nh3', 'ocs'},
+        'atm_ch4_vars': {
+            'ch4'},
                  'lwp_vars'                                                                                            : {},
                  'aod_vars'                                                                                            : {
                      'AOD_440nm'},
@@ -118,6 +120,8 @@ def draw_data_summary():
             ax = axes[get_key_from_value(subplt, 'o3_vars')]
         elif var in vars_dict['atm_gases_vars']:
             ax = axes[get_key_from_value(subplt, 'atm_gases_vars')]
+        elif var in vars_dict['atm_ch4_vars']:
+            ax = axes[get_key_from_value(subplt, 'atm_ch4_vars')]
         else:
             ax = None
 

@@ -63,7 +63,7 @@ def convert_mjd2k_list_to_date(mjd2k_list):
 
 def update_data_avail(instr):
     folder = os.path.join(ts.basefolder, 'thaao_' + instr)
-    gas_species = ['ch4', 'c2h6', 'co', 'h2co', 'hcn', 'hf', 'hno3', 'n20', 'nh3', 'o3', 'ocs']
+    gas_species = ['ch4', 'c2h6', 'co', 'h2co', 'hcn', 'hf', 'hno3', 'nh3', 'o3', 'ocs']
     # 'clono2' 'hcl' not working
 
     # Initialize an empty DataFrame for appending all gas data

@@ -94,8 +94,8 @@ metadata_entries = {'aeronet'                                                   
             dt.datetime(1999, 10, 1), institution='NCAR/NASA', start_seas=dt.datetime(1900, 3, 1),
             end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_ftir.py',
             plot_vars={'ch4' : ('red', '??'), 'o3': ('purple', '??'), 'c2h6': ('green', '??'), 'co': ('green', '??'),
-                       'h2co': ('green', '??'), # 'clono2': ('green', '??'), 'hcl': ('green', '??'),
-                       'hcn' : ('green', '??'), 'hf': ('green', '??'), 'hno3': ('green', '??'), 'n20': ('green', '??'),
+                       'h2co': ('green', '??'), # 'clono2': ('green', '??'), 'hcl': ('green', '??'),'n20': ('green', '??'),
+                       'hcn' : ('green', '??'), 'hf': ('green', '??'), 'hno3': ('green', '??'),
                        'nh3' : ('green', '??'), 'ocs': ('green', '??')}),
     'gbms'                                                                                                       : create_instr_metadata(
             dt.datetime(1992, 1, 1), dt.datetime(2012, 12, 31), institution='U.Alaska,Florence,StonyBrook/USSF',
