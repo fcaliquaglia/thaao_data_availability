@@ -22,7 +22,7 @@ plt.rcParams.update({'figure.dpi': 300})
 plt.rcParams.update({'figure.figsize': (15, 10)})
 
 
-def draw_data_summary():
+def draw_data_summary(fmt_size):
     data_all = pd.concat(
             [tls.load_data_file(instr).resample(ts.time_res).mean().add_prefix(f"{instr}__") for instr in
              ts.instr_list], axis=1).sort_index()
@@ -48,14 +48,14 @@ def draw_data_summary():
         (data_all.index.year >= sw.start_date.year) & (data_all.index.year <= sw.end_date.year), var_list]
 
     # Create subplots with shared x-axis
-    # generic
-    # fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(28, 28), sharex=True)
-    # A3
-    # fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(16.5, 11.7), dpi=300, sharex=True)
-    # A2
-    fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(16.5, 23.4), dpi=300, sharex=True)
-    # A0
-    # fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(33.1, 46.8), dpi=300, sharex=True)
+    if fmt_size == 'generic':
+        fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(28, 28), sharex=True)
+    if fmt_size == 'A3':
+        fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(11.7, 16.5), dpi=300, sharex=True)
+    if fmt_size == 'A2':
+        fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(16.5, 23.4), dpi=300, sharex=True)
+    if fmt_size == 'A0':
+        fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(33.1, 46.8), dpi=300, sharex=True)
 
     # Remove whitespace between subplots
     plt.subplots_adjust(hspace=0)
@@ -87,7 +87,8 @@ def draw_data_summary():
 
         # Primary Y-Axis (Left)
         ax.plot(
-            data_filtered.index, data_filtered[var_], color=color, marker='o', markersize=2, linestyle='-', label=instr)
+                data_filtered.index, data_filtered[var_], color=color, marker='o', markersize=2, linestyle='-',
+                label=instr)
         ax.set_ylabel(f"{lab} \n [{uom}]", color=color, fontsize=10, fontweight='bold')
         ax.tick_params(axis='y', colors=color, labelsize=8)
         ax.patch.set_facecolor('lightgrey')
@@ -346,10 +347,11 @@ def plot_panels(plot_type):
                 pbar.update(1)
 
     elif plot_type == 'summary':
-        fig = draw_data_summary()
+        fmt_size = 'A0'
+        fig = draw_data_summary(fmt_size=fmt_size)
         figname = os.path.join(
                 os.path.dirname(newdir),
-                f'thaao_data_avail_{sw.start_date.year}_{sw.end_date.year}_{dt.datetime.today().strftime("%Y%m%d")}_{ts.time_res}.png')
+                f'thaao_data_avail_{sw.start_date.year}_{sw.end_date.year}_{dt.datetime.today().strftime("%Y%m%d")}_{ts.time_res}_{fmt_size}.png')
         plt.savefig(figname, transparent=False)
         plt.clf()
         plt.close(fig)

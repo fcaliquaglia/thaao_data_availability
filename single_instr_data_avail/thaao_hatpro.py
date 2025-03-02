@@ -65,4 +65,34 @@ def update_data_avail(instr):
 
     data_avail_hat = data_avail_hat.set_index('datetime').sort_index()
     # Saving the specific 'LWP_gm-2' column with the 'save_m_csv' method
-    sida_tls.save_m_csv(data_avail_hat, os.path.join(base_folder, "thaao_" + instr), instr)
+
+    folder = os.path.join(ts.basefolder, "thaao_" + instr)
+    date_list = pd.date_range(
+            ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='YE').tolist()
+
+    hatpro = pd.DataFrame()
+    # TODO
+    # for i in date_list:
+    #     try:
+    #         t1_tmp = pd.read_table(
+    #                 os.path.join(
+    #                         inpt.basefol_t, 'thaao_hatpro', 'definitivi_da_giando',
+    #                         f'{inpt.extr[vr]['t1']['fn']}{i}', f'{inpt.extr[vr]['t1']['fn']}{i}.DAT'),
+    #                 sep='\s+', engine='python', header=None, skiprows=1)
+    #         t1_tmp.columns = ['JD_rif', 'RF', 'N', 'LWP_gm-2', 'STD_LWP']
+    #         tmp = np.empty(t1_tmp['JD_rif'].shape, dtype=dt.datetime)
+    #         for ii, el in enumerate(t1_tmp['JD_rif']):
+    #             new_jd_ass = el + julian.to_jd(dt.datetime(i - 1, 12, 31, 0, 0), fmt='jd')
+    #             tmp[ii] = julian.from_jd(new_jd_ass, fmt='jd')
+    #             tmp[ii] = tmp[ii].replace(microsecond=0)
+    #         t1_tmp.index = pd.DatetimeIndex(tmp)
+    #         t1_tmp.drop(columns=['JD_rif', 'STD_LWP', 'RF', 'N'], axis=1, inplace=True)
+    #         t1_tmp_all = pd.concat([t1_tmp_all, t1_tmp], axis=0)
+    #         print(f'OK: {inpt.extr[vr]['t1']['fn']}{i}.DAT')
+    #     except FileNotFoundError:
+    #         print(f'NOT FOUND: {inpt.extr[vr]['t1']['fn']}{i_fmt}.DAT')
+    # inpt.extr[vr]['t1']['data'] = t1_tmp_all
+    # inpt.extr[vr]['t1']['data'].columns = [vr]
+
+    # sida_tls.save_m_csv(data_avail_hat, os.path.join(base_folder, "thaao_" + instr), instr)
+
