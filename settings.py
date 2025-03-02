@@ -67,10 +67,11 @@ vars_dict = {'cbh_vars'      : {'list': ['CBH_L1[m]'], 'label': 'Cloud Base Heig
              'relh_vars'     : {'list': ['relh', 'RH'], 'label': 'RH', 'uom': '%'},
              'tcc_vars'      : {'list': ['TCC[okt]'], 'label': 'TCC', 'uom': 'okt'},
              'no2_vars'      : {'list': ['NO2 vertical column density (430 nm)'], 'label': 'NO2 vert', 'uom': '??'},
+             'co_vars': {'list': ['co'], 'label': 'CO', 'uom': '??'},
              'o3_vars'       : {
                  'list'      : ['O3 vertical column density (510 nm)', 'O3 vertical column density (530 nm)', 'o3'],
                  'label'     : 'O3 vert', 'uom': '??'},
-             'atm_gases_vars': {'list': ['c2h6', 'co', 'h2co', 'hcn', 'hf', 'hno3', 'nh3', 'ocs'],
+             'atm_gases_vars': {'list': ['c2h6', 'h2co', 'hcn', 'hf', 'hno3', 'nh3', 'ocs'],
                  'label'     : 'Atm Gases', 'uom' : '??'},
              'atm_ch4_vars'  : {'list': ['ch4'], 'label': 'CH4 vert', 'uom': '??'},
              'lwp_vars'      : {'list': [], 'label': 'LWP', 'uom': 'kg m-2'},
