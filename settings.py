@@ -187,7 +187,7 @@ metadata_entries = {'aeronet': create_instr_metadata(
             plot_vars={'ALBEDO_SW': ('grey', '')}),
     'rs_sondes'              : create_instr_metadata(
             dt.datetime(1973, 1, 1), institution='DMI+INGV', data_avail_py='thaao_rs_sondes.py',
-            plot_vars={'iwv': ('purple', 'mm')}),
+            plot_vars={'rs_iwv': ('purple', 'mm')}),
     'skycam'                 : create_instr_metadata(
             dt.datetime(2016, 7, 1), institution='ENEA', data_avail_py='thaao_skycam.py'),
     'gnss'                   : create_instr_metadata(
