@@ -32,15 +32,16 @@ def draw_data_summary():
     for instr in ts.instr_list:
         var_list += [instr + '__' + j for j in list(ts.instr_metadata[instr]['plot_vars'].keys())]
 
-    vars_dict = {'temp_vars': {'AirTC', 'tmpc'}, 'press_vars': {'mslp', 'BP_mbar'}, 'pm10_vars': {'PM10'},
-                 'relh_vars': {'relh', 'RH'}, 'iwv_vars': {'PWV'}, 'tcc_vars': {'TCC[okt]'}, 'cbh_vars': {}, 'no2_vars': {},
+    vars_dict = {'cbh_vars' : {'CBH_L1[m]'}, 'temp_vars': {'AirTC', 'tmpc'}, 'press_vars': {'mslp', 'BP_mbar'},
+                 'pm10_vars': {'PM10'}, 'relh_vars': {'relh', 'RH'}, 'tcc_vars': {'TCC[okt]'}, 'no2_vars': {},
                  'o3_vars'  : {}, 'lwp_vars': {}, 'aod_vars': {'AOD_440nm'}, 'dsi_vars': {}, 'usi_vars': {},
-                 'uli_vars' : {}, 'dli_vars': {}, 'alb_vars': {}}
-
+                 'uli_vars' : {}, 'dli_vars': {}, 'alb_vars': {}, 'iwv_vars': {'PWV'}}
+    import re
     subplt = []
     for var in var_list:
+        escaped_var = re.escape(var)
         for key, values in vars_dict.items():
-            matching_columns = data_all.columns[data_all.columns.str.contains(var, case=False, na=False)]
+            matching_columns = data_all.columns[data_all.columns.str.contains(escaped_var)]
             if not matching_columns.empty:
                 if var.split('__')[1] in values:
                     subplt.append(key)
@@ -82,6 +83,10 @@ def draw_data_summary():
             ax = axes[get_key_from_value(subplt, 'pm10_vars')]
         elif var in vars_dict['aod_vars']:
             ax = axes[get_key_from_value(subplt, 'aod_vars')]
+        elif var in vars_dict['cbh_vars']:
+            ax = axes[get_key_from_value(subplt, 'cbh_vars')]
+        elif var in vars_dict['tcc_vars']:
+            ax = axes[get_key_from_value(subplt, 'tcc_vars')]
 
         vars_details = ts.instr_metadata[instr]['plot_vars'][var]
         color = vars_details[0]  # Line color

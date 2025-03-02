@@ -55,9 +55,10 @@ def update_data_avail(instr):
         ceilometer['datetime'] = pd.to_datetime(
                 ceilometer['#'] + ' ' + ceilometer['date[y-m-d]time[h:m:s]'], format='%Y-%m-%d %H:%M:%S')
         ceilometer.set_index('datetime', inplace=True)
-        ceilometer.drop(columns=['#', 'date[y-m-d]time[h:m:s]', 'date[Y-M-D]', 'time[h:m:s]'], inplace=True)
     else:
         ceilometer = pd.DataFrame()  # If no data was found, return an empty DataFrame
+
+    ceilometer = ceilometer[['CBH_L1[m]', 'TCC[okt]']]
 
     sida_tls.save_csv(instr, ceilometer)
 
