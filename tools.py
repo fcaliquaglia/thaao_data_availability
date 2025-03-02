@@ -126,7 +126,8 @@ def load_data_file(instr):
 
     inp = ts.instr_metadata[instr]['csv_path']
     try:
-        data_val = pd.read_csv(inp, index_col='datetime', parse_dates=True)
+        date_format = lambda x: pd.to_datetime(x, format='mixed')
+        data_val = pd.read_csv(inp, index_col='datetime', date_format=date_format)
         data_val.index = pd.DatetimeIndex(data_val.index)
         return data_val
     except (FileNotFoundError, pd.errors.ParserError):
@@ -141,13 +142,13 @@ def csv_filename_creation():
         try:
             if instr == 'skycam':
                 ts.instr_metadata[instr]['csv_path'] = os.path.join(
-                    ts.basefolder_skycam, 'thaao_skycam', f'{instr}_data_avail_list.csv')
+                        ts.basefolder_skycam, 'thaao_skycam', f'{instr}_data_avail_list.csv')
             elif instr.startswith('rad'):
                 ts.instr_metadata[instr]['csv_path'] = os.path.join(
-                    ts.basefolder, 'thaao_rad', f'{instr}_data_avail_list.csv')
+                        ts.basefolder, 'thaao_rad', f'{instr}_data_avail_list.csv')
             else:
                 ts.instr_metadata[instr]['csv_path'] = os.path.join(
-                    ts.basefolder, f'thaao_{instr}', f'{instr}_data_avail_list.csv')
+                        ts.basefolder, f'thaao_{instr}', f'{instr}_data_avail_list.csv')
         except FileNotFoundError:
             ts.instr_metadata[instr]['csv_path'] = ''
             print(f'File for {instr} not found')
