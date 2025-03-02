@@ -35,7 +35,8 @@ def draw_data_summary():
     vars_dict = {'cbh_vars' : {'CBH_L1[m]'}, 'temp_vars': {'AirTC', 'tmpc'}, 'press_vars': {'mslp', 'BP_mbar'},
                  'pm10_vars': {'PM10'}, 'relh_vars': {'relh', 'RH'}, 'tcc_vars': {'TCC[okt]'},
                  'no2_vars' : {'NO2 vertical column density (430 nm)'},
-                 'o3_vars'  : {'O3 vertical column density (510 nm)', 'O3 vertical column density (530 nm)'},
+                 'o3_vars'  : {'O3 vertical column density (510 nm)', 'O3 vertical column density (530 nm)', 'o3'},
+                 'atm_gases_vars': {'ch4', 'c2h6', 'co', 'clono2', 'h2co', 'hcl', 'hcn', 'hf', 'hno3', 'n20', 'nh3', 'ocs'},
                  'lwp_vars' : {}, 'aod_vars': {'AOD_440nm'}, 'dsi_vars': {}, 'usi_vars': {}, 'bt_vars': {},
                  'uli_vars' : {}, 'dli_vars': {}, 'alb_vars': {}, 'iwv_vars': {'PWV'}}
     import re
@@ -93,6 +94,8 @@ def draw_data_summary():
             ax = axes[get_key_from_value(subplt, 'no2_vars')]
         elif var in vars_dict['o3_vars']:
             ax = axes[get_key_from_value(subplt, 'o3_vars')]
+        elif var in vars_dict['atm_gases_vars']:
+            ax = axes[get_key_from_value(subplt, 'atm_gases_vars')]
         else:
             ax = None
 
