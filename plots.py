@@ -48,7 +48,7 @@ def draw_data_summary():
         (data_all.index.year >= sw.start_date.year) & (data_all.index.year <= sw.end_date.year), var_list]
 
     # Create subplots with shared x-axis
-    fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(22, 18), sharex=True)
+    fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(28, 28), sharex=True)
 
     # Remove whitespace between subplots
     plt.subplots_adjust(hspace=0)
