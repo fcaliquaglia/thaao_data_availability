@@ -32,11 +32,24 @@ def draw_data_summary():
     for instr in ts.instr_list:
         var_list += [instr + '__' + j for j in list(ts.instr_metadata[instr]['plot_vars'].keys())]
 
+    subplots_nr = 0
+    subplots = ['temp', 'pressure', 'relh', 'iwv', 'tcc', 'cbh', 'no2', 'o3', 'lwp']
+    subplots_list = []
+    for search_str in subplots:
+        matching_columns = data_all.columns[data_all.columns.str.contains(search_str, case=False, na=False)]
+        if not matching_columns == None:
+            subplots_nr += 1
+            subplots_list += search_str
+
+    temp_vars = ['AirTC', 'tmpc']
+    relh_vars = ['relh', 'RH']
+    iwv_vars = ['iwv']
+
     data_filtered = data_all.loc[
         (data_all.index.year >= sw.start_date.year) & (data_all.index.year <= sw.end_date.year), var_list]
 
     # Create subplots with shared x-axis
-    fig, axes = plt.subplots(len(data_filtered.columns), 1, figsize=(22, 12), sharex=True)
+    fig, axes = plt.subplots(len(subplots_nr), 1, figsize=(22, 12), sharex=True)
 
     # Remove whitespace between subplots
     plt.subplots_adjust(hspace=0)
@@ -45,6 +58,14 @@ def draw_data_summary():
     for i, (ax, var_) in enumerate(zip(axes, data_filtered.columns)):
         instr, var = var_.split('__')  # Extract instrument and variable names
         print(f'Plotting {var}')
+
+        # Assign specific columns to different axes based on name
+        if var in temp_vars:
+            target_ax = axes[subplots_list.index('temp')]
+        elif var in relh_vars:
+            target_ax = axes[subplots_list.index('relh')]
+        elif var in iwv_vars:
+            target_ax = axes[subplots_list.index('iwv')]
 
         vars_details = ts.instr_metadata[instr]['plot_vars'][var]
         color = vars_details[0]  # Line color
@@ -63,9 +84,17 @@ def draw_data_summary():
         # Remove unnecessary spines for a cleaner look
         ax.spines['top'].set_visible(False)
         ax_right.spines['top'].set_visible(False)
+        ax_right.spines['bottom'].set_visible(False)
+        ax_right.get_xaxis().set_visible(False)
 
         # Apply grid to **all** subplots
         ax.grid(True, linestyle='--', alpha=0.5)
+
+        # Draw events and campaigns based on switches
+        if sw.switch_history:
+            draw_events(ax, sw.start_date.year, sw.end_date.year)
+        if sw.switch_campaigns:
+            draw_campaigns(ax, sw.start_date.year, sw.end_date.year)
 
         # Remove x-axis for all but the last subplot
         if i < len(data_filtered.columns) - 1:
@@ -79,12 +108,6 @@ def draw_data_summary():
             ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
             ax.tick_params(axis='x', rotation=45, labelsize=9)
             ax.xaxis.set_ticks_position('bottom')
-
-    # Draw events and campaigns based on switches
-    if sw.switch_history:
-        draw_events(axes[-1], sw.start_date.year, sw.end_date.year)
-    if sw.switch_campaigns:
-        draw_campaigns(axes[-1], sw.start_date.year, sw.end_date.year)
 
     # Add a logo **next to the title**
     logo = plt.imread('logo.png')
