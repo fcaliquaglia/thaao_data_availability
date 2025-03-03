@@ -119,10 +119,16 @@ def draw_data_summary():
         axes[0].xaxis.set_ticks_position('top')
         axes[0].set_xticks(ax.get_xticks())  # Ensure tick positions are set
         axes[0].set_xticklabels(ax.get_xticks())  # Now set the corresponding labels
+        # Automatically adjust the number of date ticks and labels
+        axes[0].xaxis.set_major_locator(mdates.AutoDateLocator())  # Auto locates dates
+        axes[0].xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
 
         axes[-1].spines['top'].set_visible(False)
         axes[-1].spines['bottom'].set_visible(True)
         axes[-1].xaxis.set_ticks_position('bottom')
+        # Automatically adjust the number of date ticks and labels
+        axes[-1].xaxis.set_major_locator(mdates.AutoDateLocator())  # Auto locates dates
+        axes[-1].xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
 
         # Draw events and campaigns based on switches
         if sw.switch_history:
@@ -130,14 +136,8 @@ def draw_data_summary():
         if sw.switch_campaigns:
             draw_campaigns(ax, sw.start_date.year, sw.end_date.year)
 
-    # Format x-axis as date
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y'))  # Set your desired format here
-
     # Rotate date labels to make them readable
     plt.xticks(rotation=45)
-
-    # Optional: You can adjust the tick locator to control the spacing of the ticks
-    ax.xaxis.set_major_locator(mdates.DayLocator(interval=2))  # Adjust interval as needed
 
     # Add a logo **next to the title**
     logo = plt.imread('logo.png')

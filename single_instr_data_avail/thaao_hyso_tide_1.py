@@ -58,4 +58,4 @@ def update_data_avail(instr):
         else:
             print('file ' + str(fn) + ' not found')
 
-    sida_tls.save_csv(instr, hyso_tide_1)
+    sida_tls.save_csv(instr, hyso_tide_1.resample('5min'))
