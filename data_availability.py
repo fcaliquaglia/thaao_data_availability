@@ -38,7 +38,7 @@ def main():
     tls.update_data_availability()
 
     # Time resolution selection
-    ts.time_res = simpledialog.askstring("Time resolution", "What time resolution? [H, D, ME]", initialvalue='ME')
+    ts.time_res = simpledialog.askstring("Time resolution", "What time resolution? [H, D, ME]", initialvalue=ts.time_res)
 
     # Start and end year selection
     sw.start_date = dt.datetime(simpledialog.askinteger(
