@@ -80,7 +80,7 @@ vars_dict = {'cbh_vars'      : {'list': ['CBH_L1[m]'], 'label': 'Cloud Base Heig
              'tbp_vars'      : {'list': ['TBP'], 'label': 'TBP', 'uom': 'K'},
              'par_vars'      : {'list': ['PAR_DOWN', 'PAR_UP'], 'label': 'PAR DOWN-UP', 'uom': 'W m-2'},
              'alb_vars'      : {'list': ['ALBEDO_SW'], 'label': 'alb', 'uom': ''},
-             'iwv_vars'      : {'list': ['PWV', 'rs_iwv', 'IWV'], 'label': 'IWV', 'uom': 'mm'},
+             'iwv_vars'      : {'list': ['PWV', 'rs_iwv', 'IWV', 'N[Precipitable_Water(cm)'], 'label': 'IWV', 'uom': 'cm'},
              'lwp_vars': {'list': ['LWP'], 'label': 'LWP', 'uom': 'g m-2'}
              }
 
@@ -100,7 +100,7 @@ def create_instr_metadata(start_instr, end_instr=today, start_seas=start_season,
 
 metadata_entries = {'aeronet': create_instr_metadata(
         dt.datetime(2007, 3, 1), institution='NCAR/NASA', start_seas=dt.datetime(1900, 3, 1),
-        end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_aeronet.py', plot_vars={'AOD_440nm': ('green', '')}),
+        end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_aeronet.py', plot_vars={'AOD_440nm': ('green', ''), 'N[Precipitable_Water(cm)]':('green', 'cm')}),
     'aero_sondes'            : create_instr_metadata(
             dt.datetime(1992, 1, 1), dt.datetime(1998, 12, 31), institution='DMI',
             data_avail_py='thaao_aero_sondes.py'),
