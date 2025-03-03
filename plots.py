@@ -22,7 +22,7 @@ plt.rcParams.update({'figure.dpi': 300})
 plt.rcParams.update({'figure.figsize': (15, 10)})
 
 
-def draw_data_summary(fmt_size):
+def draw_data_summary():
     data_all = pd.concat(
             [tls.load_data_file(instr).resample(ts.time_res).mean().add_prefix(f"{instr}__") for instr in
              ts.instr_list], axis=1).sort_index()
@@ -50,7 +50,7 @@ def draw_data_summary(fmt_size):
         (data_all.index.year >= sw.start_date.year) & (data_all.index.year <= sw.end_date.year), var_list]
 
     # Create subplots with shared x-axis
-    fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=ts.fig_size, sharex=True)
+    fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=ts.figure_sizes[ts.fig_size], sharex=True)
 
     # Remove whitespace between subplots
     plt.subplots_adjust(hspace=0)
@@ -342,11 +342,10 @@ def plot_panels(plot_type):
                 pbar.update(1)
 
     elif plot_type == 'summary':
-        fmt_size = 'A0'
-        fig = draw_data_summary(fmt_size=fmt_size)
+        fig = draw_data_summary()
         figname = os.path.join(
                 os.path.dirname(newdir),
-                f'thaao_data_avail_{sw.start_date.year}_{sw.end_date.year}_{dt.datetime.today().strftime("%Y%m%d")}_{ts.time_res}_{fmt_size}.png')
+                f'thaao_data_avail_{sw.start_date.year}_{sw.end_date.year}_{dt.datetime.today().strftime("%Y%m%d")}_{ts.time_res}_{ts.fig_size}.png')
         plt.savefig(figname, transparent=False)
         plt.clf()
         plt.close(fig)

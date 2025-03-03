@@ -108,13 +108,64 @@ def update_instr_list():
     return
 
 
+def configure_plot_settings():
+    """
+    Configures user-selected parameters for plotting, including rolling and cumulative panels.
+    """
+
+    sw.switch_summary_panel = get_switch_input('Plot data summary?', False)
+
+    ts.fig_size = get_figure_size()
+
+    sw.switch_rolling_panels = get_switch_input(
+            'Plot rolling panels? \n [Yearly panels: set=12, window=12]', False)
+
+    if sw.switch_rolling_panels:
+        # Get lag value with default fallback
+        lag_r = simpledialog.askinteger(
+                "Rolling", "Lag (in months):\n [12 for yearly plots]", minvalue=1, maxvalue=120,
+                initialvalue=sw.time_freq_r)
+        sw.time_freq_r = pd.DateOffset(months=lag_r)
+
+        # Get window size with default fallback
+        window_size = simpledialog.askinteger(
+                "Rolling", "Window size (in months):\n [12 for yearly plots]", minvalue=1, maxvalue=120,
+                initialvalue=sw.time_window_r)
+        sw.time_window_r = pd.DateOffset(months=window_size)
+
+    sw.switch_cumulative_panels = get_switch_input('Plot cumulative panels?', False)
+    if sw.switch_cumulative_panels:
+        lag_c = simpledialog.askinteger(
+                "Cumulative", "Lag (in months):", minvalue=1, maxvalue=120, initialvalue=sw.time_freq_c)
+        sw.time_freq_c = pd.DateOffset(months=lag_c)
+
+    # Additional plot options
+    sw.switch_campaigns = get_switch_input('Draw field campaigns?', True)
+    sw.switch_history = get_switch_input('Draw historical events?', False)
+    sw.switch_prog_bar = get_switch_input('Draw progress bar?', False)
+
+
+def update_data_availability():
+    """
+    Prompts the user to update a data availability .csv file for a specific instrument.
+    If the user opts for an update, the function will process it and then exit the script.
+    """
+    sw.data_avail_update = get_switch_input(
+            'Do you want to update the data availability .csv files for the selected instruments?')
+
+    if sw.data_avail_update:
+        ts.update_threshold = simpledialog.askinteger(
+                "Update threshold", 'Update the data availability .csv files older than? \n (days)', minvalue=1,
+                initialvalue=ts.update_threshold)
+        check_csv_file_age()
+
+
 def get_figure_size():
     root = create_root()
     user_input = tk.simpledialog.askstring(
-        "Figure format", "Figure size (choose among A4, A3, A2, A1, or A0)", initialvalue='A3')
-    figure_sizes = {'generic': (28, 28), 'A4': (8.27, 11.69), 'A3': (11.7, 16.5), 'A2': (16.5, 23.4),
-                    'A1'     : (23.4, 33.1), 'A0': (33.1, 46.8), }
-    return figure_sizes.get(figure_sizes[user_input], figure_sizes['A3'])  # Default to A3 if invalid input
+            "Figure format", "Figure size (choose among A4, A3, A2, A1, or A0)", initialvalue='A3')
+
+    return user_input
 
 
 def get_switch_input(prompt, default=False):
