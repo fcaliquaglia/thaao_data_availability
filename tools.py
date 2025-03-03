@@ -39,6 +39,14 @@ def check_csv_file_age():
         if instr in ts.instr_sets['legacy']:
             print(f'{instr} is not active anymore. Skipping data update. Manually delete it for forced update.')
             continue
+        if instr == 'pm10':
+            print(f'Consider that other variables can be made available from this dataset. Ask Silvia Becagli.')
+
+            continue
+        if instr == 'ftir':
+            print(
+                    f'Consider that other variables can be made available from this dataset: h2co, c2h6, ocs, clono2, hcl, n20, hcn, hf, hno3, nh3')
+            continue
 
         csv_file_path = ts.instr_metadata[instr]['csv_path']
         if os.path.exists(csv_file_path):
