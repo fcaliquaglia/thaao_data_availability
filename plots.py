@@ -76,7 +76,8 @@ def draw_data_summary(fmt_size):
         ax, lab, uom = None, None, None
 
         for category in categories:
-            if var in ts.vars_dict[category]['list']:
+            escaped_var = re.escape(var)
+            if escaped_var in ts.vars_dict[category]['list']:
                 ax = axes[get_key_from_value(subplt, category)]
                 lab = ts.vars_dict[category]['label']
                 uom = ts.vars_dict[category]['uom']
