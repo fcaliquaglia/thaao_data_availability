@@ -95,7 +95,7 @@ def draw_data_summary():
         ax.set_ylabel(f"{lab} \n [{uom}]", color=color, fontsize=10, fontweight='bold')
         ax.tick_params(axis='y', colors=color, labelsize=8)
         ax.patch.set_facecolor('lightgrey')
-        ax.legend(ncols=3)
+        ax.legend(ncols=5, fontsize=8)
 
         # Handling of the axes:
         if i == 0:  # First (uppermost) panel
