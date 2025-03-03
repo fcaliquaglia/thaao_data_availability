@@ -42,11 +42,11 @@ def main():
 
     # Start and end year selection
     sw.start_date = dt.datetime(simpledialog.askinteger(
-        "Input", "Start year:", minvalue=1900, maxvalue=current_year, initialvalue=sw.start
+        "Input", "Start year:", minvalue=1900, maxvalue=current_year, initialvalue=sw.DEFAULT_START_YEAR
     ), 1, 1)
 
     sw.end_date = dt.datetime(simpledialog.askinteger(
-        "Input", "End year:", minvalue=1900, maxvalue=current_year, initialvalue=sw.end
+        "Input", "End year:", minvalue=1900, maxvalue=current_year, initialvalue=sw.DEFAULT_END_YEAR
     ), 12, 31)
 
     # Configure plot settings

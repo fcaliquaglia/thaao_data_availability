@@ -37,10 +37,10 @@ switch_summary_panel = True
 
 # inputs
 
-start = 1990
-end = 2024
-start_date = dt.datetime(start, 1, 1)
-end_date = dt.datetime(end, 12, 31)
+DEFAULT_START_YEAR = 1990
+DEFAULT_END_YEAR = 2024
+start_date = dt.datetime(DEFAULT_START_YEAR, 1, 1)
+end_date = dt.datetime(DEFAULT_END_YEAR, 12, 31)
 
 # cumulative
 time_freq_c = '6'
@@ -49,4 +49,4 @@ time_freq_c = '6'
 time_freq_r = '12'
 time_window_r = '12'
 
-days_of_an_old_file = 14
+DEFAULT_FILE_AGE_DAYS = 14

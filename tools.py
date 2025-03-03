@@ -7,7 +7,7 @@ Brief description
 """
 
 # =============================================================
-# CREATED: 
+# CREATED:
 # AFFILIATION: UNIVE, INGV
 # AUTHORS: Filippo Cali' Quaglia
 # =============================================================
@@ -22,10 +22,8 @@ __status__ = "Research"
 __lastupdate__ = ""
 
 import datetime as dt
-import gc
 import importlib.util
 import os
-import sys
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 
@@ -49,8 +47,8 @@ def check_csv_file_age():
             current_date = dt.datetime.now()
 
             # Check if the file is older than n days
-            if (current_date - last_modified).days > sw.days_of_an_old_file:
-                print(f"{csv_file_path} is older than {sw.days_of_an_old_file} days. Updating the file...")
+            if (current_date - last_modified).days > sw.DEFAULT_FILE_AGE_DAYS:
+                print(f"{csv_file_path} is older than {sw.DEFAULT_FILE_AGE_DAYS} days. Updating the file...")
                 update_csv_file(instr)
                 print(f"{csv_file_path} has been updated! Great!")
             else:
@@ -75,18 +73,14 @@ def update_csv_file(instr):
     # Load the script dynamically
     spec = importlib.util.spec_from_file_location("module_name", script_path)
     module = importlib.util.module_from_spec(spec)
-    sys.modules["module_name"] = module
     spec.loader.exec_module(module)  # Execute the script
 
-    # Ensure the script has a function to call
-    if not hasattr(module, "update_data_avail"):
-        print(f"Error: The script {script_path} does not contain 'update_data_avail(instr)' function.")
-        return
-    else:
-        print("Updating .csv file")
+    if hasattr(module, "update_data_avail"):
+        print(f"Updating CSV for {instr}...")
         module.update_data_avail(instr)
         print("Update completed successfully.")
-        gc.collect()
+    else:
+        print(f"Error: The script {script_path} does not contain 'update_data_avail(instr)' function.")
 
 
 # Function to create a Tkinter root window
@@ -189,7 +183,7 @@ def load_data_file(instr):
         return data_val
     except (FileNotFoundError, pd.errors.ParserError):
         print(f'{inp} not found or corrupted! Returning empty DataFrame.')
-        index_values = pd.date_range(sw.start, dt.datetime.today(), freq='12h')
+        index_values = pd.date_range(sw.DEFAULT_START_YEAR, dt.datetime.today(), freq='12h')
         return pd.DataFrame({'mask': [np.nan] * len(index_values)}, index=index_values)
 
 
