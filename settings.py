@@ -87,7 +87,8 @@ vars_dict = {'cbh_vars'                                   : {'list': ['CBH_L1[m]
              'alb_vars': {'list': ['ALBEDO_SW'], 'label': 'alb', 'uom': ''},
              'iwv_vars': {'list': ['PWV', 'rs_iwv', 'IWV', 'N[Precipitable_Water(cm)]'], 'label': 'IWV', 'uom': 'cm'},
              'lwp_vars': {'list': ['LWP_gm-2'], 'label': 'LWP', 'uom': 'g m-2'},
-             'sea_lev_vars': {'list': ['sea_level'], 'label': 'sea level', 'uom': 'm'}}
+             'sea_lev_vars': {'list': ['sea_level'], 'label': 'sea level', 'uom': 'm'},
+             'd18O_vars': {'list': ['d18O'], 'label': 'd18O', 'uom': 'per mil'}}
 
 
 # =============================================================
@@ -213,7 +214,7 @@ metadata_entries = {'aeronet'                                                   
             plot_vars={'PWV': ('cyan', '??')}),
     'wv_isotopes'                                                                                                   : create_instr_metadata(
             dt.datetime(2011, 6, 1), dt.datetime(2019, 12, 31), institution='U.Alaska,Florence,StonyBrook/USSF',
-            data_avail_py='thaao_wv_isotopes.py')}
+            data_avail_py='thaao_wv_isotopes.py', plot_vars={'d18O':('blue', 'permil')})}
 
 instr_metadata = {
     name: {**meta, 'end_instr': meta.get('end_instr', today), 'start_seas': meta.get('start_seas', start_season),
