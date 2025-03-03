@@ -24,12 +24,13 @@ plt.rcParams.update({'figure.figsize': (15, 10)})
 
 
 def draw_data_summary():
-    try:
-        data_all = pd.concat(
-            [tls.load_data_file(instr).resample(ts.time_res).mean().add_prefix(f"{instr}__") for instr in
-             ts.instr_list], axis=1).sort_index()
-    except (ValueError, UnboundLocalError):
-        print('error with HERE')
+    data_all = pd.DataFrame()
+    for instr in ts.instr_list:
+        try:
+            tmp = tls.load_data_file(instr).resample(ts.time_res).mean().add_prefix(f"{instr}__")
+            data_all = pd.concat([data_all, tmp], axis=1).sort_index()
+        except (ValueError, UnboundLocalError):
+            print('ERROR with ' + instr)
 
     if 'aeronet' in ts.instr_list:
         data_all['aeronet__N[Precipitable_Water(cm)]'] /= 10.

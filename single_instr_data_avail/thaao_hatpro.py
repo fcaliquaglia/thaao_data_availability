@@ -83,5 +83,5 @@ def update_data_avail(instr):
             print(e)
     hatpro_iwv = hatpro_iwv.set_index('datetime').sort_index()
 
-    hatpro = pd.concat([hatpro_iwv, hatpro_lwp])
+    hatpro = pd.concat([hatpro_iwv, hatpro_lwp], axis=1)
     sida_tls.save_csv(instr, hatpro)
