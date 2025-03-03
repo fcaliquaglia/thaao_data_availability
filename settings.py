@@ -142,7 +142,7 @@ metadata_entries = {'aeronet': create_instr_metadata(
             data_avail_py='thaao_gbms.py'),
     'hatpro'                 : create_instr_metadata(
             dt.datetime(2017, 1, 1), dt.datetime(2024, 9, 30), institution='ENEA', data_avail_py='thaao_hatpro.py',
-            plot_vars={'IWV': ('mm', 'yellow'), 'LWP': ('g m-2', 'yellow')}),
+            plot_vars={'IWV': ('yellow', 'mm'), 'LWP_gm-2': ('yellow', 'g m-2')}),
     'lidar_temp'             : create_instr_metadata(
             dt.datetime(1993, 11, 1), institution='U.Sap+ENEA', start_seas=dt.datetime(1900, 11, 1),
             end_seas=dt.datetime(1900, 3, 31), data_avail_py='thaao_lidar_temp.py'),
