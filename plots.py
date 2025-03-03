@@ -130,6 +130,15 @@ def draw_data_summary():
         if sw.switch_campaigns:
             draw_campaigns(ax, sw.start_date.year, sw.end_date.year)
 
+    # Format x-axis as date
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y'))  # Set your desired format here
+
+    # Rotate date labels to make them readable
+    plt.xticks(rotation=45)
+
+    # Optional: You can adjust the tick locator to control the spacing of the ticks
+    ax.xaxis.set_major_locator(mdates.DayLocator(interval=2))  # Adjust interval as needed
+
     # Add a logo **next to the title**
     logo = plt.imread('logo.png')
     logo_ax = fig.add_axes([0.05, 0.87, 0.12, 0.12], anchor='NE', zorder=10)  # Adjust the x-position (0.05) for left
