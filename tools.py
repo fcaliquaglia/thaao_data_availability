@@ -114,7 +114,7 @@ def get_figure_size():
         "Figure format", "Figure size (choose among A4, A3, A2, A1, or A0)", initialvalue='A3')
     figure_sizes = {'generic': (28, 28), 'A4': (8.27, 11.69), 'A3': (11.7, 16.5), 'A2': (16.5, 23.4),
                     'A1'     : (23.4, 33.1), 'A0': (33.1, 46.8), }
-    return figure_sizes.get(user_input, figure_sizes['A3'])  # Default to A3 if invalid input
+    return figure_sizes.get(figure_sizes[user_input], figure_sizes['A3'])  # Default to A3 if invalid input
 
 
 def get_switch_input(prompt, default=False):
