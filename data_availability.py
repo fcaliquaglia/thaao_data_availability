@@ -47,6 +47,8 @@ def configure_plot_settings():
 
     sw.switch_summary_panel = tls.get_switch_input('Plot data summary?', False)
 
+    sw.figure_size = tls.get_figure_size()
+
     sw.switch_rolling_panels = tls.get_switch_input(
             'Plot rolling panels? \n [Yearly panels: set=12, window=12]', False)
 
@@ -75,12 +77,12 @@ def configure_plot_settings():
     sw.switch_prog_bar = tls.get_switch_input('Draw progress bar?', False)
 
 
+
 def main():
     """
     Main function for instrument selection, data availability update, and plotting.
     """
     root = tls.create_root()
-    # minor updates for the metadata
 
     # Instrument list selection
     sw.switch_instr_list = simpledialog.askstring(

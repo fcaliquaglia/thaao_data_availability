@@ -27,6 +27,7 @@ import importlib.util
 import os
 import sys
 import tkinter as tk
+from tkinter import messagebox, simpledialog
 
 import numpy as np
 import pandas as pd
@@ -40,9 +41,6 @@ def check_csv_file_age():
         if instr in ts.instr_sets['legacy']:
             print(f'{instr} is not active anymore. Skipping data update. Manually delete it for forced update.')
             continue
-        instr1 = 'rad' if instr in ['rad_par_up', 'rad_par_down', 'rad_tb', 'rad_dsi', 'rad_dli', 'rad_usi',
-                                    'rad_uli'] else instr
-        basefol = ts.basefolder_skycam if instr == 'skycam' else ts.basefolder
 
         csv_file_path = ts.instr_metadata[instr]['csv_path']
         if os.path.exists(csv_file_path):
@@ -108,6 +106,14 @@ def update_instr_list():
         else:
             print(f'{category} is wrong!')
     return
+
+
+def get_figure_size():
+    root = create_root()
+    user_input = tk.simpledialog.askstring("Figure format", "Figure size (choose among A4, A3, A2, A1, or A0)", initialvalue='A3')
+    figure_sizes = {'generic': (28, 28), 'A3': (11.7, 16.5), 'A2': (16.5, 23.4), 'A1': (23.4, 33.1),
+        'A0'                 : (33.1, 46.8), }
+    return figure_sizes.get(user_input, figure_sizes['A3'])  # Default to A3 if invalid input
 
 
 def get_switch_input(prompt, default=False):

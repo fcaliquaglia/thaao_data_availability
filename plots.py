@@ -27,6 +27,8 @@ def draw_data_summary(fmt_size):
             [tls.load_data_file(instr).resample(ts.time_res).mean().add_prefix(f"{instr}__") for instr in
              ts.instr_list], axis=1).sort_index()
 
+    data_all['aeronet__N[Precipitable_Water(cm)]'] /= 10.
+
     var_list = []
     for instr in ts.instr_list:
         var_list += [instr + '__' + j for j in list(ts.instr_metadata[instr]['plot_vars'].keys())]
@@ -48,14 +50,7 @@ def draw_data_summary(fmt_size):
         (data_all.index.year >= sw.start_date.year) & (data_all.index.year <= sw.end_date.year), var_list]
 
     # Create subplots with shared x-axis
-    if fmt_size == 'generic':
-        fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(28, 28), sharex=True)
-    if fmt_size == 'A3':
-        fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(11.7, 16.5), dpi=300, sharex=True)
-    if fmt_size == 'A2':
-        fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(16.5, 23.4), dpi=300, sharex=True)
-    if fmt_size == 'A0':
-        fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=(33.1, 46.8), dpi=300, sharex=True)
+    fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=ts.fig_size, sharex=True)
 
     # Remove whitespace between subplots
     plt.subplots_adjust(hspace=0)
@@ -76,8 +71,7 @@ def draw_data_summary(fmt_size):
         ax, lab, uom = None, None, None
 
         for category in categories:
-            escaped_var = re.escape(var)
-            if escaped_var in ts.vars_dict[category]['list']:
+            if var in ts.vars_dict[category]['list']:
                 ax = axes[get_key_from_value(subplt, category)]
                 lab = ts.vars_dict[category]['label']
                 uom = ts.vars_dict[category]['uom']
