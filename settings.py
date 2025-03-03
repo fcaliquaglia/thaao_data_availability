@@ -86,7 +86,8 @@ vars_dict = {'cbh_vars'                                   : {'list': ['CBH_L1[m]
              'par_vars': {'list': ['PAR_DOWN', 'PAR_UP'], 'label': 'PAR DOWN-UP', 'uom': 'W m-2'},
              'alb_vars': {'list': ['ALBEDO_SW'], 'label': 'alb', 'uom': ''},
              'iwv_vars': {'list': ['PWV', 'rs_iwv', 'IWV', 'N[Precipitable_Water(cm)]'], 'label': 'IWV', 'uom': 'cm'},
-             'lwp_vars': {'list': ['LWP_gm-2'], 'label': 'LWP', 'uom': 'g m-2'}}
+             'lwp_vars': {'list': ['LWP_gm-2'], 'label': 'LWP', 'uom': 'g m-2'},
+             'sea_lev_vars': {'list': ['sea_level'], 'label': 'sea level', 'uom': 'm'}}
 
 
 # =============================================================
@@ -159,7 +160,8 @@ metadata_entries = {'aeronet'                                                   
             end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_hyso_seismo_4.py'),
     'hyso_tide_1'                                                                                                   : create_instr_metadata(
             dt.datetime(2021, 8, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
-            end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_hyso_tide_1.py'),
+            end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_hyso_tide_1.py',
+            plot_vars={'sea_level': ('green', 'm')}),
     'metar'                                                                                                         : create_instr_metadata(
             dt.datetime(1951, 10, 1), institution='U.Alaska,Florence,StonyBrook/USSF', data_avail_py='thaao_metar.py',
             plot_vars={'tmpc': ('purple', 'degC'), 'relh': ('purple', '%'), 'mslp': ('purple', 'hPa')}),
