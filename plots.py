@@ -96,6 +96,8 @@ def draw_data_summary():
         ax.tick_params(axis='y', colors=color, labelsize=8)
         ax.patch.set_facecolor('lightgrey')
         ax.legend(ncols=5, fontsize=8)
+        # Apply grid to **all** subplots
+        ax.grid(True, linestyle='--', alpha=0.5)
 
         # Handling of the axes:
         if i == 0:  # First (uppermost) panel
@@ -127,8 +129,7 @@ def draw_data_summary():
             # Hide the bottom x-axis for all but the last panel
             ax.spines['bottom'].set_visible(False)
 
-        # Apply grid to **all** subplots
-        ax.grid(True, linestyle='--', alpha=0.5)
+
 
         # Draw events and campaigns based on switches
         if sw.switch_history:
