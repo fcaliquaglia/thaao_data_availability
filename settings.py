@@ -66,10 +66,9 @@ instr_list = []
 # VARIABLES DICTIONARY
 # =============================================================
 
-vars_dict = {'cbh_vars'                                   : {'list': ['CBH_L1[m]'], 'label': 'Cloud Base \n Height',
-                                                             'uom' : 'm'},
+vars_dict = {'cbh_vars' : {'list': ['CBH_L1[m]'], 'label': 'Cloud Base \n Height', 'uom' : 'm'},
              'temp_vars': {'list': ['AirTC', 'tmpc', 'Air_C'], 'label': 'Temp', 'uom': 'degC'},
-             'press_vars': {'list': ['mslp', 'BP_mbar', 'BP_hPa'], 'label': 'Surf Press', 'uom': 'hPa'},
+             'press_vars': {'list': ['mslp', 'BP_mbar', 'BP_hPa'], 'label': 'Surf \n Press', 'uom': 'hPa'},
              'pm10_vars': {'list': ['PM10'], 'label': 'PM10', 'uom': 'ug m-3'},
              'relh_vars': {'list': ['relh', 'RH', 'RH_%'], 'label': 'RH', 'uom': '%'},
              'tcc_vars': {'list': ['TCC[okt]'], 'label': 'TCC', 'uom': 'okt'},
@@ -79,11 +78,11 @@ vars_dict = {'cbh_vars'                                   : {'list': ['CBH_L1[m]
         'label': 'O3 vert', 'uom': '??'},
              'atm_gases_vars': {'list': ['c2h6', 'h2co', 'hcn', 'hf', 'hno3', 'nh3', 'ocs'], 'label': 'Atm Gases',
                                 'uom' : '??'}, 'atm_ch4_vars': {'list': ['ch4'], 'label': 'CH4 vert', 'uom': '??'},
-             'aod_vars': {'list': ['AOD_440nm'], 'label': 'AOD 440nm', 'uom': ''},
+             'aod_vars': {'list': ['AOD_440nm'], 'label': 'AOD \n 440nm', 'uom': ''},
              'si_vars': {'list': ['SW_DOWN', 'SW_UP'], 'label': 'DSI-USI', 'uom': 'W m-2'},
              'li_vars': {'list': ['LW_DOWN', 'LW_UP'], 'label': 'DLI-ULI', 'uom': 'W m-2'},
              'tbp_vars': {'list': ['TBP'], 'label': 'TBP', 'uom': 'K'},
-             'par_vars': {'list': ['PAR_DOWN', 'PAR_UP'], 'label': 'PAR DOWN-UP', 'uom': 'W m-2'},
+             'par_vars': {'list': ['PAR_DOWN', 'PAR_UP'], 'label': 'PAR \n DOWN-UP', 'uom': 'W m-2'},
              'alb_vars': {'list': ['ALBEDO_SW'], 'label': 'alb', 'uom': ''},
              'iwv_vars': {'list': ['PWV', 'rs_iwv', 'IWV', 'N[Precipitable_Water(cm)]'], 'label': 'IWV', 'uom': 'cm'},
              'lwp_vars': {'list': ['LWP_gm-2'], 'label': 'LWP', 'uom': 'g m-2'},
@@ -214,7 +213,7 @@ metadata_entries = {'aeronet'                                                   
             plot_vars={'PWV': ('cyan', '??')}),
     'wv_isotopes'                                                                                                   : create_instr_metadata(
             dt.datetime(2011, 6, 1), dt.datetime(2019, 12, 31), institution='U.Alaska,Florence,StonyBrook/USSF',
-            data_avail_py='thaao_wv_isotopes.py', plot_vars={'d18O':('blue', 'permil')})}
+            data_avail_py='thaao_wv_isotopes.py', plot_vars={'d18O': ('blue', 'permil')})}
 
 instr_metadata = {
     name: {**meta, 'end_instr': meta.get('end_instr', today), 'start_seas': meta.get('start_seas', start_season),

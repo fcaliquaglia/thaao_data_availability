@@ -37,7 +37,7 @@ def draw_data_summary():
     if 'aws_vespa' in ts.instr_list:
         data_all['aws_vespa__Air_C'] = (data_all['aws_vespa__Air_K'].values * units.K).to('degC')
     if 'hyso_tide_1__sea_level' in ts.instr_list:
-        data_all.loc[data_all['hyso_tide_1__sea_level'] > 100, 'hyso_tide_1__sea_level'] = np.nan
+        data_all.loc[data_all['hyso_tide_1__sea_level'] > 10, 'hyso_tide_1__sea_level'] = np.nan
     var_list = []
     for instr in ts.instr_list:
         var_list += [instr + '__' + j for j in list(ts.instr_metadata[instr]['plot_vars'].keys())]
@@ -58,6 +58,7 @@ def draw_data_summary():
     data_filtered = data_all.loc[
         (data_all.index.year >= sw.start_date.year) & (data_all.index.year <= sw.end_date.year), var_list]
 
+    # plt.xkcd()
     # Create subplots with shared x-axis
     fig, axes = plt.subplots(len(subplt.keys()), 1, figsize=ts.figure_sizes[ts.fig_size], sharex=True)
 
@@ -98,27 +99,30 @@ def draw_data_summary():
         ax.tick_params(axis='y', colors=color, labelsize=8)
         ax.patch.set_facecolor('lightgrey')
         ax.legend(ncols=5, fontsize=8)
-        # Apply grid to **all** subplots
-        ax.grid(True, linestyle='--', alpha=0.5)
+
         # Enable right spine, ticks, and labels
         ax.spines['right'].set_visible(True)
         ax.yaxis.set_ticks_position('right')
 
+        # Enable left spine, ticks, and labels
+        ax.spines['left'].set_visible(True)
+        ax.yaxis.set_ticks_position('left')
+
         # Handling of the axes:
-        if i == 0:  # Top subplot
-            ax.spines['top'].set_visible(True)
-            ax.spines['bottom'].set_visible(False)
-            ax.xaxis.set_ticks_position('top')
-            ax.set_xticklabels(ax.get_xticks())  # Show x labels on top
-        elif i == len(subplt.keys()) - 1:  # Bottom subplot
-            ax.spines['top'].set_visible(False)
-            ax.spines['bottom'].set_visible(True)
-            ax.xaxis.set_ticks_position('bottom')
-        else:  # Middle subplots
-            ax.spines['top'].set_visible(False)
-            ax.spines['bottom'].set_visible(False)
-            ax.set_xticklabels([])  # Remove x labels
-            ax.xaxis.set_ticks_position('none')
+        ax.spines['top'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+        ax.set_xticklabels([])  # Remove x labels
+        ax.xaxis.set_ticks_position('none')
+        # Top subplot
+        axes[0].spines['top'].set_visible(True)
+        axes[0].spines['bottom'].set_visible(False)
+        axes[0].xaxis.set_ticks_position('top')
+        axes[0].set_xticks(ax.get_xticks())  # Ensure tick positions are set
+        axes[0].set_xticklabels(ax.get_xticks())  # Now set the corresponding labels
+
+        axes[-1].spines['top'].set_visible(False)
+        axes[-1].spines['bottom'].set_visible(True)
+        axes[-1].xaxis.set_ticks_position('bottom')
 
         # Draw events and campaigns based on switches
         if sw.switch_history:
