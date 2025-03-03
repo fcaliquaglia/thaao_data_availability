@@ -98,38 +98,25 @@ def draw_data_summary():
         ax.legend(ncols=5, fontsize=8)
         # Apply grid to **all** subplots
         ax.grid(True, linestyle='--', alpha=0.5)
+        # Enable right spine, ticks, and labels
+        ax.spines['right'].set_visible(True)
+        ax.yaxis.set_ticks_position('right')
 
         # Handling of the axes:
-        if i == 0:  # First (uppermost) panel
-            # Top x-axis: visible with spines, ticks, and labels
+        if i == 0:  # Top subplot
             ax.spines['top'].set_visible(True)
-            ax.xaxis.set_ticks_position('top')  # Ensure ticks are on the top
-            ax.set_xticklabels(data_filtered.index.year, rotation=45)
-            ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-            ax.tick_params(axis='x', rotation=45, labelsize=9)  # Ensure labels on the top
-            ax.spines['bottom'].set_visible(False)  # No bottom x-axis spines
-            ax.get_xaxis().set_visible(True)  # Show x-axis on the bottom panel
-
-        else:
-            # For all intermediate panels (central ones)
-            ax.spines['top'].set_visible(False)  # Hide the top x-axis
-            ax.xaxis.set_ticks_position('bottom')  # Keep ticks on the bottom
-            ax.set_xticklabels([])  # Remove x-axis labels
-            ax.set_xlabel('')  # Remove x-axis title
-            ax.get_xaxis().set_visible(False)  # Hide x-axis title and labels
-
-        if i == len(data_filtered.columns) - 1:  # Last (lowermost) panel
-            # Bottom x-axis: visible with spines, ticks, and labels
-            ax.spines['bottom'].set_visible(True)
-            ax.xaxis.set_ticks_position('bottom')  # Ensure ticks are on the bottom
-            ax.xaxis.set_major_locator(mdates.YearLocator())
-            ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-            ax.tick_params(axis='x', rotation=45, labelsize=9)  # Ensure labels on the bottom
-        else:
-            # Hide the bottom x-axis for all but the last panel
             ax.spines['bottom'].set_visible(False)
-
-
+            ax.xaxis.set_ticks_position('top')
+            ax.set_xticklabels(ax.get_xticks())  # Show x labels on top
+        elif i == len(subplt.keys()) - 1:  # Bottom subplot
+            ax.spines['top'].set_visible(False)
+            ax.spines['bottom'].set_visible(True)
+            ax.xaxis.set_ticks_position('bottom')
+        else:  # Middle subplots
+            ax.spines['top'].set_visible(False)
+            ax.spines['bottom'].set_visible(False)
+            ax.set_xticklabels([])  # Remove x labels
+            ax.xaxis.set_ticks_position('none')
 
         # Draw events and campaigns based on switches
         if sw.switch_history:
