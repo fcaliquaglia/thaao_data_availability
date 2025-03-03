@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import patches
 from matplotlib.lines import Line2D
+from metpy.units import units
 from tqdm import tqdm
 
 import settings as ts
@@ -23,11 +24,17 @@ plt.rcParams.update({'figure.figsize': (15, 10)})
 
 
 def draw_data_summary():
-    data_all = pd.concat(
+    try:
+        data_all = pd.concat(
             [tls.load_data_file(instr).resample(ts.time_res).mean().add_prefix(f"{instr}__") for instr in
              ts.instr_list], axis=1).sort_index()
+    except (ValueError, UnboundLocalError):
+        print('error with HERE')
 
-    data_all['aeronet__N[Precipitable_Water(cm)]'] /= 10.
+    if 'aeronet' in ts.instr_list:
+        data_all['aeronet__N[Precipitable_Water(cm)]'] /= 10.
+    if 'aws_vespa' in ts.instr_list:
+        data_all['aws_vespa__Air_C'] = (data_all['aws_vespa__Air_K'].values * units.K).to('degC')
 
     var_list = []
     for instr in ts.instr_list:

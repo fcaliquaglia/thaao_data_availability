@@ -41,7 +41,6 @@ end_season = dt.datetime(1900, 12, 31)
 time_res = 'D'
 update_threshold = 7
 
-
 # =============================================================
 # SUMMARY PLOTS
 # =============================================================+
@@ -69,10 +68,10 @@ instr_list = []
 # =============================================================
 
 vars_dict = {'cbh_vars'      : {'list': ['CBH_L1[m]'], 'label': 'Cloud Base \n Height', 'uom': 'm'},
-             'temp_vars'     : {'list': ['AirTC', 'tmpc'], 'label': 'Temp', 'uom': 'degC'},
-             'press_vars'    : {'list': ['mslp', 'BP_mbar'], 'label': 'Surf Press', 'uom': 'hPa'},
+             'temp_vars'     : {'list': ['AirTC', 'tmpc', 'Air_C'], 'label': 'Temp', 'uom': 'degC'},
+             'press_vars'    : {'list': ['mslp', 'BP_mbar', 'BP_hPa'], 'label': 'Surf Press', 'uom': 'hPa'},
              'pm10_vars'     : {'list': ['PM10'], 'label': 'PM10', 'uom': 'ug m-3'},
-             'relh_vars'     : {'list': ['relh', 'RH'], 'label': 'RH', 'uom': '%'},
+             'relh_vars'     : {'list': ['relh', 'RH', 'RH_%'], 'label': 'RH', 'uom': '%'},
              'tcc_vars'      : {'list': ['TCC[okt]'], 'label': 'TCC', 'uom': 'okt'},
              'no2_vars'      : {'list': ['NO2 vertical column density (430 nm)'], 'label': 'NO2 vert', 'uom': '??'},
              'co_vars'       : {'list': ['co'], 'label': 'CO', 'uom': '??'},
@@ -115,7 +114,8 @@ metadata_entries = {'aeronet': create_instr_metadata(
             dt.datetime(1992, 1, 1), dt.datetime(1998, 12, 31), institution='DMI',
             data_avail_py='thaao_aero_sondes.py'),
     'aws_vespa'              : create_instr_metadata(
-            dt.datetime(2016, 1, 1), institution='INGV', data_avail_py='thaao_aws_vespa.py'),
+            dt.datetime(2016, 1, 1), institution='INGV', data_avail_py='thaao_aws_vespa.py', plot_vars={
+                'AIR_C': ('red', 'degC'), 'BP_hPa': ('red', 'hPa'), 'RH_%': ('red', '%')}),
     'ceilometer'             : create_instr_metadata(
             dt.datetime(2019, 11, 1), institution='ENEA', data_avail_py='thaao_ceilometer.py',
             plot_vars={'CBH_L1[m]': ('brown', ''), 'TCC[okt]': ('brown', '')}),
