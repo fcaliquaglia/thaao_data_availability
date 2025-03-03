@@ -38,9 +38,8 @@ There are three types of plot:
 - gif panels (for animations)
 - rolling panels (including yearly)
 
-Additionally, you can specify if you want the historical events, the Italian field campaigns and the progress bar to be
-plotted.
-The instruments considered are selected in batches: thaao, legacy, hyso or all.
+Additionally, you can specify if you want the historical events or the Italian field campaigns  to be plotted.
+The instruments considered are selected in batches: thaao, legacy, hyso or all or a single instrument.
 
 ## `settings.py`
 

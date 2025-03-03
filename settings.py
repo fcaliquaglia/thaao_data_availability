@@ -54,7 +54,7 @@ figure_sizes = {'generic': (28, 28), 'A4': (8.27, 11.69), 'A3': (11.7, 16.5), 'A
 # =============================================================
 
 instr_sets = {
-    "thaao" : ['rs_sondes', 'rad_uli', 'rad_dli', 'rad_usi', 'rad_dsi', 'rad_par_up', 'rad_par_down', 'rad_tb',
+    "thaao" : ['rs_sondes', 'rad_uli', 'rad_dli', 'rad_usi', 'rad_dsi', 'rad_par_up', 'rad_par_down', 'rad_tbp',
                'skycam',
                'mms_trios', 'metar', 'vespa', 'ceilometer', 'dir_rad_trkr', 'pm10', 'ftir', 'aeronet', 'gnss',
                'ecapac_mrr', 'ecapac_aws_snow', 'ecapac_disdro_precip', 'aws_vespa'],

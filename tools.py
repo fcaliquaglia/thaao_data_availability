@@ -142,7 +142,6 @@ def configure_plot_settings():
     # Additional plot options
     sw.switch_campaigns = get_switch_input('Draw field campaigns?', True)
     sw.switch_history = get_switch_input('Draw historical events?', False)
-    sw.switch_prog_bar = get_switch_input('Draw progress bar?', False)
 
 
 def update_data_availability():

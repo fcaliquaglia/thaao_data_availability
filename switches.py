@@ -30,7 +30,6 @@ switch_instr_list = 'thaao'
 
 switch_campaigns = False  # Draw field campaigns?
 switch_history = False  # Draw historical events?
-switch_prog_bar = False  # Draw progress bar?
 
 switch_cumulative_panels = False
 switch_rolling_panels = False
