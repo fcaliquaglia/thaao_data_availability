@@ -20,7 +20,6 @@ import pandas as pd
 import xarray as xr
 
 import settings as ts
-import single_instr_data_avail.sida_tools as sida_tls
 
 
 def update_data_avail(instr):
@@ -33,21 +32,26 @@ def update_data_avail(instr):
 
     filenames = glob.glob(os.path.join(folder, "thte*"))
 
-    lidar_temp = pd.DataFrame()
-    for filename in filenames:
-        lidar_temp_tmp = nasa_ames_parser_2110(filename)  # find temp values at specific height
+    lidar_temp = []
+    for filename in filenames[0:10]:
+        try:
+            lidar_temp_tmp = nasa_ames_parser_2110(filename)
+            lidar_temp.append(lidar_temp_tmp)
+        except:
+            print(filename)
+            continue
 
-    lidar_temp = pd.concat([lidar_temp, lidar_temp_tmp])
+    lidar_temp_list_tmp = [item for sublist in lidar_temp for item in sublist]
+    #lidar_temp_list = [elem.sel(pressure_levels=~elem.coords['pressure_levels'].duplicated()) for elem in lidar_temp_list_tmp]
 
-    # Save the DataFrame using sida_tls module
-    sida_tls.save_csv(instr, lidar_temp)
+    stacked_blocks = xr.concat(lidar_temp_list_tmp, dim='timestamps')
+    stacked_blocks.to_netcdf(os.path.join(ts.basefolder, 'thaao_lidar_temp', 'test.nc'))
+
+    # Save the DataFrame using sida_tls module  # sida_tls.save_csv(instr, lidar_temp)
 
 
 def nasa_ames_parser_2110(fn):
-    lidar_temp = pd.DataFrame()
-
     with open(fn, 'r') as file:
-        print(fn)
         lines = file.readlines()
         lines = lines[1:]
 
@@ -108,14 +112,7 @@ def nasa_ames_parser_2110(fn):
             {var: {'mult': mult, 'nanval': nan, 'uom': uom} for var, mult, nan, uom in
              zip(dependent_vars, dependent_mult, dependent_nan, dependent_units)})
 
-    df = pd.DataFrame(columns=independent_vars + dependent_vars)
-
     all_blocks = []
-
-    current_block = []
-
-    block_metadata = {}
-
     for i, _ in enumerate(lines[data_start:-1]):
         # Split the line by spaces and filter out empty strings
         elements = list(filter(None, lines[data_start:][i].strip().split(' ')))
@@ -125,28 +122,34 @@ def nasa_ames_parser_2110(fn):
         if (len(elements) == num_extra_vars + 1) & (len(elements1) == num_dependent_vars + 1):
             print(f'this is a new block at line: {i}')
             block_metadata = {key: value for key, value in zip([independent_vars[1]] + extra_vars, elements)}
+            print(block_metadata['Day'] + ' ' + block_metadata['Month'] + ' ' + block_metadata['Year'])
             new_date = dt.datetime.strptime(
                     block_metadata['Year'] + block_metadata['Month'] + block_metadata['Day'] + block_metadata['Hour'] +
                     block_metadata['Minutes'], '%Y%m%d%H%M')
             block_metadata['datetime'] = new_date
 
             j = 1
-            elements1 = list(filter(None, lines[data_start:][i+1].strip().split(' ')))
+            elements1 = list(filter(None, lines[data_start:][i + 1].strip().split(' ')))
             while len(elements1) == num_dependent_vars + 1:
-                elements1 = list(filter(None, lines[data_start:][i+ 1 +j].strip().split(' ')))
-                print(lines[data_start:][i+ 1 +j])
-                j += 1
-            data_block = lines[data_start:][i + 1:i+j]
+                try:
+                    elements1 = list(filter(None, lines[data_start:][i + 1 + j].strip().split(' ')))
+                    j += 1
+                except IndexError:
+                    j -= 1
+                    break
+
+            data_block = lines[data_start:][i + 1:i + j]
             data_block_fmt = []
             [data_block_fmt.append(list(filter(None, data_block[k].strip().split(' ')))) for k in
              range(len(data_block))]
             data_block_fmt = np.array(data_block_fmt).astype(float)
 
-            timestamps = pd.to_datetime(block_metadata['datetime'])
+            timestamps = np.array(pd.to_datetime([block_metadata['datetime']]))  # Ensure a single timestamp per block
             height_levels = data_block_fmt[:, 0]
             pressure_levels = data_block_fmt[:, 3]
-            temperatures = np.tile(
-                    data_block_fmt[:, 5][:, np.newaxis, np.newaxis], (1, len(height_levels), len(pressure_levels)))
+            temperatures = np.tile(data_block_fmt[:, 5], (1, len(pressure_levels)))  # Tile to match shape (1, 102, 102)
+            temperatures = temperatures.reshape(1, len(height_levels), len(pressure_levels))
+
             temp = xr.DataArray(
                     temperatures, coords={"timestamps"     : timestamps, "height_levels": height_levels,
                                           "pressure_levels": pressure_levels},
@@ -167,29 +170,21 @@ def nasa_ames_parser_2110(fn):
             all_blocks.append(temp)
 
     # Stack all blocks into a single xarray (assuming you want a single xarray with multiple blocks)
-    stacked_blocks = xr.concat(all_blocks, dim='block')
+    return all_blocks
 
-    # Read data
-    for line in lines[data_start:]:
-        values = [float(x) for x in line.split()]
-
-        # Replace NaNs
-        for idx, val in enumerate(values):
-            if idx < len(independent_nan) and val == independent_nan[idx]:
-                values[idx] = np.nan
-            elif idx >= len(independent_nan) and val == dependent_nan[idx - len(independent_nan)]:
-                values[idx] = np.nan
-
-        if len(values) == len(df.columns):
-            df.loc[len(df)] = values
+    import matplotlib.pyplot as plt
+    plt.figure(figsize=(10, 6))
+    temp_da = stacked_blocks.transpose("timestamps", "height_levels")
+    stacked_blocks.plot(
+            x="timestamps", y="height_levels", cmap="coolwarm", cbar_kwargs={"label": "Temperature (K)"})
+    plt.title("Vertical Temperature Profiles (Contour)")
+    plt.xlabel("Time")
+    plt.ylabel("Height (m)")
+    plt.show()
 
     # Apply multipliers
     for col in df.columns:
         df[col] *= metadata_dict[col]['mult']
-
-    # Convert datetime
-    df['datetime'] = pd.to_datetime(df['year'], format='%Y') + pd.to_timedelta(
-            df[independent_vars[0]].astype(float) - 1, unit='D')
 
     df.set_index('datetime', inplace=True)
     lidar_temp = pd.concat([lidar_temp, df])
