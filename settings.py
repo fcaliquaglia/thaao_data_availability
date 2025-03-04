@@ -66,7 +66,8 @@ instr_list = []
 # VARIABLES DICTIONARY
 # =============================================================
 
-vars_dict = {'cbh_vars' : {'list': ['CBH_L1[m]'], 'label': 'Cloud Base \n Height', 'uom' : 'm'},
+vars_dict = {'cbh_vars'                                   : {'list': ['CBH_L1[m]'], 'label': 'Cloud Base \n Height',
+                                                             'uom' : 'm'},
              'temp_vars': {'list': ['AirTC', 'tmpc', 'Air_C'], 'label': 'Temp', 'uom': 'degC'},
              'press_vars': {'list': ['mslp', 'BP_mbar', 'BP_hPa'], 'label': 'Surf \n Press', 'uom': 'hPa'},
              'pm10_vars': {'list': ['PM10'], 'label': 'PM10', 'uom': 'ug m-3'},
@@ -87,7 +88,8 @@ vars_dict = {'cbh_vars' : {'list': ['CBH_L1[m]'], 'label': 'Cloud Base \n Height
              'iwv_vars': {'list': ['PWV', 'rs_iwv', 'IWV', 'N[Precipitable_Water(cm)]'], 'label': 'IWV', 'uom': 'cm'},
              'lwp_vars': {'list': ['LWP_gm-2'], 'label': 'LWP', 'uom': 'g m-2'},
              'sea_lev_vars': {'list': ['sea_level'], 'label': 'sea level', 'uom': 'm'},
-             'd18O_vars': {'list': ['d18O'], 'label': 'd18O', 'uom': 'per mil'}}
+             'd18O_vars': {'list': ['d18O'], 'label': 'd18O', 'uom': 'per mil'},
+             'strat_temp_vars': {'list': ['temp'], 'label': 'Strat.\n Temp [28 km]', 'uom': 'K'}}
 
 
 # =============================================================
@@ -142,7 +144,8 @@ metadata_entries = {'aeronet'                                                   
             plot_vars={'IWV': ('yellow', 'mm'), 'LWP_gm-2': ('yellow', 'g m-2')}),
     'lidar_temp'                                                                                                    : create_instr_metadata(
             dt.datetime(1993, 11, 1), institution='U.Sap+ENEA', start_seas=dt.datetime(1900, 11, 1),
-            end_seas=dt.datetime(1900, 3, 31), data_avail_py='thaao_lidar_temp.py'),
+            end_seas=dt.datetime(1900, 3, 31), data_avail_py='thaao_lidar_temp.py',
+            plot_vars={'temp': ('orange', 'K')}),
     'lidar_ae'                                                                                                      : create_instr_metadata(
             dt.datetime(1991, 9, 1), dt.datetime(1996, 3, 31), institution='U.Sap+ENEA',
             data_avail_py='thaao_lidar_ae.py'),

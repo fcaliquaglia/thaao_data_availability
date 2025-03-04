@@ -41,7 +41,7 @@ def update_data_avail(instr):
         if os.path.exists(fn):
             hyso_tide_1_tmp = pd.read_table(fn, header=None)
             hyso_tide_1_tmp.loc[1, hyso_tide_1_tmp.iloc[1] == 9999.00] = np.nan
-            for j, date_str in enumerate(hyso_tide_1_tmp[0]):
+            for j, date_str in enumerate(hyso_tide_1_tmp[0]):  # adjusting dates with hour 24:00 which raise errors!
                 if "24:00:00" in date_str:
                     date_part, _ = date_str.split("|")  # Extract the date part
                     new_date = pd.to_datetime(date_part, format="%d/%m/%Y") + pd.Timedelta(days=1)
@@ -52,10 +52,11 @@ def update_data_avail(instr):
             hyso_tide_1_tmp.index = pd.DatetimeIndex(pd.to_datetime(hyso_tide_1_tmp[0], format='%d/%m/%Y|%H:%M:%S'))
             hyso_tide_1_tmp.drop(columns=[0], inplace=True)
             hyso_tide_1_tmp.columns = ['sea_level', 'unk', 'unk']
-            hyso_tide_1_tmp = hyso_tide_1_tmp[['sea_level']]
+            hyso_tide_1_tmp = hyso_tide_1_tmp[['sea_level']].resample('1min').mean()
+            hyso_tide_1_tmp['sea_level'] = hyso_tide_1_tmp['sea_level'].replace(9999., np.nan)
             hyso_tide_1 = pd.concat([hyso_tide_1_tmp, hyso_tide_1])
             print('file ' + str(fn) + ' FOUND')
         else:
             print('file ' + str(fn) + ' not found')
 
-    sida_tls.save_csv(instr, hyso_tide_1.resample('5min'))
+    sida_tls.save_csv(instr, hyso_tide_1)
