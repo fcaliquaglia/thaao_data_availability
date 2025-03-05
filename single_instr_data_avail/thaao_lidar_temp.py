@@ -42,7 +42,7 @@ def update_data_avail(instr):
             continue
 
     lidar_temp_list_tmp = [item for sublist in lidar_temp for item in sublist]
-    #lidar_temp_list = [elem.sel(pressure_levels=~elem.coords['pressure_levels'].duplicated()) for elem in lidar_temp_list_tmp]
+    # lidar_temp_list = [elem.sel(pressure_levels=~elem.coords['pressure_levels'].duplicated()) for elem in lidar_temp_list_tmp]
 
     stacked_blocks = xr.concat(lidar_temp_list_tmp, dim='timestamps')
     stacked_blocks.to_netcdf(os.path.join(ts.basefolder, 'thaao_lidar_temp', 'test.nc'))
@@ -115,8 +115,8 @@ def nasa_ames_parser_2110(fn):
     all_blocks = []
     for i, _ in enumerate(lines[data_start:-1]):
         # Split the line by spaces and filter out empty strings
-        elements = list(filter(None, lines[data_start:][i].strip().split(' ')))
-        elements1 = list(filter(None, lines[data_start:][i + 1].strip().split(' ')))
+        elements = list(filter(None, lines[data_start:][i].strip().split()))
+        elements1 = list(filter(None, lines[data_start:][i + 1].strip().split()))
 
         # If the row has more than a threshold number of elements, it's a new block
         if (len(elements) == num_extra_vars + 1) & (len(elements1) == num_dependent_vars + 1):
@@ -129,10 +129,10 @@ def nasa_ames_parser_2110(fn):
             block_metadata['datetime'] = new_date
 
             j = 1
-            elements1 = list(filter(None, lines[data_start:][i + 1].strip().split(' ')))
+            elements1 = list(filter(None, lines[data_start:][i + 1].strip().split()))
             while len(elements1) == num_dependent_vars + 1:
                 try:
-                    elements1 = list(filter(None, lines[data_start:][i + 1 + j].strip().split(' ')))
+                    elements1 = list(filter(None, lines[data_start:][i + 1 + j].strip().split()))
                     j += 1
                 except IndexError:
                     j -= 1
@@ -140,15 +140,33 @@ def nasa_ames_parser_2110(fn):
 
             data_block = lines[data_start:][i + 1:i + j]
             data_block_fmt = []
-            [data_block_fmt.append(list(filter(None, data_block[k].strip().split(' ')))) for k in
-             range(len(data_block))]
+            [data_block_fmt.append(list(filter(None, data_block[k].strip().split()))) for k in range(len(data_block))]
             data_block_fmt = np.array(data_block_fmt).astype(float)
 
             timestamps = np.array(pd.to_datetime([block_metadata['datetime']]))  # Ensure a single timestamp per block
             height_levels = data_block_fmt[:, 0]
             pressure_levels = data_block_fmt[:, 3]
-            temperatures = np.tile(data_block_fmt[:, 5], (1, len(pressure_levels)))  # Tile to match shape (1, 102, 102)
-            temperatures = temperatures.reshape(1, len(height_levels), len(pressure_levels))
+            # Create an empty temperature array with shape (102, 102)
+
+            height_levels = np.unique(data_block_fmt[:, 0])  # Unique height levels (should be 102)
+            pressure_levels = np.unique(data_block_fmt[:, 3])  # Unique pressure levels (should be 102)
+
+            print(f"Height levels: {len(height_levels)}, Pressure levels: {len(pressure_levels)}")
+            temperature_grid = np.full((len(height_levels), len(pressure_levels)), np.nan)
+
+            # Populate the grid by matching height and pressure levels
+            for row in data_block_fmt:
+                height = row[0]  # Height value
+                pressure = row[3]  # Pressure value
+                temp_value = row[5]  # Temperature value
+
+                # Find the correct index for height and pressure
+                height_idx = np.where(height_levels == height)[0][0]
+                pressure_idx = np.where(pressure_levels == pressure)[0][0]
+
+                # Assign temperature to correct position
+                temperature_grid[height_idx, pressure_idx] = temp_value
+            temperatures = temperature_grid.reshape(1, len(height_levels), len(pressure_levels))
 
             temp = xr.DataArray(
                     temperatures, coords={"timestamps"     : timestamps, "height_levels": height_levels,
