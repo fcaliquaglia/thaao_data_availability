@@ -64,6 +64,7 @@ def update_data_avail(instr):
         data_sel = data_sel.to_dataframe()
         data_sel.columns = ['height_levels', f'backscatter_at_{altitude_target}m']
         data = pd.concat([data, data_sel], axis=0)
+    data.index = pd.to_datetime(data.index, unit="s")
     sida_tls.save_csv(instr, data)
 
     import matplotlib.pyplot as plt
