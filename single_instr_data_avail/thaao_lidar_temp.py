@@ -197,13 +197,8 @@ def nasa_ames_parser_2110(fn, instr, varname):
                     data, coords={"timestamps": time_diff_in_seconds, "height_levels": height_levels},
                     dims=["timestamps", "height_levels"], name='data')
 
-            time_var = temp.variables['timestamps']
-
-            # Define the units for the time variable
-            time_var.units = 'seconds since 1970-01-01 00:00:00'  # Adjust the date format as necessary
-
-            # Define a calendar if needed (optional)
-            time_var.calendar = ''
+            temp.coords["timestamps"].attrs[
+                "units"] = "seconds since 1970-01-01 00:00:00"  # Adjust this to your preferred format
 
             temp = temp.sortby("height_levels")
             temp = temp.sortby("timestamps")
