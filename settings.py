@@ -89,9 +89,9 @@ vars_dict = {'cbh_vars'                                   : {'list': ['CBH_L1[m]
              'lwp_vars': {'list': ['LWP_gm-2'], 'label': 'LWP', 'uom': 'g m-2'},
              'sea_lev_vars': {'list': ['sea_level'], 'label': 'sea level', 'uom': 'm'},
              'd18O_vars': {'list': ['d18O'], 'label': 'd18O', 'uom': 'per mil'},
-             'strat_temp_vars': {'list' : ['temperature_at_25000', 'temperature_at_30000', 'temperature_at_35000'],
+             'strat_temp_vars': {'list' : ['temperature_at_25000m', 'temperature_at_30000m', 'temperature_at_35000m'],
                                  'label': 'Strat. Temp 25, \n 30, 35 km', 'uom': 'K'},
-             'bksc_vars': {'list' : ['backscatter_at_10000', 'backscatter_at_15000', 'backscatter_at_20000'],
+             'bksc_vars': {'list' : ['backscatter_at_10000m', 'backscatter_at_15000m', 'backscatter_at_20000m'],
                            'label': 'Backscatt. \n 10, 15, 20 km', 'uom': ''}}
 
 
@@ -148,13 +148,13 @@ metadata_entries = {'aeronet'                                                   
     'lidar_temp'                                                                                                    : create_instr_metadata(
             dt.datetime(1993, 11, 1), institution='U.Sap+ENEA', start_seas=dt.datetime(1900, 11, 1),
             end_seas=dt.datetime(1900, 3, 31), data_avail_py='thaao_lidar_temp.py',
-            plot_vars={'temperature_at_25000': ('orange', 'K'), 'temperature_at_30000': ('green', 'K'),
-                       'temperature_at_35000': ('blue', 'K')}),
+            plot_vars={'temperature_at_25000m': ('orange', 'K'), 'temperature_at_30000m': ('green', 'K'),
+                       'temperature_at_35000m': ('blue', 'K')}),
     'lidar_ae'                                                                                                      : create_instr_metadata(
             dt.datetime(1991, 9, 1), dt.datetime(1996, 3, 31), institution='U.Sap+ENEA',
             data_avail_py='thaao_lidar_ae.py',
-            plot_vars={'backscatter_at_10000': ('blue', ''), 'temperature_at_15000': ('purple', ''),
-                       'temperature_at_20000': ('pink', '')}),
+            plot_vars={'backscatter_at_10000m': ('blue', ''), 'backscatter_at_15000m': ('purple', ''),
+                       'backscatter_at_20000m': ('pink', '')}),
     'hyso_seismo_1'                                                                                                 : create_instr_metadata(
             dt.datetime(2021, 8, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
             end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_hyso_seismo_1.py'),
