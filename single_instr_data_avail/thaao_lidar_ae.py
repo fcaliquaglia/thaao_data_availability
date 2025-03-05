@@ -53,7 +53,7 @@ def update_data_avail(instr):
     stacked_blocks = stacked_blocks.sortby('timestamps')
     stacked_blocks.to_netcdf(os.path.join(folder, instr + '.nc'))
 
-    altitude_targets = [25000, 30000, 35000]  # Altitude in meters
+    altitude_targets = [10000, 15000, 20000]  # Altitude in meters
     data = pd.DataFrame()
     for altitude_target in altitude_targets:
         try:
