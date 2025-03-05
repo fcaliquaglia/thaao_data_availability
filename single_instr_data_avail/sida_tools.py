@@ -21,11 +21,13 @@ __email__ = "filippo.caliquaglia@gmail.com"
 __status__ = "Research"
 __lastupdate__ = "February 2025"
 
+import datetime as dt
 import os
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import xarray as xr
 
 import settings as ts
 
@@ -75,11 +77,10 @@ def save_csv(instr_nm, data_val):
     print('Saving: ' + instr_nm)
     flt_fmt = '%.6e' if instr_nm in ['uv-vis_spec', 'ftir'] else '%.2f'
     data_val.to_csv(
-        os.path.join(fol_out, f'{instr_nm}_data_avail_list.csv'), sep=',', index=True, index_label='datetime',
-        float_format=flt_fmt)
+            os.path.join(fol_out, f'{instr_nm}_data_avail_list.csv'), sep=',', index=True, index_label='datetime',
+            float_format=flt_fmt)
     print('Saved ' + str(os.path.join(fol_out, instr_nm + '_data_avail_list.csv')))
     return
-
 
 
 def nasa_ames_parser_2110(fn, instr, varname):
