@@ -57,29 +57,30 @@ def update_data_avail(instr):
         data_sel = data_sel.to_dataframe()
         data_sel.columns = ['height_levels', f'temperature_at_{altitude_target}m']
         data = pd.concat([data, data_sel[f'temperature_at_{altitude_target}m']], axis=0)
+    data.index = pd.to_datetime(data.index, unit="s")
     sida_tls.save_csv(instr, data)
 
-    import matplotlib.pyplot as plt
-
-    # Ensure that timestamps are in datetime format
-    stacked_blocks["timestamps"] = pd.to_datetime(stacked_blocks["timestamps"], unit="s", origin="1970-01-01")
-
-    # # Filter data for the specific date range (September 1991 to February 1996)
-    # start_date = "1991-09-01"
-    # end_date = "1996-02-28"
-    # stacked_blocks_filtered = stacked_blocks.sel(timestamps=slice(start_date, end_date))
-
-    # Resample data by month and compute the monthly averages
-    stacked_blocks_monthly_avg = stacked_blocks.resample(timestamps="ME").mean()  # '1MS' means monthly start
-
-    plt.figure(figsize=(10, 6))
-    stacked_blocks_monthly_avg.plot(
-            x="timestamps", y="height_levels", cmap="coolwarm", cbar_kwargs={"label": "Temperature "})
-
-    plt.title("Temp profiles")
-    plt.xlabel("Time")
-    plt.ylabel("Height (m)")
-    plt.savefig(os.path.join(folder, instr + '.png'))
+    # import matplotlib.pyplot as plt
+    #
+    # # Ensure that timestamps are in datetime format
+    # stacked_blocks["timestamps"] = pd.to_datetime(stacked_blocks["timestamps"], unit="s", origin="1970-01-01")
+    #
+    # # # Filter data for the specific date range (September 1991 to February 1996)
+    # # start_date = "1991-09-01"
+    # # end_date = "1996-02-28"
+    # # stacked_blocks_filtered = stacked_blocks.sel(timestamps=slice(start_date, end_date))
+    #
+    # # Resample data by month and compute the monthly averages
+    # stacked_blocks_monthly_avg = stacked_blocks.resample(timestamps="ME").mean()  # '1MS' means monthly start
+    #
+    # plt.figure(figsize=(10, 6))
+    # stacked_blocks_monthly_avg.plot(
+    #         x="timestamps", y="height_levels", cmap="coolwarm", cbar_kwargs={"label": "Temperature "})
+    #
+    # plt.title("Temp profiles")
+    # plt.xlabel("Time")
+    # plt.ylabel("Height (m)")
+    # plt.savefig(os.path.join(folder, instr + '.png'))
 
     return
 
