@@ -33,21 +33,30 @@ def update_data_avail(instr):
     filenames = glob.glob(os.path.join(folder, "thte*"))
 
     lidar_temp = []
-    for filename in filenames[0:10]:
+    for filename in filenames:
         try:
             lidar_temp_tmp = nasa_ames_parser_2110(filename)
             lidar_temp.append(lidar_temp_tmp)
         except:
-            print(filename)
+            print(f'Error {filename}')
             continue
 
     lidar_temp_list_tmp = [item for sublist in lidar_temp for item in sublist]
-    # lidar_temp_list = [elem.sel(pressure_levels=~elem.coords['pressure_levels'].duplicated()) for elem in lidar_temp_list_tmp]
 
     stacked_blocks = xr.concat(lidar_temp_list_tmp, dim='timestamps')
-    stacked_blocks.to_netcdf(os.path.join(ts.basefolder, 'thaao_lidar_temp', 'test.nc'))
+    stacked_blocks = stacked_blocks.sortby('timestamps')
+    stacked_blocks.to_netcdf(os.path.join(ts.basefolder, 'thaao_lidar_temp', 'test2.nc'))
 
-    # Save the DataFrame using sida_tls module  # sida_tls.save_csv(instr, lidar_temp)
+    import matplotlib.pyplot as plt
+    plt.figure(figsize=(10, 6))
+    temp_da = stacked_blocks.transpose("timestamps", "height_levels")
+    temp_da.plot(x="timestamps", y="height_levels", cmap="coolwarm", cbar_kwargs={"label": "Temperature (K)"})
+    plt.title("Vertical Temperature Profiles")
+    plt.xlabel("Time")
+    plt.ylabel("Height (m)")
+    plt.show()
+
+    return
 
 
 def nasa_ames_parser_2110(fn):
@@ -120,12 +129,17 @@ def nasa_ames_parser_2110(fn):
 
         # If the row has more than a threshold number of elements, it's a new block
         if (len(elements) == num_extra_vars + 1) & (len(elements1) == num_dependent_vars + 1):
-            print(f'this is a new block at line: {i}')
+            elements = np.array(elements).astype(float)
+            elements[np.isin(elements, np.array([np.nan] + extra_nan))] = np.nan
+            elements *= np.array([1] + extra_mult)  # applying multiplication factors
+
             block_metadata = {key: value for key, value in zip([independent_vars[1]] + extra_vars, elements)}
-            print(block_metadata['Day'] + ' ' + block_metadata['Month'] + ' ' + block_metadata['Year'])
+
             new_date = dt.datetime.strptime(
-                    block_metadata['Year'] + block_metadata['Month'] + block_metadata['Day'] + block_metadata['Hour'] +
-                    block_metadata['Minutes'], '%Y%m%d%H%M')
+                    block_metadata['Year'].astype(int).astype(str) + block_metadata['Month'].astype(int).astype(str) +
+                    block_metadata['Day'].astype(int).astype(str) + block_metadata['Hour'].astype(int).astype(str) +
+                    block_metadata['Minutes'].astype(int).astype(str), '%Y%m%d%H%M')
+            print(new_date)
             block_metadata['datetime'] = new_date
 
             j = 1
@@ -142,36 +156,45 @@ def nasa_ames_parser_2110(fn):
             data_block_fmt = []
             [data_block_fmt.append(list(filter(None, data_block[k].strip().split()))) for k in range(len(data_block))]
             data_block_fmt = np.array(data_block_fmt).astype(float)
-
-            timestamps = np.array(pd.to_datetime([block_metadata['datetime']]))  # Ensure a single timestamp per block
-            height_levels = data_block_fmt[:, 0]
-            pressure_levels = data_block_fmt[:, 3]
-            # Create an empty temperature array with shape (102, 102)
+            data_block_fmt[np.isin(data_block_fmt, np.array([np.nan] + dependent_nan))] = np.nan
+            data_block_fmt *= np.array([1] + dependent_mult)  # applying multiplication factors
+            timestamps = pd.to_datetime([block_metadata['datetime']])  # Ensure a single timestamp per block
+            # Define the correct reference time (e.g., "1970-01-01 00:00:00")
+            # reference_time = pd.Timestamp('1970-01-01 00:00:00')
+            # Calculate the time difference in seconds since the reference time
+            # time_diff_in_seconds = np.array((timestamps - reference_time).total_seconds())
 
             height_levels = np.unique(data_block_fmt[:, 0])  # Unique height levels (should be 102)
-            pressure_levels = np.unique(data_block_fmt[:, 3])  # Unique pressure levels (should be 102)
-
-            print(f"Height levels: {len(height_levels)}, Pressure levels: {len(pressure_levels)}")
-            temperature_grid = np.full((len(height_levels), len(pressure_levels)), np.nan)
+            # pressure_levels = np.unique(data_block_fmt[:, 3])  # Unique pressure levels (should be 102)
+            # temperature_grid = np.full((len(height_levels), len(pressure_levels)), np.nan)
+            temperature_grid = np.full((len(height_levels)), np.nan)
 
             # Populate the grid by matching height and pressure levels
             for row in data_block_fmt:
                 height = row[0]  # Height value
-                pressure = row[3]  # Pressure value
+                # pressure = row[3]  # Pressure value
                 temp_value = row[5]  # Temperature value
 
                 # Find the correct index for height and pressure
                 height_idx = np.where(height_levels == height)[0][0]
-                pressure_idx = np.where(pressure_levels == pressure)[0][0]
+                # pressure_idx = np.where(pressure_levels == pressure)[0][0]
 
                 # Assign temperature to correct position
-                temperature_grid[height_idx, pressure_idx] = temp_value
-            temperatures = temperature_grid.reshape(1, len(height_levels), len(pressure_levels))
+                temperature_grid[height_idx] = temp_value  # temperature_grid[height_idx, pressure_idx] = temp_value
+            temperatures = temperature_grid.reshape(1, len(height_levels))
+            # temperatures = temperature_grid.reshape(1, len(height_levels), len(pressure_levels))
 
             temp = xr.DataArray(
-                    temperatures, coords={"timestamps"     : timestamps, "height_levels": height_levels,
-                                          "pressure_levels": pressure_levels},
-                    dims=["timestamps", "height_levels", "pressure_levels"], name="temperatures")
+                    temperatures, coords={"timestamps": timestamps, "height_levels": height_levels},
+                    dims=["timestamps", "height_levels"], name="temperatures")
+
+            temp = temp.sortby("height_levels")
+            temp = temp.sortby("timestamps")
+
+            # temp = xr.DataArray(
+            #         temperatures, coords={"timestamps"     : time_diff_in_seconds, "height_levels": height_levels,
+            #                               "pressure_levels": pressure_levels},
+            #         dims=["timestamps", "height_levels", "pressure_levels"], name="temperatures")
 
             # Attach the metadata as attributes to the DataArray
             keys_to_keep = ['Altitude of aperture of the mechanical shutter', 'Latitude', 'Longitude',
@@ -187,26 +210,4 @@ def nasa_ames_parser_2110(fn):
             # Add the xarray to the list of all blocks
             all_blocks.append(temp)
 
-    # Stack all blocks into a single xarray (assuming you want a single xarray with multiple blocks)
     return all_blocks
-
-    import matplotlib.pyplot as plt
-    plt.figure(figsize=(10, 6))
-    temp_da = stacked_blocks.transpose("timestamps", "height_levels")
-    stacked_blocks.plot(
-            x="timestamps", y="height_levels", cmap="coolwarm", cbar_kwargs={"label": "Temperature (K)"})
-    plt.title("Vertical Temperature Profiles (Contour)")
-    plt.xlabel("Time")
-    plt.ylabel("Height (m)")
-    plt.show()
-
-    # Apply multipliers
-    for col in df.columns:
-        df[col] *= metadata_dict[col]['mult']
-
-    df.set_index('datetime', inplace=True)
-    lidar_temp = pd.concat([lidar_temp, df])
-
-    lidar_temp = lidar_temp.sort_index()
-
-    return lidar_temp
