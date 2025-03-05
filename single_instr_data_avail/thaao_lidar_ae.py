@@ -178,7 +178,7 @@ def nasa_ames_parser_2110(fn, instr, varname):
             # Calculate the time difference in seconds since the reference time
             time_diff_in_seconds = np.array((timestamps - reference_time).total_seconds())
 
-            height_levels = np.unique(data_block_fmt[:, 0])  # Unique height levels (should be 102)
+            height_levels = np.unique(data_block_fmt[:, 0])
             # pressure_levels = np.unique(data_block_fmt[:, 3])  # Unique pressure levels (should be 102)
             # temperature_grid = np.full((len(height_levels), len(pressure_levels)), np.nan)
             data_grid = np.full((len(height_levels)), np.nan)
@@ -187,7 +187,7 @@ def nasa_ames_parser_2110(fn, instr, varname):
             for row in data_block_fmt:
                 height = row[0]  # Height value
                 # pressure = row[3]  # Pressure value
-                temp_value = row[5]  # Temperature value
+                temp_value = row[dependent_vars.index(varname)+1]  # Temperature value
 
                 # Find the correct index for height and pressure
                 height_idx = np.where(height_levels == height)[0][0]

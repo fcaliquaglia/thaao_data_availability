@@ -182,7 +182,7 @@ def nasa_ames_parser_2110(fn, instr, varname):
             for row in data_block_fmt:
                 height = row[0]  # Height value
                 # pressure = row[3]  # Pressure value
-                temp_value = row[5]  # Temperature value
+                temp_value = row[dependent_vars.index(varname)+1]
 
                 # Find the correct index for height and pressure
                 height_idx = np.where(height_levels == height)[0][0]
