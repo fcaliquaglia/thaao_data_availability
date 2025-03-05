@@ -35,7 +35,7 @@ def update_data_avail(instr):
     lidar_temp = []
     for filename in filenames:
         try:
-            lidar_temp_tmp = sida_tls.nasa_ames_parser_2110(filename, instr, varname=varname)
+            lidar_temp_tmp = sida_tls.nasa_ames_parser_2110(filename, instr, varnames=varname)
             lidar_temp.append(lidar_temp_tmp)
         except:
             print(f'Error {filename}')
@@ -47,13 +47,18 @@ def update_data_avail(instr):
     stacked_blocks = stacked_blocks.sortby('timestamps')
     stacked_blocks.to_netcdf(os.path.join(folder, instr + '.nc'))
 
-    altitude_target = 25000
-
-    try:
-        data_sel = stacked_blocks.sel(height_levels=altitude_target, method="nearest")
-    except Exception as e:
-        print(f"Error extracting temperature at {altitude_target}m: {e}")
-    sida_tls.save_csv(instr, data_sel.to_dataframe())
+    altitude_targets = [25000, 30000, 35000]  # Altitude in meters
+    data = pd.DataFrame()
+    for altitude_target in altitude_targets:
+        try:
+            # Select the closest altitude level to 25000m
+            data_sel = stacked_blocks.sel(height_levels=altitude_target, method="nearest")
+        except Exception as e:
+            print(f"Error extracting temperature at {altitude_target}m: {e}")
+        data_sel = data_sel.to_dataframe()
+        data_sel.columns = ['height_levels', f'temperature_at_{altitude_target}m']
+        data = pd.concat([data, data_sel], axis=0)
+    sida_tls.save_csv(instr, data)
 
     import matplotlib.pyplot as plt
 

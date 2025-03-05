@@ -117,7 +117,8 @@ def configure_plot_settings():
 
     sw.switch_summary_panel = get_switch_input('Plot data summary?', False)
 
-    ts.fig_size = get_figure_size()
+    if sw.switch_summary_panel:
+        ts.fig_size = get_figure_size()
 
     sw.switch_rolling_panels = get_switch_input(
             'Plot rolling panels? \n [Yearly panels: set=12, window=12]', False)
