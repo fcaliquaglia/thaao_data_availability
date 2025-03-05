@@ -35,20 +35,21 @@ def update_data_avail(instr):
     folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
     filenames = glob.glob(os.path.join(folder, "thae*"))
-    varname = 'Aerosol backscattering coefficient'
+    varname = ['Aerosol backscattering coefficient',
+               'Backscattering coefficient']  # multiple for differnt names in files
     # varname = 'Backscatter ratio'
-    lidar_temp = []
+    lidar_ae = []
     for filename in filenames:
         try:
-            lidar_temp_tmp = sida_tls.nasa_ames_parser_2110(filename, instr, varname=varname)
-            lidar_temp.append(lidar_temp_tmp)
+            lidar_ae_tmp = sida_tls.nasa_ames_parser_2110(filename, instr, varnames=varname)
+            lidar_ae.append(lidar_ae_tmp)
         except FileNotFoundError:
             print(f'Error {filename}')
             continue
 
-    lidar_temp_list_tmp = [item for sublist in lidar_temp for item in sublist]
+    lidar_ae_list_tmp = [item for sublist in lidar_ae for item in sublist]
 
-    stacked_blocks = xr.concat(lidar_temp_list_tmp, dim='timestamps')
+    stacked_blocks = xr.concat(lidar_ae_list_tmp, dim='timestamps')
     stacked_blocks = stacked_blocks.sortby('timestamps')
     stacked_blocks.to_netcdf(os.path.join(folder, instr + '.nc'))
 
@@ -56,10 +57,10 @@ def update_data_avail(instr):
 
     try:
         # Select the closest altitude level to 25000m
-        temp_sel = stacked_blocks.sel(height_levels=altitude_target, method="nearest")
+        data_sel = stacked_blocks.sel(height_levels=altitude_target, method="nearest")
     except Exception as e:
         print(f"Error extracting temperature at {altitude_target}m: {e}")
-    sida_tls.save_csv(instr, temp_sel.to_dataframe())
+    sida_tls.save_csv(instr, data_sel.to_dataframe())
 
     import matplotlib.pyplot as plt
 

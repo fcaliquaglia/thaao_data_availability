@@ -31,7 +31,7 @@ def update_data_avail(instr):
 
     filenames = glob.glob(os.path.join(folder, "thte*"))
 
-    varname = 'Temperature'
+    varname = ['Temperature']
     lidar_temp = []
     for filename in filenames:
         try:
@@ -47,15 +47,13 @@ def update_data_avail(instr):
     stacked_blocks = stacked_blocks.sortby('timestamps')
     stacked_blocks.to_netcdf(os.path.join(folder, instr + '.nc'))
 
-    altitude_target = 25000  # Altitude in meters
+    altitude_target = 25000
 
     try:
-        # Select the closest altitude level to 25000m
-        temp_sel = stacked_blocks.sel(height_levels=altitude_target, method="nearest")
+        data_sel = stacked_blocks.sel(height_levels=altitude_target, method="nearest")
     except Exception as e:
         print(f"Error extracting temperature at {altitude_target}m: {e}")
-    sida_tls.save_csv(instr, temp_sel.to_dataframe())
-
+    sida_tls.save_csv(instr, data_sel.to_dataframe())
 
     import matplotlib.pyplot as plt
 
@@ -77,7 +75,7 @@ def update_data_avail(instr):
     plt.title("Temp profiles")
     plt.xlabel("Time")
     plt.ylabel("Height (m)")
-    plt.savefig(os.path.join(folder, 'lidar_temp.png'))
+    plt.savefig(os.path.join(folder, instr + '.png'))
 
     return
 
