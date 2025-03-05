@@ -46,7 +46,7 @@ def update_data_avail(instr):
 
     stacked_blocks = xr.concat(lidar_temp_list_tmp, dim='timestamps')
     stacked_blocks = stacked_blocks.sortby('timestamps')
-    stacked_blocks.to_netcdf(os.path.join(folder, 'test3.nc'))
+    stacked_blocks.to_netcdf(os.path.join(folder, instr + '.nc'))
 
     # import matplotlib.pyplot as plt
     # plt.figure(figsize=(10, 6))
