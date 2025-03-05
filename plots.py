@@ -32,11 +32,11 @@ def draw_data_summary():
         except (ValueError, UnboundLocalError):
             print('ERROR with ' + instr)
 
-    if 'aeronet' in ts.instr_list:
+    if 'aeronet' in data_all.columns:
         data_all['aeronet__N[Precipitable_Water(cm)]'] /= 10.
-    if 'aws_vespa' in ts.instr_list:
+    if 'aws_vespa' in data_all.columns:
         data_all['aws_vespa__Air_C'] = (data_all['aws_vespa__Air_K'].values * units.K).to('degC')
-    if 'hyso_tide_1__sea_level' in ts.instr_list:
+    if 'hyso_tide_1__sea_level' in data_all.columns:
         data_all.loc[data_all['hyso_tide_1__sea_level'] > 10, 'hyso_tide_1__sea_level'] = np.nan
     var_list = []
     for instr in ts.instr_list:
