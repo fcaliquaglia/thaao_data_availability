@@ -68,16 +68,205 @@ def update_data_avail(instr):
     # Resample data by month and compute the monthly averages
     stacked_blocks_monthly_avg = stacked_blocks_filtered.resample(timestamps="1MS").mean()  # '1MS' means monthly start
 
-    # Now, plot the monthly averages
     plt.figure(figsize=(10, 6))
     stacked_blocks_monthly_avg.plot(
-        x="timestamps", y="height_levels", cmap="coolwarm",
-        cbar_kwargs={"label": "Aerosols "}, vmin=1e-7, vmax=6e-7)
+            x="timestamps", y="height_levels", cmap="coolwarm", cbar_kwargs={"label": "Aerosols "}, vmin=1e-7,
+            vmax=7.35e-7)
 
     plt.title("Vertical AE Profiles - Monthly Averages (Sept 1991 - Feb 1996) - di Sarra et al., 1998")
     plt.xlabel("Time")
     plt.ylabel("Height (m)")
+    plt.ylim(5000, 25000)
     plt.savefig(os.path.join(folder, 'disarraetal1998.png'))
+
+
+# import numpy as np
+# import pandas as pd
+# import datetime as dt
+# import xarray as xr
+#
+#
+# import numpy as np
+# import pandas as pd
+# import datetime as dt
+# import xarray as xr
+#
+# def nasa_ames_parser_2110(fn, instr, varname):
+#     try:
+#         with open(fn, 'r') as file:
+#             lines = file.readlines()[1:]  # Skip the first line
+#     except Exception as e:
+#         print(f"Error reading file {fn}: {e}")
+#         return []
+#
+#     try:
+#         # Identify number of header lines to skip
+#         data_start = int(lines[0].split()[0])
+#         metadata = lines[:data_start]
+#     except Exception as e:
+#         print(f"Error parsing header lines: {e}")
+#         return []
+#
+#     try:
+#         # Extract independent variable count and metadata
+#         num_independent_vars = len(metadata[5].split())
+#         independent_vars = [metadata[8 + i].strip() for i in range(num_independent_vars)]
+#     except Exception as e:
+#         print(f"Error extracting independent variables: {e}")
+#         return []
+#
+#     try:
+#         # Extract dependent variable metadata
+#         next_start = 8 + num_independent_vars
+#         dependent_mult = list(map(float, metadata[next_start + 1].split()))
+#         dependent_nan = list(map(float, metadata[next_start + 2].split()))
+#
+#         num_dependent_vars = int(metadata[next_start].strip())
+#         dependent_vars, dependent_units = [], []
+#
+#         next_start += 3
+#         for _ in range(num_dependent_vars):
+#             line_parts = metadata[next_start].strip().replace(';', '(').split('(')
+#             dependent_vars.append(line_parts[0].strip())
+#             dependent_units.append(line_parts[1].strip()[:-1] if len(line_parts) > 1 else np.nan)
+#             next_start += 1
+#     except Exception as e:
+#         print(f"Error extracting dependent variables: {e}")
+#         return []
+#
+#     try:
+#         # Extract extra variables metadata
+#         num_extra_vars = int(metadata[next_start].split()[0])
+#         extra_mult = list(map(float, metadata[next_start + 1].split()))
+#         extra_nan = list(map(float, metadata[next_start + 2].split()))
+#
+#         extra_vars, extra_units = [], []
+#         next_start += 3
+#         for _ in range(num_extra_vars):
+#             line_parts = metadata[next_start].strip().replace(';', '(').split('(')
+#             extra_vars.append(line_parts[0].strip())
+#             extra_units.append(line_parts[1].strip()[:-1] if len(line_parts) > 1 else np.nan)
+#             next_start += 1
+#     except Exception as e:
+#         print(f"Error extracting extra variables: {e}")
+#         return []
+#
+#     try:
+#         # Extract comment lines
+#         nr_comment_lines = int(metadata[next_start + 1].strip())
+#         comment_lines = metadata[next_start + 2:next_start + 2 + nr_comment_lines]
+#     except Exception as e:
+#         print(f"Error extracting comment lines: {e}")
+#         return []
+#
+#     try:
+#         # Check metadata consistency
+#         if not (len(dependent_nan) == len(dependent_mult) == len(dependent_units)):
+#             raise ValueError("Mismatch in dependent variable metadata lengths.")
+#         if not (len(extra_vars) == len(extra_mult) == len(extra_nan)):
+#             raise ValueError("Mismatch in extra variable metadata lengths.")
+#
+#         # Create metadata dictionary
+#         metadata_dict = {
+#             var: {'mult': mult, 'nanval': nan, 'uom': uom}
+#             for var, mult, nan, uom in zip(dependent_vars, dependent_mult, dependent_nan, dependent_units)
+#         }
+#         metadata_dict.update({
+#             var: {'mult': mult, 'nanval': nan}
+#             for var, mult, nan in zip(extra_vars, extra_mult, extra_nan)
+#         })
+#     except Exception as e:
+#         print(f"Error in metadata dictionary creation: {e}")
+#         return []
+#
+#     all_blocks = []
+#     lines_data = lines[data_start:]
+#
+#     try:
+#         i = 0
+#         while i < len(lines_data) - 1:
+#             try:
+#                 elements = np.array(lines_data[i].split(), dtype=float)
+#                 elements1 = np.array(lines_data[i + 1].split(), dtype=float)
+#             except Exception as e:
+#                 print(f"Error parsing line {i}: {e}")
+#                 i += 1
+#                 continue
+#
+#             if len(elements) == num_extra_vars + 1 and len(elements1) == num_dependent_vars + 1:
+#                 try:
+#                     elements[elements == extra_nan] = np.nan
+#                     elements *= np.array([1] + extra_mult)
+#
+#                     block_metadata = dict(zip([independent_vars[1]] + extra_vars, elements))
+#
+#                     new_date = dt.datetime.strptime(
+#                         f"{int(block_metadata['Year']):04d}{int(block_metadata['Month']):02d}"
+#                         f"{int(block_metadata['Day']):02d}{int(block_metadata['Hour']):02d}"
+#                         f"{int(block_metadata['Minutes']):02d}", '%Y%m%d%H%M'
+#                     )
+#                     block_metadata['datetime'] = new_date
+#                 except Exception as e:
+#                     print(f"Error processing metadata at line {i}: {e}")
+#                     i += 1
+#                     continue
+#
+#                 try:
+#                     j = 1
+#                     while i + 1 + j < len(lines_data) and len(lines_data[i + 1 + j].split()) == num_dependent_vars + 1:
+#                         j += 1
+#                 except Exception as e:
+#                     print(f"Error finding data block end at line {i}: {e}")
+#                     i += j
+#                     continue
+#
+#                 try:
+#                     data_block = np.array([line.split() for line in lines_data[i + 1:i + j]], dtype=float)
+#                     data_block[data_block == dependent_nan] = np.nan
+#                     data_block *= np.array([1] + dependent_mult)
+#
+#                     timestamps = pd.to_datetime([block_metadata['datetime']])
+#                     reference_time = pd.Timestamp('1970-01-01 00:00:00')
+#                     time_diff_in_seconds = np.array((timestamps - reference_time).total_seconds())
+#
+#                     height_levels = np.unique(data_block[:, 0])
+#                     data_grid = np.full(len(height_levels), np.nan)
+#
+#                     for row in data_block:
+#                         height_idx = np.where(height_levels == row[0])[0][0]
+#                         data_grid[height_idx] = row[dependent_vars.index(varname) + 1]
+#
+#                     temp = xr.DataArray(
+#                         data_grid.reshape(1, -1),
+#                         coords={"timestamps": time_diff_in_seconds, "height_levels": height_levels},
+#                         dims=["timestamps", "height_levels"],
+#                         name='data'
+#                     )
+#
+#                     temp.coords["timestamps"].attrs["units"] = "seconds since 1970-01-01 00:00:00"
+#                     temp = temp.sortby("height_levels").sortby("timestamps")
+#
+#                     keys_to_keep = {
+#                         'lidar_ae': ['Altitude of aperture of the mechanical shutter', 'Averaging time of presented data',
+#                                      'Latitude', 'Longitude', 'Laser wavelength'],
+#                         'lidar_temp': ['Altitude of aperture of the mechanical shutter', 'Latitude', 'Longitude',
+#                                        'Laser wavelength']
+#                     }.get(instr, [])
+#
+#                     block_metadata = {key: block_metadata[key] for key in keys_to_keep if key in block_metadata}
+#                     temp.attrs = block_metadata
+#                     all_blocks.append(temp)
+#                 except Exception as e:
+#                     print(f"Error processing data block at line {i}: {e}")
+#
+#                 i += j  # Skip processed lines
+#             else:
+#                 i += 1
+#     except Exception as e:
+#         print(f"Unexpected error in main loop: {e}")
+#         return []
+#
+#     return all_blocks
 
 
 def nasa_ames_parser_2110(fn, instr, varname):
@@ -159,19 +348,27 @@ def nasa_ames_parser_2110(fn, instr, varname):
 
         # If the row has more than a threshold number of elements, it's a new block
         if (len(elements) == num_extra_vars + 1) & (len(elements1) == num_dependent_vars + 1):
-            elements = np.array(elements).astype(float)
-            elements[np.isin(elements, np.array([np.nan] + extra_nan))] = np.nan
-            elements *= np.array([1] + extra_mult)  # applying multiplication factors
+            try:
+                elements = np.array(elements).astype(float)
+                elements[np.isin(elements, np.array([np.nan] + extra_nan))] = np.nan
+                elements *= np.array([1] + extra_mult)  # applying multiplication factors
 
-            block_metadata = {key: value for key, value in zip([independent_vars[1]] + extra_vars, elements)}
-
-            new_date = dt.datetime.strptime(
-                    block_metadata['Year'].astype(int).astype(str) + block_metadata['Month'].astype(int).astype(str) +
-                    block_metadata['Day'].astype(int).astype(str) + block_metadata['Hour'].astype(int).astype(str) +
-                    block_metadata['Minutes'].astype(int).astype(str), '%Y%m%d%H%M')
-            print(new_date)
-            block_metadata['datetime'] = new_date
-
+                block_metadata = {key: value for key, value in zip([independent_vars[1]] + extra_vars, elements)}
+                if block_metadata['Hour'].astype(int) == 24:
+                    block_metadata['Hour'] = 0
+                    new_date = dt.datetime(
+                            block_metadata['Year'].astype(int), block_metadata['Month'].astype(int),
+                            block_metadata['Day'].astype(int), block_metadata['Hour'].astype(int),
+                            block_metadata['Minutes'].astype(int)) + dt.timedelta(days=1)
+                else:
+                    new_date = dt.datetime(
+                            block_metadata['Year'].astype(int), block_metadata['Month'].astype(int),
+                            block_metadata['Day'].astype(int), block_metadata['Hour'].astype(int),
+                            block_metadata['Minutes'].astype(int))
+                print(new_date)
+                block_metadata['datetime'] = new_date
+            except:
+                print('errror')
             j = 1
             elements1 = list(filter(None, lines[data_start:][i + 1].strip().split()))
             while len(elements1) == num_dependent_vars + 1:
@@ -203,7 +400,7 @@ def nasa_ames_parser_2110(fn, instr, varname):
             for row in data_block_fmt:
                 height = row[0]  # Height value
                 # pressure = row[3]  # Pressure value
-                temp_value = row[dependent_vars.index(varname)+1]  # Temperature value
+                temp_value = row[dependent_vars.index(varname) + 1]  # Temperature value
 
                 # Find the correct index for height and pressure
                 height_idx = np.where(height_levels == height)[0][0]
@@ -225,13 +422,12 @@ def nasa_ames_parser_2110(fn, instr, varname):
             temp = temp.sortby("timestamps")
 
             # Attach the metadata as attributes to the DataArray
-            if instr=='lidar_ae':
-
-                keys_to_keep = ['Altitude of aperture of the mechanical shutter', 'Averaging time of presented data', 'Latitude', 'Longitude',
-                            'Laser wavelength']  # List of keys to keep
-            if instr=='lidar_temp':
+            if instr == 'lidar_ae':
+                keys_to_keep = ['Altitude of aperture of the mechanical shutter', 'Averaging time of presented data',
+                                'Latitude', 'Longitude', 'Laser wavelength']  # List of keys to keep
+            if instr == 'lidar_temp':
                 keys_to_keep = ['Altitude of aperture of the mechanical shutter', 'Latitude', 'Longitude',
-                            'Laser wavelength']  # List of keys to keep
+                                'Laser wavelength']  # List of keys to keep
 
             # Remove all keys not in keys_to_keep
             for key in list(block_metadata.keys()):  # Convert to list to avoid modifying the dictionary while iterating
