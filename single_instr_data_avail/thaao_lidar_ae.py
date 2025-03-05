@@ -55,13 +55,13 @@ def update_data_avail(instr):
     stacked_blocks = stacked_blocks.sortby('timestamps')
     stacked_blocks.to_netcdf(os.path.join(folder, 'test3.nc'))
 
-    import matplotlib.pyplot as plt
-    plt.figure(figsize=(10, 6))
-    stacked_blocks.plot(x="timestamps", y="height_levels", cmap="coolwarm", cbar_kwargs={"label": "Aerosols "})
-    plt.title("Vertical AE Profiles")
-    plt.xlabel("Time")
-    plt.ylabel("Height (m)")
-    plt.show()
+    # import matplotlib.pyplot as plt
+    # plt.figure(figsize=(10, 6))
+    # stacked_blocks.plot(x="timestamps", y="height_levels", cmap="coolwarm", cbar_kwargs={"label": "Aerosols "}, vmin=1e-7, vmax=6e-7)
+    # plt.title("Vertical AE Profiles")
+    # plt.xlabel("Time")
+    # plt.ylabel("Height (m)")
+    # plt.show()
 
 
 def nasa_ames_parser_2110(fn, instr, varname):
