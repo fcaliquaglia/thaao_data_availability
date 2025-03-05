@@ -48,13 +48,13 @@ def update_data_avail(instr):
     stacked_blocks = stacked_blocks.sortby('timestamps')
     stacked_blocks.to_netcdf(os.path.join(folder, 'test3.nc'))
 
-    import matplotlib.pyplot as plt
-    plt.figure(figsize=(10, 6))
-    stacked_blocks.plot(x="timestamps", y="height_levels", cmap="coolwarm", cbar_kwargs={"label": "Temperature (K)"})
-    plt.title("Vertical Temperature Profiles")
-    plt.xlabel("Time")
-    plt.ylabel("Height (m)")
-    plt.show()
+    # import matplotlib.pyplot as plt
+    # plt.figure(figsize=(10, 6))
+    # stacked_blocks.plot(x="timestamps", y="height_levels", cmap="coolwarm", cbar_kwargs={"label": "Temperature (K)"})
+    # plt.title("Vertical Temperature Profiles")
+    # plt.xlabel("Time")
+    # plt.ylabel("Height (m)")
+    # plt.show()
 
     return
 
