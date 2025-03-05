@@ -38,11 +38,12 @@ def update_data_avail(instr):
     folder = os.path.join(ts.basefolder, "thaao_" + instr)
 
     filenames = glob.glob(os.path.join(folder, "thae*"))
-
+    varname = 'Aerosol backscattering coefficient'
     lidar_temp = []
     for filename in filenames:
         try:
-            lidar_temp_tmp = nasa_ames_parser_2110(filename)
+
+            lidar_temp_tmp = nasa_ames_parser_2110(filename, instr, varname=varname)
             lidar_temp.append(lidar_temp_tmp)
         except:
             print(f'Error {filename}')
@@ -63,7 +64,7 @@ def update_data_avail(instr):
     plt.show()
 
 
-def nasa_ames_parser_2110(fn):
+def nasa_ames_parser_2110(fn, instr, varname):
     with open(fn, 'r') as file:
         lines = file.readlines()
         lines = lines[1:]
@@ -95,10 +96,10 @@ def nasa_ames_parser_2110(fn):
 
     next_start += 3
     for _ in range(num_dependent_vars):
-        try:
-            line_parts = metadata[next_start].split('(')
-        except:
-            line_parts = metadata[next_start].split(';')
+        if '(' in metadata[next_start]:
+            line_parts = metadata[next_start].strip().split('(')
+        if ';' in metadata[next_start]:
+            line_parts = metadata[next_start].strip().split(';')
         dependent_vars.append(line_parts[0].strip())
         dependent_units.append(line_parts[1].strip()[:-1] if len(line_parts) > 1 else np.nan)
         next_start += 1
@@ -111,10 +112,10 @@ def nasa_ames_parser_2110(fn):
 
     next_start += 3
     for _ in range(num_extra_vars):
-        try:
-            line_parts = metadata[next_start].split('(')
-        except:
-            line_parts = metadata[next_start].split(';')
+        if '(' in metadata[next_start]:
+            line_parts = metadata[next_start].strip().split('(')
+        if ';' in metadata[next_start]:
+            line_parts = metadata[next_start].strip().split(';')
         extra_vars.append(line_parts[0].strip())
         extra_units.append(line_parts[1].strip()[:-1] if len(line_parts) > 1 else np.nan)
         next_start += 1
@@ -180,7 +181,7 @@ def nasa_ames_parser_2110(fn):
             height_levels = np.unique(data_block_fmt[:, 0])  # Unique height levels (should be 102)
             # pressure_levels = np.unique(data_block_fmt[:, 3])  # Unique pressure levels (should be 102)
             # temperature_grid = np.full((len(height_levels), len(pressure_levels)), np.nan)
-            temperature_grid = np.full((len(height_levels)), np.nan)
+            data_grid = np.full((len(height_levels)), np.nan)
 
             # Populate the grid by matching height and pressure levels
             for row in data_block_fmt:
@@ -193,24 +194,24 @@ def nasa_ames_parser_2110(fn):
                 # pressure_idx = np.where(pressure_levels == pressure)[0][0]
 
                 # Assign temperature to correct position
-                temperature_grid[height_idx] = temp_value  # temperature_grid[height_idx, pressure_idx] = temp_value
-            temperatures = temperature_grid.reshape(1, len(height_levels))
+                data_grid[height_idx] = temp_value  # temperature_grid[height_idx, pressure_idx] = temp_value
+            data = data_grid.reshape(1, len(height_levels))
             # temperatures = temperature_grid.reshape(1, len(height_levels), len(pressure_levels))
 
             temp = xr.DataArray(
-                    temperatures, coords={"timestamps": time_diff_in_seconds, "height_levels": height_levels},
-                    dims=["timestamps", "height_levels"], name="temperatures")
+                    data, coords={"timestamps": time_diff_in_seconds, "height_levels": height_levels},
+                    dims=["timestamps", "height_levels"], name='data')
 
             temp = temp.sortby("height_levels")
             temp = temp.sortby("timestamps")
 
-            # temp = xr.DataArray(
-            #         temperatures, coords={"timestamps"     : time_diff_in_seconds, "height_levels": height_levels,
-            #                               "pressure_levels": pressure_levels},
-            #         dims=["timestamps", "height_levels", "pressure_levels"], name="temperatures")
-
             # Attach the metadata as attributes to the DataArray
-            keys_to_keep = ['Altitude of aperture of the mechanical shutter', 'Latitude', 'Longitude',
+            if instr=='lidar_ae':
+
+                keys_to_keep = ['Altitude of aperture of the mechanical shutter', 'Averaging time of presented data', 'Latitude', 'Longitude',
+                            'Laser wavelength']  # List of keys to keep
+            if instr=='lidar_temp':
+                keys_to_keep = ['Altitude of aperture of the mechanical shutter', 'Latitude', 'Longitude',
                             'Laser wavelength']  # List of keys to keep
 
             # Remove all keys not in keys_to_keep
