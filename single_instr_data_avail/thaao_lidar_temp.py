@@ -51,13 +51,12 @@ def update_data_avail(instr):
     data = pd.DataFrame()
     for altitude_target in altitude_targets:
         try:
-            # Select the closest altitude level to 25000m
             data_sel = stacked_blocks.sel(height_levels=altitude_target, method="nearest")
         except Exception as e:
             print(f"Error extracting temperature at {altitude_target}m: {e}")
         data_sel = data_sel.to_dataframe()
         data_sel.columns = ['height_levels', f'temperature_at_{altitude_target}m']
-        data = pd.concat([data, data_sel], axis=0)
+        data = pd.concat([data, data_sel[f'temperature_at_{altitude_target}m']], axis=0)
     sida_tls.save_csv(instr, data)
 
     import matplotlib.pyplot as plt
