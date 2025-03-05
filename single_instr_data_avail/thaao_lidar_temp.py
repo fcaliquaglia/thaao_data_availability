@@ -45,12 +45,11 @@ def update_data_avail(instr):
 
     stacked_blocks = xr.concat(lidar_temp_list_tmp, dim='timestamps')
     stacked_blocks = stacked_blocks.sortby('timestamps')
-    stacked_blocks.to_netcdf(os.path.join(ts.basefolder, 'thaao_lidar_temp', 'test2.nc'))
+    stacked_blocks.to_netcdf(os.path.join(folder, 'test3.nc'))
 
     import matplotlib.pyplot as plt
     plt.figure(figsize=(10, 6))
-    temp_da = stacked_blocks.transpose("timestamps", "height_levels")
-    temp_da.plot(x="timestamps", y="height_levels", cmap="coolwarm", cbar_kwargs={"label": "Temperature (K)"})
+    stacked_blocks.plot(x="timestamps", y="height_levels", cmap="coolwarm", cbar_kwargs={"label": "Temperature (K)"})
     plt.title("Vertical Temperature Profiles")
     plt.xlabel("Time")
     plt.ylabel("Height (m)")
@@ -91,7 +90,10 @@ def nasa_ames_parser_2110(fn):
 
     next_start += 3
     for _ in range(num_dependent_vars):
-        line_parts = metadata[next_start].split('(')
+        try:
+            line_parts = metadata[next_start].split('(')
+        except:
+            line_parts = metadata[next_start].split(';')
         dependent_vars.append(line_parts[0].strip())
         dependent_units.append(line_parts[1].strip()[:-1] if len(line_parts) > 1 else np.nan)
         next_start += 1
@@ -104,10 +106,16 @@ def nasa_ames_parser_2110(fn):
 
     next_start += 3
     for _ in range(num_extra_vars):
-        line_parts = metadata[next_start].split('(')
+        try:
+            line_parts = metadata[next_start].split('(')
+        except:
+            line_parts = metadata[next_start].split(';')
         extra_vars.append(line_parts[0].strip())
         extra_units.append(line_parts[1].strip()[:-1] if len(line_parts) > 1 else np.nan)
         next_start += 1
+
+    nr_comment_lines = int(metadata[next_start + 1].strip())
+    comment_lines = metadata[next_start + 2:next_start + 2+nr_comment_lines]
 
     # Check metadata consistency
     if not (len(dependent_nan) == len(dependent_mult) == len(dependent_units)):
@@ -160,9 +168,9 @@ def nasa_ames_parser_2110(fn):
             data_block_fmt *= np.array([1] + dependent_mult)  # applying multiplication factors
             timestamps = pd.to_datetime([block_metadata['datetime']])  # Ensure a single timestamp per block
             # Define the correct reference time (e.g., "1970-01-01 00:00:00")
-            # reference_time = pd.Timestamp('1970-01-01 00:00:00')
+            reference_time = pd.Timestamp('1970-01-01 00:00:00')
             # Calculate the time difference in seconds since the reference time
-            # time_diff_in_seconds = np.array((timestamps - reference_time).total_seconds())
+            time_diff_in_seconds = np.array((timestamps - reference_time).total_seconds())
 
             height_levels = np.unique(data_block_fmt[:, 0])  # Unique height levels (should be 102)
             # pressure_levels = np.unique(data_block_fmt[:, 3])  # Unique pressure levels (should be 102)
@@ -185,7 +193,7 @@ def nasa_ames_parser_2110(fn):
             # temperatures = temperature_grid.reshape(1, len(height_levels), len(pressure_levels))
 
             temp = xr.DataArray(
-                    temperatures, coords={"timestamps": timestamps, "height_levels": height_levels},
+                    temperatures, coords={"timestamps": time_diff_in_seconds, "height_levels": height_levels},
                     dims=["timestamps", "height_levels"], name="temperatures")
 
             temp = temp.sortby("height_levels")
