@@ -10,17 +10,17 @@ import numpy as np
 import pandas as pd
 from matplotlib import patches
 from matplotlib.lines import Line2D
-from metpy.units import units
 from tqdm import tqdm
 
 import settings as ts
 import switches as sw
 import tools as tls
 
-scale_factor = 1.5
-plt.rcParams.update({'font.size': 6 * scale_factor})
-plt.rcParams.update({'figure.dpi': 300})
-plt.rcParams.update({'figure.figsize': (15, 10)})
+
+# scale_factor = 1.5
+# plt.rcParams.update({'font.size': 6 * scale_factor})
+# plt.rcParams.update({'figure.dpi': 300})
+# plt.rcParams.update({'figure.figsize': (15, 10)})
 
 
 def draw_data_summary():

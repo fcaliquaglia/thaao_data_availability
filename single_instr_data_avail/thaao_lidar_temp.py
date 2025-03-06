@@ -32,10 +32,11 @@ def update_data_avail(instr):
     filenames = glob.glob(os.path.join(folder, "thte*"))
 
     varname = ['Temperature']
+    vert_var = ['Altitude']
     lidar_temp = []
     for filename in filenames:
         try:
-            lidar_temp_tmp = sida_tls.nasa_ames_parser_2110(filename, instr, varnames=varname)
+            lidar_temp_tmp = sida_tls.nasa_ames_parser_2110(filename, instr, vert_var=vert_var, varnames=varname)
             lidar_temp.append(lidar_temp_tmp)
         except:
             print(f'Error {filename}')

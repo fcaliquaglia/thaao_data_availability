@@ -21,8 +21,8 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "February 2025"
 
-import os
 import glob
+import os
 
 import pandas as pd
 import xarray as xr
@@ -37,10 +37,11 @@ def update_data_avail(instr):
     filenames = glob.glob(os.path.join(folder, "th*"))
 
     varname = ['Ozone partial pressure']  # , 'Scattering ratio for red channel', 'Scattering ratio for blue channel']
+    vert_var = ['Geopotential height']
     aero_sondes = []
     for filename in filenames:
         try:
-            aero_sondes_tmp = sida_tls.nasa_ames_parser_2110(filename, instr, varnames=varname)
+            aero_sondes_tmp = sida_tls.nasa_ames_parser_2110(filename, instr, vert_var=vert_var, varnames=varname)
             aero_sondes.append(aero_sondes_tmp)
         except:
             print(f'Error {filename}')

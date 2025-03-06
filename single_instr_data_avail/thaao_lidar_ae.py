@@ -37,11 +37,12 @@ def update_data_avail(instr):
     filenames = glob.glob(os.path.join(folder, "thae*"))
     varname = ['Aerosol backscattering coefficient',
                'Backscattering coefficient']  # multiple for differnt names in files
+    vert_var = ['Geometric altitude']
     # varname = 'Backscatter ratio'
     lidar_ae = []
     for filename in filenames:
         try:
-            lidar_ae_tmp = sida_tls.nasa_ames_parser_2110(filename, instr, varnames=varname)
+            lidar_ae_tmp = sida_tls.nasa_ames_parser_2110(filename, instr, vert_var = vert_var, varnames=varname)
             lidar_ae.append(lidar_ae_tmp)
         except FileNotFoundError:
             print(f'Error {filename}')

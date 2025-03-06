@@ -83,7 +83,7 @@ def save_csv(instr_nm, data_val):
     return
 
 
-def nasa_ames_parser_2110(fn, instr, varnames):
+def nasa_ames_parser_2110(fn, instr, vert_var, varnames):
     with open(fn, 'r') as file:
         lines = file.readlines()
         lines = lines[1:]
@@ -227,40 +227,44 @@ def nasa_ames_parser_2110(fn, instr, varnames):
             # Calculate the time difference in seconds since the reference time
             time_diff_in_seconds = np.array((timestamps - reference_time).total_seconds())
 
-            height_levels = np.unique(data_block_fmt[:, 0])
-            # pressure_levels = np.unique(data_block_fmt[:, 3])  # Unique pressure levels (should be 102)
+            # height_levels = np.unique(data_block_fmt[:, 0])
+            v_var_levels = np.unique(data_block_fmt[:, dependent_vars.index(vert_var[0])])  # Unique pressure levels (should be 102)
             # temperature_grid = np.full((len(height_levels), len(pressure_levels)), np.nan)
-            data_grid = np.full((len(height_levels)), np.nan)
+            data_grid = np.full((len(v_var_levels)), np.nan)
 
             # Populate the grid by matching height and pressure levels
             for row in data_block_fmt:
-                height = row[0]  # Height value
-                # pressure = row[3]  # Pressure value
+                # height = row[0]
+                v_var = row[dependent_vars.index(vert_var[0])]  # vert value
                 for varn in varnames:
                     try:
-                        temp_value = row[dependent_vars.index(varn) + 1]
+                        data_value = row[dependent_vars.index(varn) + 1]
                         break
                     except ValueError:
                         continue
 
-                # Find the correct index for height and pressure
-                height_idx = np.where(height_levels == height)[0][0]
-                # pressure_idx = np.where(pressure_levels == pressure)[0][0]
+                # Find the correct index for v_var
+                v_var_idx = np.where(v_var_levels == v_var)[0][0]
 
                 # Assign temperature to correct position
-                data_grid[height_idx] = temp_value  # temperature_grid[height_idx, pressure_idx] = temp_value
-            data = data_grid.reshape(1, len(height_levels))
+                # data_grid[height_idx] = temp_value
+                data_grid[v_var_idx] = data_value
+            data = data_grid.reshape(1, len(v_var_levels))
             # temperatures = temperature_grid.reshape(1, len(height_levels), len(pressure_levels))
 
-            temp = xr.DataArray(
-                    data, coords={"timestamps": time_diff_in_seconds, "height_levels": height_levels},
-                    dims=["timestamps", "height_levels"], name='data')
+            if ['geopotential', 'height'] in vert_var.lower():
+                ver_var_lab = 'height_levels'
+            if ['pressure'] in vert_var:
+                ver_var_lab = 'pressure_levels'
+            data = xr.DataArray(
+                    data, coords={"timestamps": time_diff_in_seconds, ver_var_lab: v_var_levels},
+                    dims=["timestamps", ver_var_lab], name='data')
 
-            temp.coords["timestamps"].attrs[
+            data.coords["timestamps"].attrs[
                 "units"] = "seconds since 1970-01-01 00:00:00"  # Adjust this to your preferred format
 
-            temp = temp.sortby("height_levels")
-            temp = temp.sortby("timestamps")
+            data = data.sortby("ver_var_lab")
+            data = data.sortby("timestamps")
 
             # Attach the metadata as attributes to the DataArray
             if instr == 'lidar_ae':
@@ -281,9 +285,9 @@ def nasa_ames_parser_2110(fn, instr, varnames):
                 if key not in keys_to_keep:
                     del block_metadata[key]
 
-            temp.attrs = block_metadata
+            data.attrs = block_metadata
 
             # Add the xarray to the list of all blocks
-            all_blocks.append(temp)
+            all_blocks.append(data)
 
     return all_blocks
