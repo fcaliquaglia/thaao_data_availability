@@ -148,8 +148,7 @@ metadata_entries = {'aeronet'                                                   
     'lidar_temp'                                                                                                    : create_instr_metadata(
             dt.datetime(1993, 11, 1), institution='U.Sap+ENEA', start_seas=dt.datetime(1900, 11, 1),
             end_seas=dt.datetime(1900, 3, 31), data_avail_py='thaao_lidar_temp.py',
-            plot_vars={'temperature_at_25000m': ('orange', 'K'), 'temperature_at_30000m': ('green', 'K'),
-                       'temperature_at_35000m': ('blue', 'K')}),
+            plot_vars={ 'temperature_at_30000m': ('green', 'K')}),
     'lidar_ae'                                                                                                      : create_instr_metadata(
             dt.datetime(1991, 9, 1), dt.datetime(1996, 3, 31), institution='U.Sap+ENEA',
             data_avail_py='thaao_lidar_ae.py',

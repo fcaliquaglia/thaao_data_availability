@@ -66,23 +66,23 @@ def update_data_avail(instr):
         data = pd.concat([data, data_sel], axis=0)
     data.index = pd.to_datetime(data.index, unit="s")
     sida_tls.save_csv(instr, data)
-
-    import matplotlib.pyplot as plt
-
-    # Ensure that timestamps are in datetime format
-    stacked_blocks["timestamps"] = pd.to_datetime(stacked_blocks["timestamps"], unit="s", origin="1970-01-01")
-
-    # stacked_blocks_filtered = stacked_blocks.sel(timestamps=slice(start_date, end_date))
-
-    # Resample data by month and compute the monthly averages
-    stacked_blocks_monthly_avg = stacked_blocks.resample(timestamps="ME").mean()  # '1MS' means monthly start
-
-    plt.figure(figsize=(10, 6))
-    stacked_blocks_monthly_avg.plot(
-            x="timestamps", y="height_levels", cmap="coolwarm", cbar_kwargs={"label": "Aerosols "}, vmin=1e-7,
-            vmax=7.35e-7)
-
-    plt.title("Vertical AE Profiles - Monthly Averages (Sept 1991 - Feb 1996) - di Sarra et al., 1998")
-    plt.xlabel("Time")
-    plt.ylabel("Height (m)")
-    plt.savefig(os.path.join(folder, 'disarraetal1998_7D.png'))
+    #
+    # import matplotlib.pyplot as plt
+    #
+    # # Ensure that timestamps are in datetime format
+    # stacked_blocks["timestamps"] = pd.to_datetime(stacked_blocks["timestamps"], unit="s", origin="1970-01-01")
+    #
+    # # stacked_blocks_filtered = stacked_blocks.sel(timestamps=slice(start_date, end_date))
+    #
+    # # Resample data by month and compute the monthly averages
+    # stacked_blocks_monthly_avg = stacked_blocks.resample(timestamps="ME").mean()  # '1MS' means monthly start
+    #
+    # plt.figure(figsize=(10, 6))
+    # stacked_blocks_monthly_avg.plot(
+    #         x="timestamps", y="height_levels", cmap="coolwarm", cbar_kwargs={"label": "Aerosols "}, vmin=1e-7,
+    #         vmax=7.35e-7)
+    #
+    # plt.title("Vertical AE Profiles - Monthly Averages (Sept 1991 - Feb 1996) - di Sarra et al., 1998")
+    # plt.xlabel("Time")
+    # plt.ylabel("Height (m)")
+    # plt.savefig(os.path.join(folder, 'disarraetal1998_7D.png'))
