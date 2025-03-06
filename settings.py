@@ -91,6 +91,8 @@ vars_dict = {'cbh_vars'                                   : {'list': ['CBH_L1[m]
              'd18O_vars': {'list': ['d18O'], 'label': 'd18O', 'uom': 'per mil'},
              'strat_temp_vars': {'list' : ['temperature_at_25000m', 'temperature_at_30000m', 'temperature_at_35000m'],
                                  'label': 'Strat. Temp 25, \n 30, 35 km', 'uom': 'K'},
+             'strat_ozone_vars': {'list': ['Ozone partial pressure_at_35000m'], 'label': 'Strat. O3 \n 25 km',
+                                  'uom' : ''},
              'bksc_vars': {'list' : ['backscatter_at_10000m', 'backscatter_at_15000m', 'backscatter_at_20000m'],
                            'label': 'Backscatt. \n 10, 15, 20 km', 'uom': ''}}
 
@@ -177,7 +179,10 @@ metadata_entries = {'aeronet'                                                   
     'mms_trios'                                                                                                     : create_instr_metadata(
             dt.datetime(2021, 9, 1), institution='INGV', data_avail_py='thaao_mms_trios.py'),
     'o3_sondes'                                                                                                     : create_instr_metadata(
-            dt.datetime(1991, 12, 1), dt.datetime(2016, 12, 31), institution='DMI', data_avail_py='thaao_o3_sondes.py'),
+            dt.datetime(1991, 12, 1), dt.datetime(2016, 12, 31), institution='DMI', data_avail_py='thaao_o3_sondes.py',
+            plot_vars={'Ozone partial pressure'           : ('orange', '??'),
+                       'Scattering ratio for red channel' : ('orange', '??'),
+                       'Scattering ratio for blue channel': ('orange', '??')}),
     'pm10'                                                                                                          : create_instr_metadata(
             dt.datetime(2010, 1, 1), institution='U.Alaska,Florence,StonyBrook/USSF', data_avail_py='thaao_pm10.py',
             plot_vars={'PM10': ('black', 'ug m-3')}),

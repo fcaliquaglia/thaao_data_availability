@@ -133,14 +133,27 @@ def nasa_ames_parser_2110(fn, instr, varnames):
     for _ in range(num_extra_vars):
         if '(' in metadata[next_start]:
             line_parts = metadata[next_start].strip().split('(')
-        if ';' in metadata[next_start]:
+            extra_vars.append(line_parts[0].strip())
+            extra_units.append(line_parts[1].strip()[:-1] if len(line_parts) > 1 else np.nan)
+        elif ';' in metadata[next_start]:
             line_parts = metadata[next_start].strip().split(';')
-        extra_vars.append(line_parts[0].strip())
-        extra_units.append(line_parts[1].strip()[:-1] if len(line_parts) > 1 else np.nan)
+            extra_vars.append(line_parts[0].strip())
+            extra_units.append(line_parts[1].strip()[:-1] if len(line_parts) > 1 else np.nan)
+        else:
+            line_parts = metadata[next_start].strip()
+            extra_vars.append(line_parts.strip())
+            extra_units.append(np.nan)
+
         next_start += 1
 
-    nr_comment_lines = int(metadata[next_start + 1].strip())
-    comment_lines = metadata[next_start + 2:next_start + 2 + nr_comment_lines]
+    comment_lines = []
+    nr_comment_lines = int(metadata[next_start].strip())
+    [comment_lines.append(elem.strip()) for elem in metadata[next_start + 1:next_start + 1 + nr_comment_lines]]
+
+    # for aero_sondes
+    next_start += 1 + nr_comment_lines
+    nr_comment_lines = int(metadata[next_start].strip())
+    [comment_lines.append(elem.strip()) for elem in metadata[next_start + 1:next_start + 1 + nr_comment_lines]]
 
     # Check metadata consistency
     if not (len(dependent_nan) == len(dependent_mult) == len(dependent_units)):
@@ -168,19 +181,28 @@ def nasa_ames_parser_2110(fn, instr, varnames):
                 elements *= np.array([1] + extra_mult)  # applying multiplication factors
 
                 block_metadata = {key: value for key, value in zip([independent_vars[1]] + extra_vars, elements)}
-                if block_metadata['Hour'].astype(int) == 24:
-                    block_metadata['Hour'] = 0
+                if instr in ['lidar_temp', 'lidar_ae']:
+                    if block_metadata['Hour'].astype(int) == 24:
+                        block_metadata['Hour'] = 0
+                        new_date = dt.datetime(
+                                block_metadata['Year'].astype(int), block_metadata['Month'].astype(int),
+                                block_metadata['Day'].astype(int), block_metadata['Hour'],
+                                block_metadata['Minutes'].astype(int)) + dt.timedelta(days=1)
+                    else:
+                        new_date = dt.datetime(
+                                block_metadata['Year'].astype(int), block_metadata['Month'].astype(int),
+                                block_metadata['Day'].astype(int), block_metadata['Hour'].astype(int),
+                                block_metadata['Minutes'].astype(int))
+                    print(new_date)
+                    block_metadata['datetime'] = new_date
+                if instr in ['aero_sondes', '03_sondes']:
+                    timedelta = pd.to_timedelta(block_metadata['Launch time'], unit="h")
                     new_date = dt.datetime(
-                            block_metadata['Year'].astype(int), block_metadata['Month'].astype(int),
-                            block_metadata['Day'].astype(int), block_metadata['Hour'],
-                            block_metadata['Minutes'].astype(int)) + dt.timedelta(days=1)
-                else:
-                    new_date = dt.datetime(
-                            block_metadata['Year'].astype(int), block_metadata['Month'].astype(int),
-                            block_metadata['Day'].astype(int), block_metadata['Hour'].astype(int),
-                            block_metadata['Minutes'].astype(int))
-                print(new_date)
-                block_metadata['datetime'] = new_date
+                            block_metadata['Year of launch'].astype(int), block_metadata['Month of launch'].astype(int),
+                            block_metadata['Day of launch'].astype(int), timedelta.components.hours,
+                            timedelta.components.minutes)
+                    print(new_date)
+                    block_metadata['datetime'] = new_date
             except:
                 print('errror')
             j = 1
@@ -245,8 +267,14 @@ def nasa_ames_parser_2110(fn, instr, varnames):
                 keys_to_keep = ['Altitude of aperture of the mechanical shutter', 'Averaging time of presented data',
                                 'Latitude', 'Longitude', 'Laser wavelength']  # List of keys to keep
             if instr == 'lidar_temp':
-                keys_to_keep = ['Altitude of aperture of the mechanical shutter', 'Latitude', 'Longitude',
+                keys_to_keep = ['Altitude of aperture of the mechanical shutter', 'Latitude',
+                                'Longitude']  # List of keys to keep
+            if instr == 'aero_sondes':
+                keys_to_keep = ['East longitude of station', 'Latitude of station',
                                 'Laser wavelength']  # List of keys to keep
+            # TODO:
+            if instr == 'o3_sondes':
+                keys_to_keep = []  # List of keys to keep
 
             # Remove all keys not in keys_to_keep
             for key in list(block_metadata.keys()):  # Convert to list to avoid modifying the dictionary while iterating
