@@ -228,7 +228,8 @@ def nasa_ames_parser_2110(fn, instr, vert_var, varnames):
             time_diff_in_seconds = np.array((timestamps - reference_time).total_seconds())
 
             # height_levels = np.unique(data_block_fmt[:, 0])
-            v_var_levels = np.unique(data_block_fmt[:, dependent_vars.index(vert_var[0])])  # Unique pressure levels (should be 102)
+            v_var_levels = np.unique(
+                    data_block_fmt[:, dependent_vars.index(vert_var[0])])  # Unique pressure levels (should be 102)
             # temperature_grid = np.full((len(height_levels), len(pressure_levels)), np.nan)
             data_grid = np.full((len(v_var_levels)), np.nan)
 
@@ -252,9 +253,9 @@ def nasa_ames_parser_2110(fn, instr, vert_var, varnames):
             data = data_grid.reshape(1, len(v_var_levels))
             # temperatures = temperature_grid.reshape(1, len(height_levels), len(pressure_levels))
 
-            if ['geopotential', 'height'] in vert_var.lower():
+            if any(word in vert_var[0].lower() for word in ['geopotential', 'height']):
                 ver_var_lab = 'height_levels'
-            if ['pressure'] in vert_var:
+            if any(word in vert_var[0].lower() for word in ['pressure']):
                 ver_var_lab = 'pressure_levels'
             data = xr.DataArray(
                     data, coords={"timestamps": time_diff_in_seconds, ver_var_lab: v_var_levels},
@@ -263,7 +264,7 @@ def nasa_ames_parser_2110(fn, instr, vert_var, varnames):
             data.coords["timestamps"].attrs[
                 "units"] = "seconds since 1970-01-01 00:00:00"  # Adjust this to your preferred format
 
-            data = data.sortby("ver_var_lab")
+            data = data.sortby(ver_var_lab)
             data = data.sortby("timestamps")
 
             # Attach the metadata as attributes to the DataArray
