@@ -21,28 +21,46 @@ __email__ = "filippo.caliquaglia@ingv.it"
 __status__ = "Research"
 __lastupdate__ = "February 2025"
 
+import os
+import glob
+
+import pandas as pd
+import xarray as xr
+
+import settings as ts
+import single_instr_data_avail.sida_tools as sida_tls
+
 
 def update_data_avail(instr):
-    import os
-    from glob import glob
-
-    import pandas as pd
-    import single_instr_data_avail.sida_tools as sida_tls
-
-    import settings as ts
-
-    date_list = pd.date_range(
-            ts.instr_metadata[instr]['start_instr'], ts.instr_metadata[instr]['end_instr'], freq='D').tolist()
     folder = os.path.join(ts.basefolder, 'thaao_' + instr)
 
-    aero_sondes = pd.DataFrame(columns=['dt', 'mask'])
+    filenames = glob.glob(os.path.join(folder, "th*"))
 
-    for i in date_list:
-        fn = glob(os.path.join(folder, 'th' + i.strftime('%y%m%d') + '.*'))
+    varname = ['Ozone partial pressure']  # , 'Scattering ratio for red channel', 'Scattering ratio for blue channel']
+    aero_sondes = []
+    for filename in filenames:
         try:
-            if fn[0]:
-                aero_sondes.loc[i] = [i, True]
-        except IndexError:
-            pass
+            aero_sondes_tmp = sida_tls.nasa_ames_parser_2110(filename, instr, varnames=varname)
+            aero_sondes.append(aero_sondes_tmp)
+        except:
+            print(f'Error {filename}')
+            continue
 
-    sida_tls.save_csv(instr, aero_sondes)
+    aero_sondes_list_tmp = [item for sublist in aero_sondes for item in sublist]
+
+    stacked_blocks = xr.concat(aero_sondes_list_tmp, dim='timestamps')
+    stacked_blocks = stacked_blocks.sortby('timestamps')
+    stacked_blocks.to_netcdf(os.path.join(folder, instr + '.nc'))
+
+    altitude_targets = [25000, 30000, 35000]  # Altitude in meters
+    data = pd.DataFrame()
+    for altitude_target in altitude_targets:
+        try:
+            data_sel = stacked_blocks.sel(height_levels=altitude_target, method="nearest")
+        except Exception as e:
+            print(f"Error extracting ozone at {altitude_target}m: {e}")
+        data_sel = data_sel.to_dataframe()
+        data_sel.columns = ['height_levels', f'ozone_at_{altitude_target}m']
+        data = pd.concat([data, data_sel[f'ozone_at_{altitude_target}m']], axis=0)
+    data.index = pd.to_datetime(data.index, unit="s")
+    sida_tls.save_csv(instr, data)
