@@ -91,7 +91,7 @@ vars_dict = {'cbh_vars'                                   : {'list': ['CBH_L1[m]
              'd18O_vars': {'list': ['d18O'], 'label': 'd18O', 'uom': 'per mil'},
              'strat_temp_vars': {'list' : ['temperature_at_25000m', 'temperature_at_30000m', 'temperature_at_35000m'],
                                  'label': 'Strat. Temp 25, \n 30, 35 km', 'uom': 'K'},
-             'strat_ozone_vars': {'list': ['Ozone partial pressure_at_35000m'], 'label': 'Strat. O3 \n 25 km',
+             'strat_ozone_vars': {'list': ['Ozone partial pressure_at_20000m'], 'label': 'Strat. O3 \n 20 km',
                                   'uom' : ''},
              'bksc_vars': {'list' : ['backscatter_at_10000m', 'backscatter_at_15000m', 'backscatter_at_20000m'],
                            'label': 'Backscatt. \n 10, 15, 20 km', 'uom': ''}}

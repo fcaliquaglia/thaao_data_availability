@@ -52,7 +52,7 @@ def update_data_avail(instr):
     stacked_blocks = stacked_blocks.sortby('timestamps')
     stacked_blocks.to_netcdf(os.path.join(folder, instr + '.nc'))
 
-    altitude_targets = [25000, 30000, 35000]  # Altitude in meters
+    altitude_targets = [15000, 20000, 25000]  # Altitude in meters
     data = pd.DataFrame()
     for altitude_target in altitude_targets:
         try:
@@ -60,7 +60,7 @@ def update_data_avail(instr):
         except Exception as e:
             print(f"Error extracting ozone at {altitude_target}m: {e}")
         data_sel = data_sel.to_dataframe()
-        data_sel.columns = ['height_levels', f'ozone_at_{altitude_target}m']
-        data = pd.concat([data, data_sel[f'ozone_at_{altitude_target}m']], axis=0)
+        data_sel.columns = ['height_levels', f'Ozone partial pressure_at_{altitude_target}m']
+        data = pd.concat([data, data_sel[f'Ozone partial pressure_at_{altitude_target}m']], axis=0)
     data.index = pd.to_datetime(data.index, unit="s")
     sida_tls.save_csv(instr, data)
