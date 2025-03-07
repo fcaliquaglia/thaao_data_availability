@@ -95,5 +95,6 @@ def update_data_avail(instr):
             print(f"Error extracting ozone at {height_target}m: {e}")
 
     # Save the data to a CSV or further processing
+    data = data.drop_duplicates(keep='first')
     data.sort_index(inplace=True)
     sida_tls.save_csv(instr, data)
