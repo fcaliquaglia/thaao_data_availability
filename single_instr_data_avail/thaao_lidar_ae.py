@@ -73,7 +73,7 @@ def update_data_avail(instr):
                 if not data_at_timestamp_non_nan.isnull().all():
                     # Select the nearest value at the specified height
                     data_sel = data_at_timestamp_non_nan.sel(
-                            height_levels=height_target, method="nearest", tolerance=100)
+                            height_levels=height_target, method="nearest")
 
                     # Ensure the selected data is a single value
                     if not data_sel.isnull():
@@ -105,3 +105,5 @@ def update_data_avail(instr):
 
         except Exception as e:
             print(f"Error extracting backscatter at {height_target}m: {e}")
+
+    sida_tls.save_csv(instr, data)

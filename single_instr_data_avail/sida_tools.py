@@ -106,11 +106,12 @@ def nasa_ames_parser_2110(fn, instr, vert_var, varnames):
     dependent_mult.extend([float(x) for x in metadata[next_start + 1 + num_independent_vars].strip().split()])
     dependent_nan.extend([float(x) for x in metadata[next_start + 2 + num_independent_vars].strip().split()])
     for _ in range(num_independent_vars):
-        try:
+        if '(' in metadata[next_start]:
+            independent_vars.append(metadata[next_start].strip().split('(')[0].strip())
+            independent_uom.append(metadata[next_start].strip().split('(')[1])
+        else:
             independent_vars.append(metadata[next_start].strip())
-            independent_uom.append(metadata[next_start].strip())
-        except:
-            independent_vars.append(metadata[next_start].strip())
+            independent_uom.append(np.nan)
         next_start += 1
 
     # Extract dependent variables metadata
@@ -232,9 +233,9 @@ def nasa_ames_parser_2110(fn, instr, vert_var, varnames):
             # Calculate the time difference in seconds since the reference time
             time_diff_in_seconds = np.array((timestamps - reference_time).total_seconds())
 
-            if len(vert_var) >1:
+            if len(vert_var) > 1:
                 try:
-                    vert_var_idx= ([independent_vars[0]] + dependent_vars).index(vert_var[0])
+                    vert_var_idx = ([independent_vars[0]] + dependent_vars).index(vert_var[0])
                 except ValueError:
                     vert_var_idx = ([independent_vars[0]] + dependent_vars).index(vert_var[1])
             v_var_levels = np.unique(
