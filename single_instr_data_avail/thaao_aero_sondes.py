@@ -60,6 +60,7 @@ def update_data_avail(instr):
     # Create an empty DataFrame to store results (with timestamps as the index)
     data = pd.DataFrame()
 
+    # Loop through each height target
     for height_target in height_targets:
         try:
             # Loop over each timestamp in the data
@@ -80,21 +81,30 @@ def update_data_avail(instr):
                         # Extract the scalar value from data_sel (it's a single value)
                         ozone_value = data_sel.values
 
-                        # Get the timestamp and height_level (these are already in data_sel's coordinates)
+                        # Get the timestamp (this is already in data_sel's coordinates)
                         timestamp = data_sel.timestamps.values
 
-                        # Create a DataFrame with the ozone value and timestamp
+                        # Convert the timestamp to datetime
+                        timestamp = pd.to_datetime(timestamp, unit='s')
+
+                        # Create a DataFrame with the ozone value for the specific height level and timestamp
                         data_sel_df = pd.DataFrame(
                                 {f'Ozone partial pressure_at_{height_target}m': [ozone_value]},
-                                index=[pd.to_datetime(timestamp, unit='s')]  # Convert timestamp to datetime
+                                index=[timestamp]  # Use the timestamp as the index
                         )
-                        data = pd.concat([data_sel_df, data])
-            # Convert the index to datetime (if needed)
-            data.index = pd.to_datetime(data.index, unit="s")
+
+                        # Check if the timestamp already exists in the DataFrame
+                        if timestamp in data.index:
+                            # If it exists, update the value in the corresponding column (don't add a new row)
+                            data.loc[timestamp, f'Ozone partial pressure_at_{height_target}m'] = ozone_value
+                        else:
+                            # Otherwise, add a new row with the value for that timestamp
+                            data = pd.concat([data, data_sel_df])
+
+            # Sort the DataFrame by index (timestamps) to ensure it's ordered
+            data.sort_index(inplace=True)
+
         except Exception as e:
             print(f"Error extracting ozone at {height_target}m: {e}")
 
-    # Save the data to a CSV or further processing
-    data = data.drop_duplicates(keep='first')
-    data.sort_index(inplace=True)
     sida_tls.save_csv(instr, data)

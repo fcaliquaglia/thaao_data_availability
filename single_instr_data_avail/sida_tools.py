@@ -98,6 +98,7 @@ def nasa_ames_parser_2110(fn, instr, vert_var, varnames):
 
     # Extract independent variable metadata
     independent_vars = []
+    independent_uom = []
     next_start = 8
 
     dependent_mult = []
@@ -105,7 +106,11 @@ def nasa_ames_parser_2110(fn, instr, vert_var, varnames):
     dependent_mult.extend([float(x) for x in metadata[next_start + 1 + num_independent_vars].strip().split()])
     dependent_nan.extend([float(x) for x in metadata[next_start + 2 + num_independent_vars].strip().split()])
     for _ in range(num_independent_vars):
-        independent_vars.append(metadata[next_start].strip())
+        try:
+            independent_vars.append(metadata[next_start].strip())
+            independent_uom.append(metadata[next_start].strip())
+        except:
+            independent_vars.append(metadata[next_start].strip())
         next_start += 1
 
     # Extract dependent variables metadata
@@ -227,12 +232,17 @@ def nasa_ames_parser_2110(fn, instr, vert_var, varnames):
             # Calculate the time difference in seconds since the reference time
             time_diff_in_seconds = np.array((timestamps - reference_time).total_seconds())
 
+            if len(vert_var) >1:
+                try:
+                    vert_var_idx= ([independent_vars[0]] + dependent_vars).index(vert_var[0])
+                except ValueError:
+                    vert_var_idx = ([independent_vars[0]] + dependent_vars).index(vert_var[1])
             v_var_levels = np.unique(
-                    data_block_fmt[:, dependent_vars.index(vert_var[0])+1])
+                    data_block_fmt[:, vert_var_idx])
             data_grid = np.full((len(v_var_levels)), np.nan)
 
             for row in data_block_fmt:
-                v_var = row[dependent_vars.index(vert_var[0])+1]  # vert value
+                v_var = row[vert_var_idx]  # vert value
                 for varn in varnames:
                     try:
                         data_value = row[dependent_vars.index(varn) + 1]
@@ -249,7 +259,7 @@ def nasa_ames_parser_2110(fn, instr, vert_var, varnames):
             data = data_grid.reshape(1, len(v_var_levels))
             # temperatures = temperature_grid.reshape(1, len(height_levels), len(pressure_levels))
 
-            if any(word in vert_var[0].lower() for word in ['geopotential', 'height']):
+            if any(word in vert_var[0].lower() for word in ['geopotential', 'height', 'altitude']):
                 ver_var_lab = 'height_levels'
             if any(word in vert_var[0].lower() for word in ['pressure']):
                 ver_var_lab = 'pressure_levels'

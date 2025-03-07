@@ -24,6 +24,7 @@ __lastupdate__ = "February 2025"
 import glob
 import os
 
+import numpy as np
 import pandas as pd
 import xarray as xr
 
@@ -37,12 +38,12 @@ def update_data_avail(instr):
     filenames = glob.glob(os.path.join(folder, "thae*"))
     varname = ['Aerosol backscattering coefficient',
                'Backscattering coefficient']  # multiple for differnt names in files
-    vert_var = ['Geometric altitude']
+    vert_var = ['Geometric altitude', 'Altitude']
     # varname = 'Backscatter ratio'
     lidar_ae = []
     for filename in filenames:
         try:
-            lidar_ae_tmp = sida_tls.nasa_ames_parser_2110(filename, instr, vert_var = vert_var, varnames=varname)
+            lidar_ae_tmp = sida_tls.nasa_ames_parser_2110(filename, instr, vert_var=vert_var, varnames=varname)
             lidar_ae.append(lidar_ae_tmp)
         except FileNotFoundError:
             print(f'Error {filename}')
@@ -54,36 +55,53 @@ def update_data_avail(instr):
     stacked_blocks = stacked_blocks.sortby('timestamps')
     stacked_blocks.to_netcdf(os.path.join(folder, instr + '.nc'))
 
-    altitude_targets = [10000, 15000, 20000]  # Altitude in meters
+    height_targets = [10000, 15000, 20000]  # Altitude in meters
+    # Create an empty DataFrame to store results (with timestamps as the index)
     data = pd.DataFrame()
-    for altitude_target in altitude_targets:
+
+    # Loop through each height target
+    for height_target in height_targets:
         try:
-            # Select the closest altitude level to 25000m
-            data_sel = stacked_blocks.sel(height_levels=altitude_target, method="nearest")
+            # Loop over each timestamp in the data
+            for timestamp in stacked_blocks.timestamps.values:
+                # Select the data for the current timestamp
+                data_at_timestamp = stacked_blocks.sel(timestamps=timestamp)
+
+                # Mask out NaN values along the 'height_levels' dimension
+                data_at_timestamp_non_nan = data_at_timestamp.where(~np.isnan(data_at_timestamp), drop=True)
+
+                if not data_at_timestamp_non_nan.isnull().all():
+                    # Select the nearest value at the specified height
+                    data_sel = data_at_timestamp_non_nan.sel(
+                            height_levels=height_target, method="nearest", tolerance=100)
+
+                    # Ensure the selected data is a single value
+                    if not data_sel.isnull():
+                        # Extract the scalar value from data_sel (it's a single value)
+                        ozone_value = data_sel.values
+
+                        # Get the timestamp (this is already in data_sel's coordinates)
+                        timestamp = data_sel.timestamps.values
+
+                        # Convert the timestamp to datetime
+                        timestamp = pd.to_datetime(timestamp, unit='s')
+
+                        # Create a DataFrame with the ozone value for the specific height level and timestamp
+                        data_sel_df = pd.DataFrame(
+                                {f'backscatter_at_{height_target}m': [ozone_value]}, index=[timestamp]
+                                # Use the timestamp as the index
+                        )
+
+                        # Check if the timestamp already exists in the DataFrame
+                        if timestamp in data.index:
+                            # If it exists, update the value in the corresponding column (don't add a new row)
+                            data.loc[timestamp, f'backscatter_at_{height_target}m'] = ozone_value
+                        else:
+                            # Otherwise, add a new row with the value for that timestamp
+                            data = pd.concat([data, data_sel_df])
+
+            # Sort the DataFrame by index (timestamps) to ensure it's ordered
+            data.sort_index(inplace=True)
+
         except Exception as e:
-            print(f"Error extracting backscatter at {altitude_target}m: {e}")
-        data_sel = data_sel.to_dataframe()
-        data_sel.columns = ['height_levels', f'backscatter_at_{altitude_target}m']
-        data = pd.concat([data, data_sel], axis=0)
-    data.index = pd.to_datetime(data.index, unit="s")
-    sida_tls.save_csv(instr, data)
-    #
-    # import matplotlib.pyplot as plt
-    #
-    # # Ensure that timestamps are in datetime format
-    # stacked_blocks["timestamps"] = pd.to_datetime(stacked_blocks["timestamps"], unit="s", origin="1970-01-01")
-    #
-    # # stacked_blocks_filtered = stacked_blocks.sel(timestamps=slice(start_date, end_date))
-    #
-    # # Resample data by month and compute the monthly averages
-    # stacked_blocks_monthly_avg = stacked_blocks.resample(timestamps="ME").mean()  # '1MS' means monthly start
-    #
-    # plt.figure(figsize=(10, 6))
-    # stacked_blocks_monthly_avg.plot(
-    #         x="timestamps", y="height_levels", cmap="coolwarm", cbar_kwargs={"label": "Aerosols "}, vmin=1e-7,
-    #         vmax=7.35e-7)
-    #
-    # plt.title("Vertical AE Profiles - Monthly Averages (Sept 1991 - Feb 1996) - di Sarra et al., 1998")
-    # plt.xlabel("Time")
-    # plt.ylabel("Height (m)")
-    # plt.savefig(os.path.join(folder, 'disarraetal1998_7D.png'))
+            print(f"Error extracting backscatter at {height_target}m: {e}")
