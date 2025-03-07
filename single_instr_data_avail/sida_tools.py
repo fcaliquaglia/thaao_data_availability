@@ -195,7 +195,7 @@ def nasa_ames_parser_2110(fn, instr, vert_var, varnames):
                                 block_metadata['Minutes'].astype(int))
                     print(new_date)
                     block_metadata['datetime'] = new_date
-                if instr in ['aero_sondes', '03_sondes']:
+                if instr in ['aero_sondes', 'o3_sondes']:
                     timedelta = pd.to_timedelta(block_metadata['Launch time'], unit="h")
                     new_date = dt.datetime(
                             block_metadata['Year of launch'].astype(int), block_metadata['Month of launch'].astype(int),
@@ -227,16 +227,12 @@ def nasa_ames_parser_2110(fn, instr, vert_var, varnames):
             # Calculate the time difference in seconds since the reference time
             time_diff_in_seconds = np.array((timestamps - reference_time).total_seconds())
 
-            # height_levels = np.unique(data_block_fmt[:, 0])
             v_var_levels = np.unique(
-                    data_block_fmt[:, dependent_vars.index(vert_var[0])])  # Unique pressure levels (should be 102)
-            # temperature_grid = np.full((len(height_levels), len(pressure_levels)), np.nan)
+                    data_block_fmt[:, dependent_vars.index(vert_var[0])+1])
             data_grid = np.full((len(v_var_levels)), np.nan)
 
-            # Populate the grid by matching height and pressure levels
             for row in data_block_fmt:
-                # height = row[0]
-                v_var = row[dependent_vars.index(vert_var[0])]  # vert value
+                v_var = row[dependent_vars.index(vert_var[0])+1]  # vert value
                 for varn in varnames:
                     try:
                         data_value = row[dependent_vars.index(varn) + 1]
@@ -257,15 +253,15 @@ def nasa_ames_parser_2110(fn, instr, vert_var, varnames):
                 ver_var_lab = 'height_levels'
             if any(word in vert_var[0].lower() for word in ['pressure']):
                 ver_var_lab = 'pressure_levels'
-            data = xr.DataArray(
+            data_tmp = xr.DataArray(
                     data, coords={"timestamps": time_diff_in_seconds, ver_var_lab: v_var_levels},
-                    dims=["timestamps", ver_var_lab], name='data')
+                    dims=["timestamps", ver_var_lab], name=varn)
 
-            data.coords["timestamps"].attrs[
+            data_tmp.coords["timestamps"].attrs[
                 "units"] = "seconds since 1970-01-01 00:00:00"  # Adjust this to your preferred format
 
-            data = data.sortby(ver_var_lab)
-            data = data.sortby("timestamps")
+            # data_tmp = data_tmp.sortby(ver_var_lab)
+            data_tmp = data_tmp.sortby("timestamps")
 
             # Attach the metadata as attributes to the DataArray
             if instr == 'lidar_ae':
@@ -286,9 +282,9 @@ def nasa_ames_parser_2110(fn, instr, vert_var, varnames):
                 if key not in keys_to_keep:
                     del block_metadata[key]
 
-            data.attrs = block_metadata
+            data_tmp.attrs = block_metadata
 
             # Add the xarray to the list of all blocks
-            all_blocks.append(data)
+            all_blocks.append(data_tmp)
 
     return all_blocks

@@ -90,9 +90,9 @@ vars_dict = {'cbh_vars' : {'list': ['CBH_L1[m]'], 'label': 'Cloud Base \n Height
              'sea_lev_vars': {'list': ['sea_level'], 'label': 'sea level', 'uom': 'm'},
              'd18O_vars': {'list': ['d18O'], 'label': 'd18O', 'uom': 'per mil'},
              'strat_temp_vars': {'list' : ['temperature_at_25000m', 'temperature_at_30000m', 'temperature_at_35000m'],
-                                 'label': 'Strat. Temp 25, \n 30, 35 km', 'uom': 'K'}, 'strat_ozone_vars': {
-        'list': ['Ozone partial pressure_at_550hPa', 'Ozone partial pressure_at_200hPa',
-                 'Ozone partial pressure_at_50hPa'], 'label': 'Strat. O3 \n 550, 200, 50 hPa', 'uom': ''},
+                                 'label': 'Temp @ 25, \n 30, 35 km', 'uom': 'K'}, 'strat_ozone_vars': {
+        'list': ['Ozone partial pressure_at_15000m', 'Ozone partial pressure_at_20000m',
+                 'Ozone partial pressure_at_25000m'], 'label': 'O3 @ 15\n 20, 25 km', 'uom': ''},
              'bksc_vars': {'list' : ['backscatter_at_550hPa', 'backscatter_at_200hPa', 'backscatter_at_50hPa'],
                            'label': 'Backscatt. \n 550, 200, 50 hPa', 'uom': ''}}
 
@@ -116,7 +116,7 @@ metadata_entries = {'aeronet'                                                   
         plot_vars={'AOD_440nm': ('green', ''), 'N[Precipitable_Water(cm)]': ('green', 'cm')}),
     'aero_sondes'                                                                                                   : create_instr_metadata(
             dt.datetime(1992, 1, 1), dt.datetime(1998, 12, 31), institution='DMI', data_avail_py='thaao_aero_sondes.py',
-            plot_vars={'Ozone partial pressure_at_550hPa': ('blue', '??'), 'Ozone partial pressure_at_200hPa': ('purple', '??'), 'Ozone partial pressure_at_50hPa': ('pink', '??'), }),
+            plot_vars={'Ozone partial pressure_at_15000m': ('blue', '??'), 'Ozone partial pressure_at_20000m': ('purple', '??'), 'Ozone partial pressure_at_25000m': ('pink', '??'), }),
     'aws_vespa'                                                                                                     : create_instr_metadata(
             dt.datetime(2016, 1, 1), institution='INGV', data_avail_py='thaao_aws_vespa.py',
             plot_vars={'AIR_C': ('red', 'degC'), 'BP_hPa': ('red', 'hPa'), 'RH_%': ('red', '%')}),
