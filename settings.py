@@ -116,7 +116,7 @@ metadata_entries = {'aeronet'                                                   
         plot_vars={'AOD_440nm': ('green', ''), 'N[Precipitable_Water(cm)]': ('green', 'cm')}),
     'aero_sondes'                                                                                                   : create_instr_metadata(
             dt.datetime(1992, 1, 1), dt.datetime(1998, 12, 31), institution='DMI', data_avail_py='thaao_aero_sondes.py',
-            plot_vars={'Ozone partial pressure_at_15000m': ('blue', '??'), 'Ozone partial pressure_at_20000m': ('purple', '??'), 'Ozone partial pressure_at_25000m': ('pink', '??'), }),
+            plot_vars={'Ozone partial pressure_at_15000m': ('blue', '??'), 'Ozone partial pressure_at_20000m': ('purple', '??'), 'Ozone partial pressure_at_25000m': ('cyan', '??'), }),
     'aws_vespa'                                                                                                     : create_instr_metadata(
             dt.datetime(2016, 1, 1), institution='INGV', data_avail_py='thaao_aws_vespa.py',
             plot_vars={'AIR_C': ('red', 'degC'), 'BP_hPa': ('red', 'hPa'), 'RH_%': ('red', '%')}),
@@ -146,7 +146,7 @@ metadata_entries = {'aeronet'                                                   
             data_avail_py='thaao_gbms.py'),
     'hatpro'                                                                                                        : create_instr_metadata(
             dt.datetime(2017, 1, 1), dt.datetime(2024, 9, 30), institution='ENEA', data_avail_py='thaao_hatpro.py',
-            plot_vars={'IWV': ('yellow', 'mm'), 'LWP_gm-2': ('yellow', 'g m-2')}),
+            plot_vars={'IWV': ('blue', 'mm'), 'LWP_gm-2': ('blue', 'g m-2')}),
     'lidar_temp'                                                                                                    : create_instr_metadata(
             dt.datetime(1993, 11, 1), institution='U.Sap+ENEA', start_seas=dt.datetime(1900, 11, 1),
             end_seas=dt.datetime(1900, 3, 31), data_avail_py='thaao_lidar_temp.py',
@@ -156,7 +156,7 @@ metadata_entries = {'aeronet'                                                   
             dt.datetime(1991, 9, 1), dt.datetime(1996, 3, 31), institution='U.Sap+ENEA',
             data_avail_py='thaao_lidar_ae.py',
             plot_vars={'backscatter_at_10000m': ('blue', ''), 'backscatter_at_15000m': ('purple', ''),
-                       'backscatter_at_20000m': ('pink', '')}),
+                       'backscatter_at_20000m': ('cyan', '')}),
     'hyso_seismo_1'                                                                                                 : create_instr_metadata(
             dt.datetime(2021, 8, 1), institution='INGV', start_seas=dt.datetime(1900, 3, 1),
             end_seas=dt.datetime(1900, 10, 31), data_avail_py='thaao_hyso_seismo_1.py'),
