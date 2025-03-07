@@ -201,98 +201,79 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
         return newdate + timedelta(hours=decimal_hour)
 
     if instr in ['o3_sondes']:
-        extra_metadata['datetime'] = cast_hour_to_datetime(datetime, extra_metadata['launch time'])
+        try:
+            extra_metadata['datetime'] = cast_hour_to_datetime(datetime, extra_metadata['launch time'])
+        except KeyError:
+            extra_metadata['datetime'] = cast_hour_to_datetime(datetime, extra_metadata['Launch time'])
 
     data_start = next_start + 2
-    all_blocks = []
-    for i, _ in enumerate(lines[data_start:]):
-        # Split the line by spaces and filter out empty strings
-        elements = list(filter(None, lines[data_start:][i].strip().split()))
 
-        # If the row has more than a threshold number of elements, it's a new block
-        if (len(elements) == num_dependent_vars + 1):
-            elements = np.array(elements).astype(float)
-            elements[np.isin(elements, np.array([np.nan] + dependent_nan))] = np.nan
-            elements *= np.array([1] + dependent_mult)  # applying multiplication factors
+    #data_block = lines[data_start:][data_start:]
+    # data_block_fmt = []
+    # [data_block_fmt.append(list(filter(None, data_block[k].strip().split()))) for k in range(len(data_block))]
+    # data_block_fmt = np.array(data_block_fmt).astype(float)
+    # data_block_fmt[np.isin(data_block_fmt, np.array([np.nan] + dependent_nan))] = np.nan
+    # data_block_fmt *= np.array([1] + dependent_mult)  # applying multiplication factors
+    timestamps = pd.to_datetime([extra_metadata['datetime']])  # Ensure a single timestamp per block
+    # Define the correct reference time (e.g., "1970-01-01 00:00:00")
+    reference_time = pd.Timestamp('1970-01-01 00:00:00')
+    # Calculate the time difference in seconds since the reference time
+    time_diff_in_seconds = np.array((timestamps - reference_time).total_seconds())
 
-            j = 1
-            elements1 = list(filter(None, lines[data_start:][i + 1].strip().split()))
-            while len(elements1) == num_dependent_vars + 1:
-                try:
-                    elements1 = list(filter(None, lines[data_start:][i + 1 + j].strip().split()))
-                    j += 1
-                except IndexError:
-                    j -= 1
-                    break
+    try:
+        vert_var_idx = ([independent_vars[0]] + dependent_vars).index(vert_var[0])
+    except ValueError:
+        vert_var_idx = ([independent_vars[0]] + dependent_vars).index(vert_var[1])
+    data_grid = np.full((len(lines[data_start:])), np.nan)
 
-            data_block = lines[data_start:][i + 1:i + j]
-            data_block_fmt = []
-            [data_block_fmt.append(list(filter(None, data_block[k].strip().split()))) for k in range(len(data_block))]
-            data_block_fmt = np.array(data_block_fmt).astype(float)
-            data_block_fmt[np.isin(data_block_fmt, np.array([np.nan] + dependent_nan))] = np.nan
-            data_block_fmt *= np.array([1] + dependent_mult)  # applying multiplication factors
-            timestamps = pd.to_datetime([extra_metadata['datetime']])  # Ensure a single timestamp per block
-            # Define the correct reference time (e.g., "1970-01-01 00:00:00")
-            reference_time = pd.Timestamp('1970-01-01 00:00:00')
-            # Calculate the time difference in seconds since the reference time
-            time_diff_in_seconds = np.array((timestamps - reference_time).total_seconds())
 
-            if len(vert_var) > 1:
-                try:
-                    vert_var_idx = ([independent_vars[0]] + dependent_vars).index(vert_var[0])
-                except ValueError:
-                    vert_var_idx = ([independent_vars[0]] + dependent_vars).index(vert_var[1])
-            v_var_levels = np.unique(
-                    data_block_fmt[:, vert_var_idx])
-            data_grid = np.full((len(v_var_levels)), np.nan)
+    v_var_levels = []
 
-            for row in data_block_fmt:
-                v_var = row[vert_var_idx]  # vert value
-                for varn in varnames:
-                    try:
-                        data_value = row[dependent_vars.index(varn) + 1]
-                        break
-                    except ValueError:
-                        continue
+    [v_var_levels.append(list(filter(None, lines[data_start:][k].strip().split()))) for k in range(len(lines[data_start:]))]
+    v_var_levels = np.array(v_var_levels).astype(float)
 
-                # Find the correct index for v_var
-                v_var_idx = np.where(v_var_levels == v_var)[0][0]
+    for row in lines[data_start:]:
+        el=row.strip().split()
+        elements = np.array(el).astype(float)
+        elements[np.isin(elements, np.array([np.nan] + dependent_nan))] = np.nan
+        elements *= np.array([1] + dependent_mult)  # applying multiplication factors
+        v_var = elements[vert_var_idx]  # vert value
+        for varn in varnames:
+            data_value = elements[dependent_vars.index(varn)]
 
-                # Assign temperature to correct position
-                # data_grid[height_idx] = temp_value
-                data_grid[v_var_idx] = data_value
-            data = data_grid.reshape(1, len(v_var_levels))
-            # temperatures = temperature_grid.reshape(1, len(height_levels), len(pressure_levels))
+        # Find the correct index for v_var
 
-            if any(word in vert_var[0].lower() for word in ['geopotential', 'height', 'altitude']):
-                ver_var_lab = 'height_levels'
-            if any(word in vert_var[0].lower() for word in ['pressure']):
-                ver_var_lab = 'pressure_levels'
-            data_tmp = xr.DataArray(
-                    data, coords={"timestamps": time_diff_in_seconds, ver_var_lab: v_var_levels},
-                    dims=["timestamps", ver_var_lab], name=varn)
+        v_var_idx = np.where(v_var_levels[:,vert_var_idx] == v_var)[0][0]
 
-            data_tmp.coords["timestamps"].attrs[
-                "units"] = "seconds since 1970-01-01 00:00:00"  # Adjust this to your preferred format
+        data_grid[v_var_idx] = data_value
+    data = data_grid.reshape(1, len(lines[data_start:]))
 
-            # data_tmp = data_tmp.sortby(ver_var_lab)
-            data_tmp = data_tmp.sortby("timestamps")
+    if any(word in vert_var[0].lower() for word in ['geopotential', 'height', 'altitude']):
+        ver_var_lab = 'height_levels'
+    if any(word in vert_var[0].lower() for word in ['pressure']):
+        ver_var_lab = 'pressure_levels'
+    data_tmp = xr.DataArray(
+            data, coords={"timestamps": time_diff_in_seconds, ver_var_lab: v_var_levels[:,vert_var_idx]},
+            dims=["timestamps", ver_var_lab], name=varn)
 
-            # Attach the metadata as attributes to the DataArray
-            if instr == 'o3_sondes':
-                keys_to_keep = ['east longitude of station', 'latitude of station']  # List of keys to keep
+    data_tmp.coords["timestamps"].attrs[
+        "units"] = "seconds since 1970-01-01 00:00:00"  # Adjust this to your preferred format
 
-            # Remove all keys not in keys_to_keep
-            for key in list(extra_metadata.keys()):  # Convert to list to avoid modifying the dictionary while iterating
-                if key not in keys_to_keep:
-                    del block_metadata[key]
+    # data_tmp = data_tmp.sortby(ver_var_lab)
+    data_tmp = data_tmp.sortby("timestamps")
 
-            data_tmp.attrs = block_metadata
+    # Attach the metadata as attributes to the DataArray
+    if instr == 'o3_sondes':
+        keys_to_keep = ['east longitude of station', 'latitude of station']  # List of keys to keep
 
-            # Add the xarray to the list of all blocks
-            all_blocks.append(data_tmp)
+    # Remove all keys not in keys_to_keep
+    for key in list(extra_metadata.keys()):  # Convert to list to avoid modifying the dictionary while iterating
+        if key not in keys_to_keep:
+            del extra_metadata[key]
 
-    return all_blocks
+    data_tmp.attrs = extra_metadata
+
+    return data_tmp
 
 
 def nasa_ames_parser_2110(fn, instr, vert_var, varnames):

@@ -36,7 +36,7 @@ def update_data_avail(instr):
     folder = os.path.join(ts.basefolder, "thaao_" + instr)
     filenames = glob.glob(os.path.join(folder, "th*"))
 
-    varname = ['Ozone partial pressure']
+    varname = ['ozone partial pressure']
     vert_var = ['geopotential height']
     aero_sondes = []
     for filename in filenames:
