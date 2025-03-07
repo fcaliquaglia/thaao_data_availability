@@ -93,7 +93,7 @@ vars_dict = {'cbh_vars' : {'list': ['CBH_L1[m]'], 'label': 'Cloud Base \n Height
                                  'label': 'Temp @ 25, \n 30, 35 km', 'uom': 'K'}, 'strat_ozone_vars': {
         'list': ['Ozone partial pressure_at_15000m', 'Ozone partial pressure_at_20000m',
                  'Ozone partial pressure_at_25000m'], 'label': 'O3 @ 15\n 20, 25 km', 'uom': ''},
-             'bksc_vars': {'list' : ['backscatter_at_550hPa', 'backscatter_at_200hPa', 'backscatter_at_50hPa'],
+             'bksc_vars': {'list' : ['backscatter_at_15000m', 'backscatter_at_15000m', 'backscatter_at_20000m'],
                            'label': 'Backscatt. \n 550, 200, 50 hPa', 'uom': ''}}
 
 
