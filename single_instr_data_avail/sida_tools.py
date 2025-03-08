@@ -90,21 +90,20 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
         lines = lines[1:]
 
     # Identify number of header lines to skip (first element in line 1)
-    lines_to_skip = int(lines[0].split()[0])
-    data_start = lines_to_skip
-    metadata = lines[:data_start]
+
+    metadata_lines = int(lines[0].split()[0])
+    metadata = lines[:metadata_lines]
 
     next_start = 5
-    # Extract independent variable count for 2110 format
+
+    # INDEPENDENT VARS
+    independent_vars = []
+    independent_uom = []
     num_independent_vars = len(metadata[next_start].split())
     next_start += 1
     datetime = dt.datetime(
-        int(metadata[next_start].split()[0]), int(metadata[next_start].split()[1]),
-        int(metadata[next_start].split()[2]))
-
-    # Extract independent variable metadata
-    independent_vars = []
-    independent_uom = []
+            int(metadata[next_start].split()[0]), int(metadata[next_start].split()[1]),
+            int(metadata[next_start].split()[2]))
     next_start += 1
     next_start += num_independent_vars
     for _ in range(num_independent_vars):
@@ -116,13 +115,13 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
             independent_uom.append(np.nan)
         next_start += 1
 
-    # Extract dependent variables metadata
-    num_dependent_vars = int(metadata[next_start].strip())
+    # DEPENDENT VARS
     dependent_mult = []
     dependent_nan = []
     dependent_vars = []
     dependent_units = []
 
+    num_dependent_vars = int(metadata[next_start].strip())
     next_start += 1
     dependent_mult.extend([float(x) for x in metadata[next_start].strip().split()])
     next_start += 1
@@ -138,14 +137,16 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
         dependent_units.append(line_parts[1].strip()[:-1] if len(line_parts) > 1 else np.nan)
         next_start += 1
 
-    num_extra_vars = int(metadata[next_start].split()[0])
-    next_start += 1
-    skip = int(metadata[next_start].split()[0])
-    next_start += 1
+    # EXTRA
     extra_vars = []
     extra_units = []
     extra_mult = []
     extra_nan = []
+
+    num_extra_vars = int(metadata[next_start].split()[0])
+    next_start += 1
+    skip = int(metadata[next_start].split()[0])
+    next_start += 1
     [extra_mult.append(1.) for i in range(skip)]
     while len(extra_mult) < num_extra_vars:
         extra_mult += [float(x) for x in metadata[next_start].split()]
@@ -153,8 +154,8 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
     while len(extra_nan) < num_extra_vars:
         extra_nan += [float(x) for x in metadata[next_start].split()]
         next_start += 1
-
     next_start += skip
+
     for _ in range(num_extra_vars):
         if '(' in metadata[next_start]:
             line_parts = metadata[next_start].strip().split('(')
@@ -171,8 +172,8 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
 
         next_start += 1
 
+    # COMMENTS
     comment_lines = []
-
     nr_comment_lines1 = int(metadata[next_start].strip())
     next_start += 1
     if not nr_comment_lines1 == 0:
@@ -182,18 +183,7 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
     nr_comment_lines2 = int(metadata[next_start].strip())
     next_start += 1
     [comment_lines.append(elem.strip()) for elem in metadata[next_start:next_start + nr_comment_lines2]]
-
-    # Check metadata consistency
-    if not (len(dependent_nan) == len(dependent_mult) == len(dependent_units) == len(dependent_vars)):
-        print('Error in dependent variable metadata')
-    if not (len(extra_vars) == len(extra_mult) == len(extra_nan) == len(extra_units)):
-        print('Error in extra variable metadata')
-
-    # Create metadata dictionary
-    metadata_dict = {var: {'mult': mult, 'nanval': nan} for var, mult, nan in zip(extra_vars, extra_mult, extra_nan)}
-    metadata_dict.update(
-            {var: {'mult': mult, 'nanval': nan, 'uom': uom} for var, mult, nan, uom in
-             zip(dependent_vars, dependent_mult, dependent_nan, dependent_units)})
+    next_start += nr_comment_lines2
 
     independent_vars_vals = lines[next_start].strip()
 
@@ -205,8 +195,20 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
     while len(extra_vars_vals) < num_extra_vars + 1:
         extra_vars_vals += [lines[next_start + 1].strip()]
         next_start += 1
+    data_start = next_start + 2
 
     # block_metadata = {key: value for key, value in zip([independent_vars[0]] + dependent_vars, elements)}
+    # Check metadata consistency
+    if not (len(dependent_nan) == len(dependent_mult) == len(dependent_units) == len(dependent_vars)):
+        print('Error in dependent variable metadata')
+    if not (len(extra_vars) == len(extra_mult) == len(extra_nan) == len(extra_units)):
+        print('Error in extra variable metadata')
+
+    # Create metadata dictionary
+    metadata_dict = {var: {'mult': mult, 'nanval': nan} for var, mult, nan in zip(extra_vars, extra_mult, extra_nan)}
+    metadata_dict.update(
+            {var: {'mult': mult, 'nanval': nan, 'uom': uom} for var, mult, nan, uom in
+             zip(dependent_vars, dependent_mult, dependent_nan, dependent_units)})
     extra_metadata = {key: value for key, value in zip([independent_vars[1]] + extra_vars, extra_vars_vals)}
 
     def cast_hour_to_datetime(dtt, decimal_hour):
@@ -218,8 +220,6 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
             extra_metadata['datetime'] = cast_hour_to_datetime(datetime, extra_metadata['launch time'])
         except KeyError:
             extra_metadata['datetime'] = cast_hour_to_datetime(datetime, extra_metadata['Launch time'])
-
-    data_start = next_start + 2
 
     timestamps = pd.to_datetime([extra_metadata['datetime']])  # Ensure a single timestamp per block
     # Define the correct reference time (e.g., "1970-01-01 00:00:00")
@@ -279,7 +279,8 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
             del extra_metadata[key]
 
     data_tmp.attrs = extra_metadata
-
+    print(f'OK {fn}')
+    # print(data_tmp.head())
     return data_tmp
 
 

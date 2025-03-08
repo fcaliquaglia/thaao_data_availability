@@ -79,6 +79,7 @@ def update_data_avail(instr):
                     if not data_sel.isnull():
                         # Extract the scalar value from data_sel (it's a single value)
                         ozone_value = data_sel.values
+                        print(ozone_value)
 
                         # Get the timestamp (this is already in data_sel's coordinates)
                         timestamp = data_sel.timestamps.values
