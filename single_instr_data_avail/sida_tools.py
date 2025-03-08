@@ -94,18 +94,19 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
     data_start = lines_to_skip
     metadata = lines[:data_start]
 
+    next_start = 5
     # Extract independent variable count for 2110 format
-    num_independent_vars = len(metadata[5].split())
-    datetime = dt.datetime(int(metadata[6].split()[0]), int(metadata[6].split()[1]), int(metadata[6].split()[2]))
+    num_independent_vars = len(metadata[next_start].split())
+    next_start += 1
+    datetime = dt.datetime(
+        int(metadata[next_start].split()[0]), int(metadata[next_start].split()[1]),
+        int(metadata[next_start].split()[2]))
+
     # Extract independent variable metadata
     independent_vars = []
     independent_uom = []
-    next_start = 7 + num_independent_vars
-
-    dependent_mult = []
-    dependent_nan = []
-    dependent_mult.extend([float(x) for x in metadata[next_start + 1 + num_independent_vars].strip().split()])
-    dependent_nan.extend([float(x) for x in metadata[next_start + 2 + num_independent_vars].strip().split()])
+    next_start += 1
+    next_start += num_independent_vars
     for _ in range(num_independent_vars):
         if '(' in metadata[next_start]:
             independent_vars.append(metadata[next_start].strip().split('(')[0].strip())
@@ -117,10 +118,17 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
 
     # Extract dependent variables metadata
     num_dependent_vars = int(metadata[next_start].strip())
+    dependent_mult = []
+    dependent_nan = []
     dependent_vars = []
     dependent_units = []
 
-    next_start += 3
+    next_start += 1
+    dependent_mult.extend([float(x) for x in metadata[next_start].strip().split()])
+    next_start += 1
+    dependent_nan.extend([float(x) for x in metadata[next_start].strip().split()])
+    next_start += 1
+
     for _ in range(num_dependent_vars):
         if '(' in metadata[next_start]:
             line_parts = metadata[next_start].strip().split('(')
@@ -131,17 +139,22 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
         next_start += 1
 
     num_extra_vars = int(metadata[next_start].split()[0])
-    skip = int(metadata[next_start + 1].split()[0])
+    next_start += 1
+    skip = int(metadata[next_start].split()[0])
+    next_start += 1
     extra_vars = []
     extra_units = []
+    extra_mult = []
     extra_nan = []
-    extra_mult = [float(x) for x in metadata[next_start + 2].split()]
     [extra_mult.append(1.) for i in range(skip)]
+    while len(extra_mult) < num_extra_vars:
+        extra_mult += [float(x) for x in metadata[next_start].split()]
+        next_start += 1
     while len(extra_nan) < num_extra_vars:
-        extra_nan = extra_nan + [float(x) for x in metadata[next_start + 3].split()]
+        extra_nan += [float(x) for x in metadata[next_start].split()]
         next_start += 1
 
-    next_start += 3 + skip
+    next_start += skip
     for _ in range(num_extra_vars):
         if '(' in metadata[next_start]:
             line_parts = metadata[next_start].strip().split('(')
@@ -161,13 +174,14 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
     comment_lines = []
 
     nr_comment_lines1 = int(metadata[next_start].strip())
-    if not nr_comment_lines1 ==0:
-        [comment_lines.append(elem.strip()) for elem in metadata[next_start + 1:next_start + 1 + nr_comment_lines1]]
+    next_start += 1
+    if not nr_comment_lines1 == 0:
+        [comment_lines.append(elem.strip()) for elem in metadata[next_start:next_start + nr_comment_lines1]]
+        next_start += nr_comment_lines1
 
-    next_start += 1 + nr_comment_lines1
     nr_comment_lines2 = int(metadata[next_start].strip())
-    [comment_lines.append(elem.strip()) for elem in metadata[next_start + 1:next_start + 1 + nr_comment_lines2]]
-    next_start += 1 + nr_comment_lines2
+    next_start += 1
+    [comment_lines.append(elem.strip()) for elem in metadata[next_start:next_start + nr_comment_lines2]]
 
     # Check metadata consistency
     if not (len(dependent_nan) == len(dependent_mult) == len(dependent_units) == len(dependent_vars)):
