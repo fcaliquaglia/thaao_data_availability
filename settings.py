@@ -118,9 +118,9 @@ metadata_entries = {'aeronet'                                                   
         plot_vars={'AOD_440nm': ('green', ''), 'N[Precipitable_Water(cm)]': ('green', 'cm')}),
     'aero_sondes'                                                                                                   : create_instr_metadata(
             dt.datetime(1992, 1, 1), dt.datetime(1998, 12, 31), institution='DMI', data_avail_py='thaao_aero_sondes.py',
-            plot_vars={'Ozone partial pressure_at_15000m': ('blue', '??'),
-                       'Ozone partial pressure_at_20000m': ('purple', '??'),
-                       'Ozone partial pressure_at_25000m': ('cyan', '??'), }),
+            plot_vars={'Ozone partial pressure_at_15000m': ('orange', '??'),
+                       'Ozone partial pressure_at_20000m': ('green', '??'),
+                       'Ozone partial pressure_at_25000m': ('blue', '??'), }),
     'aws_vespa'                                                                                                     : create_instr_metadata(
             dt.datetime(2016, 1, 1), institution='INGV', data_avail_py='thaao_aws_vespa.py',
             plot_vars={'AIR_C': ('red', 'degC'), 'BP_hPa': ('red', 'hPa'), 'RH_%': ('red', '%')}),
