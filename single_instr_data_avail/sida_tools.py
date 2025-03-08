@@ -161,7 +161,8 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
     comment_lines = []
 
     nr_comment_lines1 = int(metadata[next_start].strip())
-    [comment_lines.append(elem.strip()) for elem in metadata[next_start + 1:next_start + 1 + nr_comment_lines1]]
+    if not nr_comment_lines1 ==0:
+        [comment_lines.append(elem.strip()) for elem in metadata[next_start + 1:next_start + 1 + nr_comment_lines1]]
 
     next_start += 1 + nr_comment_lines1
     nr_comment_lines2 = int(metadata[next_start].strip())
