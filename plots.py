@@ -40,7 +40,7 @@ def draw_data_summary():
                               # Replace outliers > 50 with NaN
                               'hatpro__LWP_gm-2'                  : lambda x: x.mask(x > 1000, np.nan),
                               # Replace outliers > 1000 with NaN
-                              'ftir__ch4'                         : lambda x: x.mask(x < 3.3E19, np.nan)
+                              'ftir__ch4'                         : lambda x: x.mask(x < 3.4E19, np.nan)
                               # Replace values below threshold with NaN
                               }
 
