@@ -39,13 +39,18 @@ def update_data_avail(instr):
     varname = ['ozone partial pressure']
     vert_var = ['geopotential height']
     aero_sondes = []
+    filenames_error = []
     for filename in filenames:
         try:
             aero_sondes_tmp = sida_tls.nasa_ames_parser_2160(filename, instr, vert_var=vert_var, varnames=varname)
             aero_sondes.append(aero_sondes_tmp)
-        except Exception as e :
+        except Exception as e:
             print(f'Error {filename} ' + str(e))
+            filenames_error.append(filename)
             continue
+
+    print('These files failed!\n')
+    print(filenames_error)
 
     aero_sondes_list_tmp = [item for sublist in aero_sondes for item in sublist]
 
@@ -61,10 +66,12 @@ def update_data_avail(instr):
 
     # Loop through each height target
     for height_target in height_targets:
+        print(height_target)
         try:
             # Loop over each timestamp in the data
             for timestamp in stacked_blocks.timestamps.values:
                 # Select the data for the current timestamp
+                # print(timestamp)
                 data_at_timestamp = stacked_blocks.sel(timestamps=timestamp)
 
                 # Mask out NaN values along the 'height_levels' dimension
@@ -72,31 +79,36 @@ def update_data_avail(instr):
 
                 if not data_at_timestamp_non_nan.isnull().all():
                     # Select the nearest value at the specified height
-                    data_sel = data_at_timestamp_non_nan.sel(
-                            height_levels=height_target, method="nearest", tolerance=100)
+                    try:
+                        data_sel = data_at_timestamp_non_nan.sel(
+                                height_levels=height_target, method="nearest", tolerance=200)
+                    except:
+                        continue
 
                     # Ensure the selected data is a single value
                     if not data_sel.isnull():
                         # Extract the scalar value from data_sel (it's a single value)
                         ozone_value = data_sel.values
-                        print(ozone_value)
 
+                        print(ozone_value)
                         # Get the timestamp (this is already in data_sel's coordinates)
-                        timestamp = data_sel.timestamps.values
+                        # timestamp = data_sel.timestamps.values
 
                         # Convert the timestamp to datetime
-                        timestamp = pd.to_datetime(timestamp, unit='s')
+                        tstamp = pd.to_datetime(timestamp, unit='s')
 
                         # Create a DataFrame with the ozone value for the specific height level and timestamp
-                        data_sel_df = pd.DataFrame(
-                                {f'Ozone partial pressure_at_{height_target}m': [ozone_value]}, index=[timestamp]
-                                # Use the timestamp as the index
-                        )
-
+                        try:
+                            data_sel_df = pd.DataFrame(
+                                    {f'Ozone partial pressure_at_{height_target}m': [ozone_value]}, index=[tstamp]
+                                    # Use the timestamp as the index
+                            )
+                        except:
+                            print('ciccio')
                         # Check if the timestamp already exists in the DataFrame
-                        if timestamp in data.index:
+                        if tstamp in data.index:
                             # If it exists, update the value in the corresponding column (don't add a new row)
-                            data.loc[timestamp, f'Ozone partial pressure_at_{height_target}m'] = ozone_value
+                            data.loc[tstamp, f'Ozone partial pressure_at_{height_target}m'] = ozone_value
                         else:
                             # Otherwise, add a new row with the value for that timestamp
                             data = pd.concat([data, data_sel_df])
