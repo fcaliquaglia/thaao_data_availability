@@ -17,50 +17,60 @@ import switches as sw
 import tools as tls
 
 
-# scale_factor = 1.5
-# plt.rcParams.update({'font.size': 6 * scale_factor})
-# plt.rcParams.update({'figure.dpi': 300})
-# plt.rcParams.update({'figure.figsize': (15, 10)})
-
-
 def draw_data_summary():
+    # Create an empty DataFrame to store processed data
     data_all = pd.DataFrame()
+
+    # Load and process data for each instrument
     for instr in ts.instr_list:
         try:
+            # Load data file, resample based on time resolution, compute mean, and add a prefix
             tmp = tls.load_data_file(instr).resample(ts.time_res).mean().add_prefix(f"{instr}__")
+
+            # Concatenate with existing data and sort by index
             data_all = pd.concat([data_all, tmp], axis=1).sort_index()
         except (ValueError, UnboundLocalError):
-            print('ERROR with ' + instr)
+            print(f'ERROR with {instr}')  # Print error message for debugging
 
-    if 'aeronet__N[Precipitable_Water(cm)]' in data_all.columns:
-        data_all['aeronet__N[Precipitable_Water(cm)]'] /= 10.
-    # if 'aws_vespa__iwv' in data_all.columns:
-    #     data_all['aws_vespa__Air_C'] = (data_all['aws_vespa__Air_K'].values * units.K).to('degC')
-    if 'hyso_tide_1__sea_level' in data_all.columns:
-        data_all.loc[data_all['hyso_tide_1__sea_level'] > 10, 'hyso_tide_1__sea_level'] = np.nan
-    if 'hatpro__IWV' in data_all.columns:
-        data_all.loc[data_all['hatpro__IWV'] > 50, 'hatpro__IWV'] = np.nan
-    if 'hatpro__LWP_gm-2' in data_all.columns:
-        data_all.loc[data_all['hatpro__LWP_gm-2'] > 1000, 'hatpro__LWP_gm-2'] = np.nan
-    if 'ftir__ch4' in data_all.columns:
-        data_all.loc[data_all['ftir__ch4'] < 3.3E-19, 'ftir__ch4'] = np.nan
-    var_list = []
-    for instr in ts.instr_list:
-        var_list += [instr + '__' + j for j in list(ts.instr_metadata[instr]['plot_vars'].keys())]
+    # Apply transformations to specific columns if they exist
+    column_transformations = {'aeronet__N[Precipitable_Water(cm)]': lambda x: x / 10,  # Convert to appropriate unit
+                              'hyso_tide_1__sea_level'            : lambda x: x.mask(x > 10, np.nan),
+                              # Replace values > 10 with NaN
+                              'hatpro__IWV'                       : lambda x: x.mask(x > 50, np.nan),
+                              # Replace outliers > 50 with NaN
+                              'hatpro__LWP_gm-2'                  : lambda x: x.mask(x > 1000, np.nan),
+                              # Replace outliers > 1000 with NaN
+                              'ftir__ch4'                         : lambda x: x.mask(x < 3.3E19, np.nan)
+                              # Replace values below threshold with NaN
+                              }
 
+    # Apply transformations if the corresponding column exists in the DataFrame
+    for col, func in column_transformations.items():
+        if col in data_all.columns:
+            data_all[col] = func(data_all[col])
+
+    # Generate a list of variable names for each instrument
+    var_list = [f"{instr}__{var}"  # Format: 'instrument__variable'
+                for instr in ts.instr_list for var in ts.instr_metadata[instr]['plot_vars'].keys()]
+
+    # Identify subplots based on variable categories
     subplt = []
     for var in var_list:
-        escaped_var = re.escape(var)
+        escaped_var = re.escape(var)  # Escape special characters in variable name for regex matching
         for key, values in ts.vars_dict.items():
-            matching_columns = data_all.columns[data_all.columns.str.contains(escaped_var)]
+            matching_columns = data_all.columns[data_all.columns.str.contains(escaped_var)]  # Find matching columns
             if not matching_columns.empty:
-                if var.split('__')[1] in values['list']:
+                if var.split('__')[1] in values['list']:  # Check if variable belongs to the category
                     subplt.append(key)
-                    break  # Stop searching after finding the first match
+                    break  # Stop searching after the first match
 
-    subplt = list(dict.fromkeys(subplt))  # remove duplicates
+    # Remove duplicate categories while preserving order
+    subplt = list(dict.fromkeys(subplt))
+
+    # Convert the list into an enumerated dictionary for subplot indexing
     subplt = dict(enumerate(subplt))
 
+    # Filter data within the specified date range
     data_filtered = data_all.loc[
         (data_all.index.year >= sw.start_date.year) & (data_all.index.year <= sw.end_date.year), var_list]
 
