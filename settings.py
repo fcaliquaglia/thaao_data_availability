@@ -66,35 +66,37 @@ instr_list = []
 # VARIABLES DICTIONARY
 # =============================================================
 
-vars_dict = {'cbh_vars' : {'list': ['CBH_L1[m]'], 'label': 'Cloud Base \n Height',
-                                                             'uom' : 'm'},
-             'temp_vars': {'list': ['AirTC', 'tmpc', 'Air_C'], 'label': 'Temp', 'uom': 'degC'},
-             'press_vars': {'list': ['mslp', 'BP_mbar', 'BP_hPa'], 'label': 'Surf \n Press', 'uom': 'hPa'},
-             'pm10_vars': {'list': ['PM10'], 'label': 'PM10', 'uom': 'ug m-3'},
-             'relh_vars': {'list': ['relh', 'RH', 'RH_%'], 'label': 'RH', 'uom': '%'},
-             'tcc_vars': {'list': ['TCC[okt]'], 'label': 'TCC', 'uom': 'okt'},
-             'no2_vars': {'list': ['NO2 vertical column density (430 nm)'], 'label': 'NO2 vert', 'uom': '??'},
-             'co_vars': {'list': ['co'], 'label': 'CO', 'uom': '??'}, 'o3_vars': {
-        'list' : ['O3 vertical column density (510 nm)', 'O3 vertical column density (530 nm)', 'o3'],
-        'label': 'O3 vert', 'uom': '??'},
-             'atm_gases_vars': {'list': ['c2h6', 'h2co', 'hcn', 'hf', 'hno3', 'nh3', 'ocs'], 'label': 'Atm Gases',
-                                'uom' : '??'}, 'atm_ch4_vars': {'list': ['ch4'], 'label': 'CH4 vert', 'uom': '??'},
-             'aod_vars': {'list': ['AOD_440nm'], 'label': 'AOD \n 440nm', 'uom': ''},
-             'si_vars': {'list': ['SW_DOWN', 'SW_UP'], 'label': 'DSI-USI', 'uom': 'W m-2'},
-             'li_vars': {'list': ['LW_DOWN', 'LW_UP'], 'label': 'DLI-ULI', 'uom': 'W m-2'},
-             'tbp_vars': {'list': ['TBP'], 'label': 'TBP', 'uom': 'K'},
-             'par_vars': {'list': ['PAR_DOWN', 'PAR_UP'], 'label': 'PAR \n DOWN-UP', 'uom': 'W m-2'},
-             'alb_vars': {'list': ['ALBEDO_SW'], 'label': 'alb', 'uom': ''},
-             'iwv_vars': {'list': ['PWV', 'rs_iwv', 'IWV', 'N[Precipitable_Water(cm)]'], 'label': 'IWV', 'uom': 'cm'},
-             'lwp_vars': {'list': ['LWP_gm-2'], 'label': 'LWP', 'uom': 'g m-2'},
-             'sea_lev_vars': {'list': ['sea_level'], 'label': 'sea level', 'uom': 'm'},
-             'd18O_vars': {'list': ['d18O'], 'label': 'd18O', 'uom': 'per mil'},
-             'strat_temp_vars': {'list' : ['temperature_at_25000m', 'temperature_at_30000m', 'temperature_at_35000m'],
-                                 'label': 'Temp @ 25, \n 30, 35 km', 'uom': 'K'}, 'strat_ozone_vars': {
-        'list': ['Ozone partial pressure_at_15000m', 'Ozone partial pressure_at_20000m',
+vars_dict = {'cbh_vars'                                                     : {'list' : ['CBH_L1[m]'],
+                                                                               'label': 'Cloud Base \n Height',
+                                                                               'uom'  : 'm'},
+    'temp_vars': {'list': ['AirTC', 'tmpc', 'Air_C'], 'label': 'Temp', 'uom': 'degC'},
+    'press_vars': {'list': ['mslp', 'BP_mbar', 'BP_hPa'], 'label': 'Surf \n Press', 'uom': 'hPa'},
+    'pm10_vars': {'list': ['PM10'], 'label': 'PM10', 'uom': 'ug m-3'},
+    'relh_vars': {'list': ['relh', 'RH', 'RH_%'], 'label': 'RH', 'uom': '%'},
+    'tcc_vars': {'list': ['TCC[okt]'], 'label': 'TCC', 'uom': 'okt'},
+    'no2_vars': {'list': ['NO2 vertical column density (430 nm)'], 'label': 'NO2 vert', 'uom': '??'},
+    'co_vars': {'list': ['co'], 'label': 'CO', 'uom': '??'},
+    'o3_vars': {'list' : ['O3 vertical column density (510 nm)', 'O3 vertical column density (530 nm)', 'o3'],
+                'label': 'O3 vert', 'uom': '??'},
+    'atm_gases_vars': {'list': ['c2h6', 'h2co', 'hcn', 'hf', 'hno3', 'nh3', 'ocs'], 'label': 'Atm Gases', 'uom': '??'},
+    'atm_ch4_vars': {'list': ['ch4'], 'label': 'CH4 vert', 'uom': '??'},
+    'aod_vars': {'list': ['AOD_440nm'], 'label': 'AOD \n 440nm', 'uom': ''},
+    'si_vars': {'list': ['SW_DOWN', 'SW_UP'], 'label': 'DSI-USI', 'uom': 'W m-2'},
+    'li_vars': {'list': ['LW_DOWN', 'LW_UP'], 'label': 'DLI-ULI', 'uom': 'W m-2'},
+    'tbp_vars': {'list': ['TBP'], 'label': 'TBP', 'uom': 'K'},
+    'par_vars': {'list': ['PAR_DOWN', 'PAR_UP'], 'label': 'PAR \n DOWN-UP', 'uom': 'W m-2'},
+    'alb_vars': {'list': ['ALBEDO_SW'], 'label': 'alb', 'uom': ''},
+    'iwv_vars': {'list': ['PWV', 'rs_iwv', 'IWV', 'N[Precipitable_Water(cm)]'], 'label': 'IWV', 'uom': 'cm'},
+    'lwp_vars': {'list': ['LWP_gm-2'], 'label': 'LWP', 'uom': 'g m-2'},
+    'sea_lev_vars': {'list': ['sea_level'], 'label': 'sea level', 'uom': 'm'},
+    'd18O_vars': {'list': ['d18O'], 'label': 'd18O', 'uom': 'per mil'},
+    'strat_temp_vars': {'list' : ['temperature_at_25000m', 'temperature_at_30000m', 'temperature_at_35000m'],
+                        'label': 'Temp @ 25, \n 30, 35 km', 'uom': 'K'},
+    'strat_ozone_vars': {
+                        'list': ['Ozone partial pressure_at_15000m', 'Ozone partial pressure_at_20000m',
                  'Ozone partial pressure_at_25000m'], 'label': 'O3 @ 15\n 20, 25 km', 'uom': ''},
-             'bksc_vars': {'list' : ['backscatter_at_10000m', 'backscatter_at_15000m', 'backscatter_at_20000m'],
-                           'label': 'Aer Backscatt. 15\n 20, 25 km', 'uom': ''}}
+    'bksc_vars': {'list' : ['backscatter_at_10000m', 'backscatter_at_15000m', 'backscatter_at_20000m'],
+                  'label': 'Aer Backscatt. 15\n 20, 25 km', 'uom': ''}}
 
 
 # =============================================================
@@ -116,7 +118,9 @@ metadata_entries = {'aeronet'                                                   
         plot_vars={'AOD_440nm': ('green', ''), 'N[Precipitable_Water(cm)]': ('green', 'cm')}),
     'aero_sondes'                                                                                                   : create_instr_metadata(
             dt.datetime(1992, 1, 1), dt.datetime(1998, 12, 31), institution='DMI', data_avail_py='thaao_aero_sondes.py',
-            plot_vars={'Ozone partial pressure_at_15000m': ('blue', '??'), 'Ozone partial pressure_at_20000m': ('purple', '??'), 'Ozone partial pressure_at_25000m': ('cyan', '??'), }),
+            plot_vars={'Ozone partial pressure_at_15000m': ('blue', '??'),
+                       'Ozone partial pressure_at_20000m': ('purple', '??'),
+                       'Ozone partial pressure_at_25000m': ('cyan', '??'), }),
     'aws_vespa'                                                                                                     : create_instr_metadata(
             dt.datetime(2016, 1, 1), institution='INGV', data_avail_py='thaao_aws_vespa.py',
             plot_vars={'AIR_C': ('red', 'degC'), 'BP_hPa': ('red', 'hPa'), 'RH_%': ('red', '%')}),
@@ -180,9 +184,9 @@ metadata_entries = {'aeronet'                                                   
             dt.datetime(2021, 9, 1), institution='INGV', data_avail_py='thaao_mms_trios.py'),
     'o3_sondes'                                                                                                     : create_instr_metadata(
             dt.datetime(1991, 12, 1), dt.datetime(2016, 12, 31), institution='DMI', data_avail_py='thaao_o3_sondes.py',
-            plot_vars={'Ozone partial pressure'           : ('orange', '??'),
-                       'Scattering ratio for red channel' : ('orange', '??'),
-                       'Scattering ratio for blue channel': ('orange', '??')}),
+            plot_vars={'Ozone partial pressure_at_15000m': ('orange', '??'),
+                       'Ozone partial pressure_at_20000m': ('green', '??'),
+                       'Ozone partial pressure_at_25000m': ('blue', '??')}),
     'pm10'                                                                                                          : create_instr_metadata(
             dt.datetime(2010, 1, 1), institution='U.Alaska,Florence,StonyBrook/USSF', data_avail_py='thaao_pm10.py',
             plot_vars={'PM10': ('black', 'ug m-3')}),
