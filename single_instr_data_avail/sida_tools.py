@@ -250,8 +250,6 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
         for varn in varnames:
             data_value = elements[dependent_vars.index(varn.capitalize())]
 
-        # Find the correct index for v_var
-
         v_var_idx = np.where(v_var_levels[:, vert_var_idx] == v_var)[0][0]
 
         data_grid[v_var_idx] = data_value
@@ -259,8 +257,9 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
 
     if any(word in vert_var[0].lower() for word in ['geopotential', 'height', 'altitude']):
         ver_var_lab = 'height_levels'
-    if any(word in vert_var[0].lower() for word in ['pressure']):
+    elif any(word in vert_var[0].lower() for word in ['pressure']):
         ver_var_lab = 'pressure_levels'
+
     data_tmp = xr.DataArray(
             data, coords={"timestamps": time_diff_in_seconds, ver_var_lab: v_var_levels[:, vert_var_idx]},
             dims=["timestamps", ver_var_lab], name=varn)
@@ -281,8 +280,7 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
             del extra_metadata[key]
 
     data_tmp.attrs = extra_metadata
-    print(f'OK {fn}')
-    # print(data_tmp.head())
+    print(f"Parsing completed successfully: {fn}")
     return data_tmp
 
 

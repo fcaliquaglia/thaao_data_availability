@@ -94,13 +94,10 @@ def update_data_avail(instr):
                         tstamp = pd.to_datetime(timestamp, unit='s')
 
                         # Create a DataFrame with the ozone value for the specific height level and timestamp
-                        try:
-                            data_sel_df = pd.DataFrame(
-                                    {f'Ozone partial pressure_at_{height_target}m': [ozone_value]}, index=[tstamp]
-                                    # Use the timestamp as the index
-                            )
-                        except:
-                            print('ciccio')
+                        data_sel_df = pd.DataFrame(
+                                {f'Ozone partial pressure_at_{height_target}m': [ozone_value]}, index=[tstamp]
+                                # Use the timestamp as the index
+                        )
                         # Check if the timestamp already exists in the DataFrame
                         if tstamp in data.index:
                             # If it exists, update the value in the corresponding column (don't add a new row)
