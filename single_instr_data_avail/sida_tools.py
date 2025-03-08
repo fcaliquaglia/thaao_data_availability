@@ -89,9 +89,11 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
         lines = file.readlines()
         lines = lines[1:]
 
-    # Identify number of header lines to skip (first element in line 1)
-
     metadata_lines = int(lines[0].split()[0])
+    file_format = int(lines[0].split()[1])
+    if file_format != 2160:
+        print(f'The file format for {fn} is not AMES 2160')
+        return
     metadata = lines[:metadata_lines]
 
     next_start = 5
@@ -291,6 +293,10 @@ def nasa_ames_parser_2110(fn, instr, vert_var, varnames):
 
     # Identify number of header lines to skip (first element in line 1)
     lines_to_skip = int(lines[0].split()[0])
+    file_format = int(lines[0].split()[1])
+    if file_format != 2110:
+        print(f'The file format for {fn} is not AMES 2110')
+        return
     data_start = lines_to_skip
     metadata = lines[:data_start]
 
