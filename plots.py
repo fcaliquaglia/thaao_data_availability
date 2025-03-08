@@ -41,7 +41,9 @@ def draw_data_summary():
     if 'hatpro__IWV' in data_all.columns:
         data_all.loc[data_all['hatpro__IWV'] > 50, 'hatpro__IWV'] = np.nan
     if 'hatpro__LWP_gm-2' in data_all.columns:
-        data_all.loc[data_all['hatpro__LWP_gm'] > 1000, 'hatpro__LWP_gm'] = np.nan
+        data_all.loc[data_all['hatpro__LWP_gm-2'] > 1000, 'hatpro__LWP_gm-2'] = np.nan
+    if 'ftir__ch4-2' in data_all.columns:
+        data_all.loc[data_all['ftir__ch4'] < 3.3E-19, 'ftir__ch4-2'] = np.nan
     var_list = []
     for instr in ts.instr_list:
         var_list += [instr + '__' + j for j in list(ts.instr_metadata[instr]['plot_vars'].keys())]
