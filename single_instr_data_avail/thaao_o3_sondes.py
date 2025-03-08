@@ -43,8 +43,8 @@ def update_data_avail(instr):
         try:
             aero_sondes_tmp = sida_tls.nasa_ames_parser_2160(filename, instr, vert_var=vert_var, varnames=varname)
             aero_sondes.append(aero_sondes_tmp)
-        except:
-            print(f'Error {filename}')
+        except Exception as e :
+            print(f'Error {filename} ' + str(e))
             continue
 
     aero_sondes_list_tmp = [item for sublist in aero_sondes for item in sublist]

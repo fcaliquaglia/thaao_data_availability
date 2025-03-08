@@ -24,6 +24,7 @@ __lastupdate__ = ""
 import datetime as dt
 import importlib.util
 import os
+import sys
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 

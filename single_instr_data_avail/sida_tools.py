@@ -100,7 +100,7 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
     # Extract independent variable metadata
     independent_vars = []
     independent_uom = []
-    next_start = 7+num_independent_vars
+    next_start = 7 + num_independent_vars
 
     dependent_mult = []
     dependent_nan = []
@@ -126,7 +126,7 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
             line_parts = metadata[next_start].strip().split('(')
         if ';' in metadata[next_start]:
             line_parts = metadata[next_start].strip().split(';')
-        dependent_vars.append(line_parts[0].strip())
+        dependent_vars.append(line_parts[0].strip().capitalize())
         dependent_units.append(line_parts[1].strip()[:-1] if len(line_parts) > 1 else np.nan)
         next_start += 1
 
@@ -145,33 +145,33 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
     for _ in range(num_extra_vars):
         if '(' in metadata[next_start]:
             line_parts = metadata[next_start].strip().split('(')
-            extra_vars.append(line_parts[0].strip())
+            extra_vars.append(line_parts[0].strip().capitalize())
             extra_units.append(line_parts[1].strip()[:-1] if len(line_parts) > 1 else np.nan)
         elif ';' in metadata[next_start]:
             line_parts = metadata[next_start].strip().split(';')
-            extra_vars.append(line_parts[0].strip())
+            extra_vars.append(line_parts[0].strip().capitalize())
             extra_units.append(line_parts[1].strip()[:-1] if len(line_parts) > 1 else np.nan)
         else:
             line_parts = metadata[next_start].strip()
-            extra_vars.append(line_parts.strip())
+            extra_vars.append(line_parts.strip().capitalize())
             extra_units.append(np.nan)
 
         next_start += 1
 
     comment_lines = []
 
-    nr_comment_lines = int(metadata[next_start].strip())
+    nr_comment_lines1 = int(metadata[next_start].strip())
     [comment_lines.append(elem.strip()) for elem in metadata[next_start + 1:next_start + 1 + nr_comment_lines]]
 
-    next_start += 1 + nr_comment_lines
-    nr_comment_lines = int(metadata[next_start].strip())
+    next_start += 1 + nr_comment_lines1
+    nr_comment_lines2 = int(metadata[next_start].strip())
     [comment_lines.append(elem.strip()) for elem in metadata[next_start + 1:next_start + 1 + nr_comment_lines]]
-    next_start += 1 + nr_comment_lines
+    next_start += 1 + nr_comment_lines2
 
     # Check metadata consistency
-    if not (len(dependent_nan) == len(dependent_mult) == len(dependent_units)== len(dependent_vars)):
+    if not (len(dependent_nan) == len(dependent_mult) == len(dependent_units) == len(dependent_vars)):
         print('Error in dependent variable metadata')
-    if not (len(extra_vars) == len(extra_mult) == len(extra_nan)==len(extra_units)):
+    if not (len(extra_vars) == len(extra_mult) == len(extra_nan) == len(extra_units)):
         print('Error in extra variable metadata')
 
     # Create metadata dictionary
@@ -182,15 +182,13 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
 
     independent_vars_vals = lines[next_start].strip()
 
-    def try_cast(x):
-        try:
-            return float(x)
-        except ValueError:
-            return str(x)
-
     extra_vars_vals = [independent_vars_vals]
+    while len(extra_vars_vals) < num_extra_vars - skip + 1:
+        extra_vars_vals += [float(x) for x in lines[next_start + 1].split()]
+        next_start += 1
+
     while len(extra_vars_vals) < num_extra_vars + 1:
-        extra_vars_vals += [try_cast(x) for x in lines[next_start + 1].split()]
+        extra_vars_vals += [lines[next_start + 1].strip()]
         next_start += 1
 
     # block_metadata = {key: value for key, value in zip([independent_vars[0]] + dependent_vars, elements)}
@@ -208,12 +206,6 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
 
     data_start = next_start + 2
 
-    #data_block = lines[data_start:][data_start:]
-    # data_block_fmt = []
-    # [data_block_fmt.append(list(filter(None, data_block[k].strip().split()))) for k in range(len(data_block))]
-    # data_block_fmt = np.array(data_block_fmt).astype(float)
-    # data_block_fmt[np.isin(data_block_fmt, np.array([np.nan] + dependent_nan))] = np.nan
-    # data_block_fmt *= np.array([1] + dependent_mult)  # applying multiplication factors
     timestamps = pd.to_datetime([extra_metadata['datetime']])  # Ensure a single timestamp per block
     # Define the correct reference time (e.g., "1970-01-01 00:00:00")
     reference_time = pd.Timestamp('1970-01-01 00:00:00')
@@ -223,16 +215,17 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
     try:
         vert_var_idx = ([independent_vars[0]] + dependent_vars).index(vert_var[0].capitalize())
     except ValueError:
-        vert_var_idx = ([independent_vars[0]] + dependent_vars).index(vert_var[1])
+        vert_var_idx = ([independent_vars[0]] + dependent_vars).index(vert_var[1].capitalize())
     data_grid = np.full((len(lines[data_start:])), np.nan)
 
     v_var_levels = []
 
-    [v_var_levels.append(list(filter(None, lines[data_start:][k].strip().split()))) for k in range(len(lines[data_start:]))]
+    [v_var_levels.append(list(filter(None, lines[data_start:][k].strip().split()))) for k in
+     range(len(lines[data_start:]))]
     v_var_levels = np.array(v_var_levels).astype(float)
 
     for row in lines[data_start:]:
-        el=row.strip().split()
+        el = row.strip().split()
         elements = np.array(el).astype(float)
         elements[np.isin(elements, np.array([np.nan] + dependent_nan))] = np.nan
         elements *= np.array([1] + dependent_mult)  # applying multiplication factors
@@ -242,7 +235,7 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
 
         # Find the correct index for v_var
 
-        v_var_idx = np.where(v_var_levels[:,vert_var_idx] == v_var)[0][0]
+        v_var_idx = np.where(v_var_levels[:, vert_var_idx] == v_var)[0][0]
 
         data_grid[v_var_idx] = data_value
     data = data_grid.reshape(1, len(lines[data_start:]))
@@ -252,7 +245,7 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
     if any(word in vert_var[0].lower() for word in ['pressure']):
         ver_var_lab = 'pressure_levels'
     data_tmp = xr.DataArray(
-            data, coords={"timestamps": time_diff_in_seconds, ver_var_lab: v_var_levels[:,vert_var_idx]},
+            data, coords={"timestamps": time_diff_in_seconds, ver_var_lab: v_var_levels[:, vert_var_idx]},
             dims=["timestamps", ver_var_lab], name=varn)
 
     data_tmp.coords["timestamps"].attrs[
