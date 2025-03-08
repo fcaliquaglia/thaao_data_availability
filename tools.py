@@ -107,6 +107,7 @@ def update_instr_list():
             ts.instr_list.append(category)
         else:
             print(f'{category} is wrong!')
+            sys.exit()
     return
 
 

@@ -100,7 +100,7 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
     # Extract independent variable metadata
     independent_vars = []
     independent_uom = []
-    next_start = 9
+    next_start = 7+num_independent_vars
 
     dependent_mult = []
     dependent_nan = []
@@ -169,10 +169,10 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
     next_start += 1 + nr_comment_lines
 
     # Check metadata consistency
-    if not (len(dependent_nan) == len(dependent_mult) == len(dependent_units)):
-        print('Error in independent variable metadata')
-    if not (len(extra_vars) == len(extra_mult) == len(extra_nan)):
+    if not (len(dependent_nan) == len(dependent_mult) == len(dependent_units)== len(dependent_vars)):
         print('Error in dependent variable metadata')
+    if not (len(extra_vars) == len(extra_mult) == len(extra_nan)==len(extra_units)):
+        print('Error in extra variable metadata')
 
     # Create metadata dictionary
     metadata_dict = {var: {'mult': mult, 'nanval': nan} for var, mult, nan in zip(extra_vars, extra_mult, extra_nan)}
@@ -221,11 +221,10 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
     time_diff_in_seconds = np.array((timestamps - reference_time).total_seconds())
 
     try:
-        vert_var_idx = ([independent_vars[0]] + dependent_vars).index(vert_var[0])
+        vert_var_idx = ([independent_vars[0]] + dependent_vars).index(vert_var[0].capitalize())
     except ValueError:
         vert_var_idx = ([independent_vars[0]] + dependent_vars).index(vert_var[1])
     data_grid = np.full((len(lines[data_start:])), np.nan)
-
 
     v_var_levels = []
 
@@ -239,7 +238,7 @@ def nasa_ames_parser_2160(fn, instr, vert_var, varnames):
         elements *= np.array([1] + dependent_mult)  # applying multiplication factors
         v_var = elements[vert_var_idx]  # vert value
         for varn in varnames:
-            data_value = elements[dependent_vars.index(varn)]
+            data_value = elements[dependent_vars.index(varn.capitalize())]
 
         # Find the correct index for v_var
 
