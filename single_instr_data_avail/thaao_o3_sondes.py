@@ -66,7 +66,6 @@ def update_data_avail(instr):
 
     # Loop through each height target
     for height_target in height_targets:
-        print(height_target)
         try:
             # Loop over each timestamp in the data
             for timestamp in stacked_blocks.timestamps.values:

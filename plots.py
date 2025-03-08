@@ -38,6 +38,10 @@ def draw_data_summary():
     #     data_all['aws_vespa__Air_C'] = (data_all['aws_vespa__Air_K'].values * units.K).to('degC')
     if 'hyso_tide_1__sea_level' in data_all.columns:
         data_all.loc[data_all['hyso_tide_1__sea_level'] > 10, 'hyso_tide_1__sea_level'] = np.nan
+    if 'hatpro__IWV' in data_all.columns:
+        data_all.loc[data_all['hatpro__IWV'] > 50, 'hatpro__IWV'] = np.nan
+    if 'hatpro__LWP_gm-2' in data_all.columns:
+        data_all.loc[data_all['hatpro__LWP_gm'] > 1000, 'hatpro__LWP_gm'] = np.nan
     var_list = []
     for instr in ts.instr_list:
         var_list += [instr + '__' + j for j in list(ts.instr_metadata[instr]['plot_vars'].keys())]
