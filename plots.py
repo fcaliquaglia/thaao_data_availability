@@ -286,7 +286,7 @@ def draw_campaigns(ax, a1, a2):
 def draw_data_avail(a1, a2):
     """Draws data availability with legends for instruments and campaigns."""
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=ts.figure_sizes[ts.fig_size], sharex=True)
     ax2 = ax.twinx()
 
     start = a1.strftime('%b %Y')
@@ -324,7 +324,7 @@ def draw_data_avail(a1, a2):
     ax.legend(
             handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.05), fancybox=True, shadow=True,
             ncol=6, labelcolor=[ts.institution_colors[elem] for elem in ts.institution_colors], prop={'weight': 'bold'})
-    plt.tight_layout()
+    #plt.tight_layout()
 
     return fig
 
