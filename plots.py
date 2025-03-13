@@ -286,7 +286,7 @@ def draw_campaigns(ax, a1, a2):
 def draw_data_avail(a1, a2):
     """Draws data availability with legends for instruments and campaigns."""
 
-    fig, ax = plt.subplots(figsize=ts.figure_sizes[ts.fig_size], sharex=True)
+    fig, ax = plt.subplots(figsize=ts.figure_sizes[ts.fig_size][::-1], sharex=True)
     ax2 = ax.twinx()
 
     start = a1.strftime('%b %Y')
