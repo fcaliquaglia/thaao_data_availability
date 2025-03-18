@@ -130,6 +130,7 @@ def draw_data_summary():
         ax.set_xticklabels([])  # Remove x labels
         ax.xaxis.set_ticks_position('none')
         # Top subplot
+        axes[0].set_xlim(sw.start_date, sw.end_date)
         axes[0].spines['top'].set_visible(True)
         axes[0].spines['bottom'].set_visible(False)
         axes[0].xaxis.set_ticks_position('top')
@@ -139,6 +140,7 @@ def draw_data_summary():
         axes[0].xaxis.set_major_locator(mdates.AutoDateLocator())  # Auto locates dates
         axes[0].xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
 
+        axes[-1].set_xlim(sw.start_date, sw.end_date)
         axes[-1].spines['top'].set_visible(False)
         axes[-1].spines['bottom'].set_visible(True)
         axes[-1].xaxis.set_ticks_position('bottom')
@@ -162,7 +164,8 @@ def draw_data_summary():
     logo_ax.axis('off')
 
     # Set title and layout
-    fig.suptitle('Thule High Arctic Atmospheric Observatory - THAAO', fontsize=14, fontweight='bold')
+    fig.suptitle(
+        'Thule High Arctic Atmospheric Observatory in Pituffik, Greenland - THAAO', fontsize=14, fontweight='bold')
     plt.tight_layout()
 
     return fig
@@ -324,7 +327,7 @@ def draw_data_avail(a1, a2):
     ax.legend(
             handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.05), fancybox=True, shadow=True,
             ncol=6, labelcolor=[ts.institution_colors[elem] for elem in ts.institution_colors], prop={'weight': 'bold'})
-    #plt.tight_layout()
+    plt.tight_layout()
 
     return fig
 
@@ -344,7 +347,7 @@ def plot_panels(plot_type):
                 yyyy1, yyyy2 = j, j + sw.time_window_r
                 fig = draw_data_avail(yyyy1, yyyy2)
                 figname = os.path.join(
-                        newdir, f'thaao_data_avail_{yyyy1.strftime("%Y%m")}_{yyyy2.strftime("%Y%m")}.png')
+                        newdir, f'thaao_data_avail_{yyyy1.strftime("%Y%m")}_{yyyy2.strftime("%Y%m")}_{ts.fig_size}.png')
                 plt.savefig(figname, transparent=False)
                 plt.clf()
                 plt.close(fig)
@@ -361,7 +364,8 @@ def plot_panels(plot_type):
                 end = date + sw.time_freq_c
                 fig = draw_data_avail(sw.start_date, end)
                 figname = os.path.join(
-                        newdir, f'thaao_data_avail_{sw.start_date.strftime("%Y%m")}_{end.strftime("%Y%m")}.png')
+                        newdir,
+                        f'thaao_data_avail_{sw.start_date.strftime("%Y%m")}_{end.strftime("%Y%m")}_{ts.fig_size}.png')
                 plt.savefig(figname, transparent=False)
                 plt.clf()
                 plt.close(fig)
