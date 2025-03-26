@@ -1,8 +1,7 @@
-Here’s the documentation for the given code in Markdown format:
-
----
-
 # Documentation for Data availability plots at THAAO
+
+# TODO:
+- escludere dai plot valori mediati se sono basati da meno di x misure nel periodo considerato (medi mail di Daniela)
 
 This Python script leverages the Tkinter library for creating graphical user interface (GUI) elements to allow users to
 customize and generate plots related to instruments, field campaigns, and historical events. It also uses pandas for
